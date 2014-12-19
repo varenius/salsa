@@ -1,0 +1,25 @@
+<?php
+/**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+function salsa_archive_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#salsa_archive":
+      return '<p>' . t("Makes it possible for Views to show data from the SALSA archive table in the database.") . '</p>';
+      break;
+  }
+} 
+
+function salsa_archive_views_api() {
+    return array(
+        'api' => '3.0',
+        'path' => drupal_get_path('module','salsa_archive'). '/views',
+    );
+}

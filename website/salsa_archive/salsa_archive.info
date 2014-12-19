@@ -1,0 +1,7 @@
+name = SALSA Archive Views plugin  
+description = Module to enable Views to show the SALSA Archive table in the database.
+core = 7.x
+version = 7.x-dev
+dependencies[] = views
+files[] = salsa_archive.module
+files[] = views/salsa_archive.views.inc
