@@ -308,7 +308,7 @@ class TelescopeController:
             self._set_target_al(al)
             self._set_target_az(az)
         else: 
-            raise TelescopeError('You requested the telescope to move to horizontal coordinates alt=' + str(round(al,2)) + ', az=' + str(round(az,2)) + '. Sorry, but this telescope cannot reach this position. If you are trying to reach a moving coordinate, such as the Sun or the galaxy, try later when your object have moved to another horizontal coordinate.')
+            raise TelescopeError('You requested the telescope to move to horizontal coordinates alt=' + str(round(al,2)) + ', az=' + str(round(az,2)) + '. Sorry, but this telescope cannot reach this position. This telescope cannot reach targets below ' + str(round(self.minal_deg,2)) + ' degrees altitude, or between ' + str(round(self.maxaz_deg%360,2)) + ' and ' + str(round(self.minaz_deg%360,2)) + ' azimuth. If you are trying to reach a moving coordinate, such as the Sun or the galaxy, try later when your object have moved to an observable direction.')
     
     def get_target_alaz(self):
         """Returns the target altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
