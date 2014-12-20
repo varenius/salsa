@@ -4,8 +4,8 @@
 # Name of telescope, e.g. vale, brage etc.
 name=vale
 # Location of telescope, DEG:ARCMIN:ARCSEC
-latitude=57:23:36
-longitude=11:55:08
+latitude=57:23:36.4
+longitude=11:55:07.5
 # Elevation is relative to sea level, in meters.
 elevation=2
 
