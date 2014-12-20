@@ -23,5 +23,10 @@ elseif ($kind=='file_png')
     header("Content-Disposition: attachment; filename=\"spectrum_" . $id. ".png\"");
     header("Content-type: image/png");
 }
+elseif ($kind=='file_txt')
+{
+    header("Content-Disposition: attachment; filename=\"spectrum_" . $id. ".txt\"");
+    header("Content-type: text/plain");
+}
 print $data; 
 ?> 
