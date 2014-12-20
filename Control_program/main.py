@@ -229,13 +229,17 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         date = str(self.listWidget_spectra.currentItem().text())
         spectrum = self.spectra[date]
         if not spectrum.uploaded:
-           # Create FITS file
-           fitsfile = '/tmp/tmp_vale_' + spectrum.observer + '.fits'
-           spectrum.save_to_fits(fitsfile)
-           pngfile = '/tmp/tmp_vale_' + spectrum.observer + '.png'
-           plt.savefig(pngfile) # current item
-           spectrum.upload_to_archive(fitsfile, pngfile)
-           self.btn_upload.setEnabled(False)
+            tmpdir = self.config.get('USRP', 'tmpdir')
+            tmpfile = tmpdir + '/tmp_vale_' + spectrum.observer
+            # Save temporary files
+            txtfile = tmpfile + '.txt'
+            spectrum.save_to_txt(txtfile)
+            fitsfile = tmpfile + '.fits'
+            spectrum.save_to_fits(fitsfile)
+            pngfile = tmpfile + '.png'
+            plt.savefig(pngfile) # current item
+            spectrum.upload_to_archive(fitsfile, pngfile, txtfile)
+            self.btn_upload.setEnabled(False)
 
     def abort_obs(self):
         print "Aborting measurement."

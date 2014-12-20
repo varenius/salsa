@@ -159,6 +159,24 @@ class SALSA_spectrum:
         vels = -1*(freqs-self.rest_freq)*c/self.rest_freq 
         return vels
 
+    def save_to_txt(self, outfile):
+        vels = self.get_vels() * 1e-3 # km/s
+        data = self.data
+        with open(outfile, "w") as text_file:
+            text_file.write("# BEGINHEADER\n")
+            text_file.write("# This file contains data from the SALSA 2m radio telescope.\n")
+            dateobs = self.site.date.tuple()
+            YYYY=str(dateobs[0]); MM=str(dateobs[1]); DD=str(dateobs[2]); hh = str(dateobs[3]); mm=str(dateobs[4]); ss=str(round(dateobs[5]))
+            date = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(2)
+            text_file.write("# DATE=" + date + "\n")
+            text_file.write("# GLON and GLAT given in degrees\n")
+            text_file.write("# GLON={0}\n".format(float(self.target.lon)*180/np.pi)) # Degrees
+            text_file.write("# GLAT={0}\n".format(float(self.target.lat)*180/np.pi)) # Degrees
+            text_file.write("# DATA in two columns below. Col. 1 is velocity relative to LSR [km/s]. Col. 2 is uncalibrated antenna temperature [K].\n")
+            text_file.write("# ENDHEADER\n")
+            for i, datum in enumerate(data):
+                text_file.write("{0} {1}\n".format(vels[i], data[i]))
+
     def save_to_fits(self, outfile):
         # Standard according to old SALSA files from Qradio and from http://archive.stsci.edu/fits/fits_standard/node39.html
         header = fits.Header()
@@ -211,7 +229,7 @@ class SALSA_spectrum:
         hdulist = fits.HDUList([hdu])
         hdulist.writeto(outfile)
 
-    def upload_to_archive(self, fitsfile, pngfile):
+    def upload_to_archive(self, fitsfile, pngfile, txtfile):
         host = self.config.get('ARCHIVE', 'host')
         db = self.config.get('ARCHIVE', 'database')
         user = self.config.get('ARCHIVE', 'user')
@@ -226,6 +244,10 @@ class SALSA_spectrum:
         f_png = open(pngfile, 'rb')
         pngdata = f_png.read()
         f_png.close()
+        
+        f_txt = open(txtfile, 'rb')
+        txtdata = f_txt.read()
+        f_txt.close()
 
         # Insert to database
         with con:
@@ -243,7 +265,8 @@ class SALSA_spectrum:
             mysqlcmd = mysqlcmd + "bandwidth=" + str(1e-6*self.bandwidth) + ","
             mysqlcmd = mysqlcmd + "int_time=" + str(self.int_time) + ","
             mysqlcmd = mysqlcmd + "telescope=\'" + self.site.name + "\',"
-            mysqlcmd = mysqlcmd + "file_png=\'{0}\'".format(con.escape_string(pngdata))
+            mysqlcmd = mysqlcmd + "file_png=\'{0}\'".format(con.escape_string(pngdata)) + ","
+            mysqlcmd = mysqlcmd + "file_txt=\'{0}\'".format(con.escape_string(txtdata))
             cur.execute(mysqlcmd)
         con.close()
         self.uploaded = True
