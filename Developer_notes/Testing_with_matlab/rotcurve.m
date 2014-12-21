@@ -9,7 +9,7 @@
 R0 = 8.5; % kpc
 V0 = 220; % km/s
 
-fid= fopen('BATCHRESULT.txt');
+fid= fopen('ALLDATA.txt');
 clf
 % Read first line
 tline = fgetl(fid);
@@ -20,14 +20,16 @@ while ischar(tline)
     % Get coordinates from first two numbers
     GLON = numline(1);
     GLAT = numline(2);
-    % Get maximum velocity, i.e. max of all fitted components
-    vmax = max(numline(3:length(numline)));
-    % Calculate distance and rotational velocity. Convert to radians for the sin-function.
-    R = R0*sin(GLON*pi/180.0);
-    V = vmax + V0*sin(GLON*pi/180.0);
-    % Plot
-    plot(R,V,'*')
-    hold on
+	if GLON<=90
+        % Get maximum velocity, i.e. max of all fitted components
+        vmax = max(numline(3:length(numline)));
+        % Calculate distance and rotational velocity. Convert to radians for the sin-function.
+        R = R0*sin(GLON*pi/180.0);
+        V = vmax + V0*sin(GLON*pi/180.0);
+        % Plot
+        plot(R,V,'*')
+        hold on
+	end
     % Read next line
     tline = fgetl(fid);
 end
