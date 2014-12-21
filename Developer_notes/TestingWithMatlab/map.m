@@ -40,7 +40,7 @@ while ischar(tline)
                 % Plot
                 plot(x,y,'*k')
                 hold on
-            elseif (isreal(rp)&&isreal(rm)==1)
+            elseif (isreal(rp)&&isreal(rm))
                 % Found two possible solutions. 
                 % Easiest way to treat these is to plot both, but with another color
                 r = rp;
