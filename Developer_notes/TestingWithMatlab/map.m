@@ -25,40 +25,40 @@ while ischar(tline)
     % Get maximum velocity, i.e. max of all fitted components
     vels = numline(3:length(numline));
     % Calculate distance and rotational velocity. Convert to radians for the sin-function.
-	theta = GLON-90 + 180; % Rotate to fit the Wikipedia image of galactic coordinates.
-	% This means that the y coordinates below have -R0 instead of +R0.
+    theta = GLON-90 + 180; % Rotate to fit the Wikipedia image of galactic coordinates.
+    % This means that the y coordinates below have -R0 instead of +R0.
     for VR = vels
-		R = R0*V0*sin(GLON*pi/180.0)/(V0*sin(GLON*pi/180.0) + VR);
+        R = R0*V0*sin(GLON*pi/180.0)/(V0*sin(GLON*pi/180.0) + VR);
         % Calculate x,y coordinates for this cloud
-		rp = sqrt(R^2-R0^2*(sin(GLON*pi/180.0))^2) + R0*cos(GLON*pi/180.0);
-		rm = -sqrt(R^2-R0^2*(sin(GLON*pi/180.0))^2) + R0*cos(GLON*pi/180.0);
-		if rp>0
-			if rm<0
-				r = rp;
-			    x = r * cos(theta*pi/180.0);
-	            y = -R0 + r * sin(theta*pi/180.0);
+        rp = sqrt(R^2-R0^2*(sin(GLON*pi/180.0))^2) + R0*cos(GLON*pi/180.0);
+        rm = -sqrt(R^2-R0^2*(sin(GLON*pi/180.0))^2) + R0*cos(GLON*pi/180.0);
+        if rp>0
+            if rm<0
+                r = rp;
+                x = r * cos(theta*pi/180.0);
+                y = -R0 + r * sin(theta*pi/180.0);
                 % Plot
                 plot(x,y,'*k')
                 hold on
-			elseif (isreal(rp)&&isreal(rm)==1)
-			    % Found two possible solutions. 
-			    % Easiest way to treat these is to plot both, but with another color
-			    r = rp;
-			    x = r * cos(theta*pi/180.0);
-	            y = -R0 + r * sin(theta*pi/180.0);
+            elseif (isreal(rp)&&isreal(rm)==1)
+                % Found two possible solutions. 
+                % Easiest way to treat these is to plot both, but with another color
+                r = rp;
+                x = r * cos(theta*pi/180.0);
+                y = -R0 + r * sin(theta*pi/180.0);
                 % Plot
                 plot(x,y,'*r')
                 hold on
-			    r = rm;
-			    x = r * cos(theta*pi/180.0);
-	            y = -R0 + r * sin(theta*pi/180.0);
+                r = rm;
+                x = r * cos(theta*pi/180.0);
+                y = -R0 + r * sin(theta*pi/180.0);
                 % Plot
                 plot(x,y,'*b')
                 hold on
-				[GLON, VR, rp, rm]
-			end
-		end
-	end
+                [GLON, VR, rp, rm]
+            end
+        end
+    end
     % Read next line
     tline = fgetl(fid);
 end
