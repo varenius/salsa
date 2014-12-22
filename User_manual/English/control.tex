@@ -10,20 +10,39 @@ before starting your first observations.
 \section{What can we observe with SALSA?}
 Although the SALSA system was primarily designed for observing galactic
 hydrogen there are a few other ways to use the telescope. In the following
-subsections we describe the ideas we have tested so far. 
+subsections we describe the ideas we have tested so far. More projects
+will be added as we find the time.
 
-\subsection{Galactic hydrogen}
+\subsection{The Milky Way}
 Most users of SALSA aim to detect emission from hydrogen gas in our galaxy the
 Milky Way.  The aim here is to detect emission from hydrogen gas emitting at
-frequencies close to 1420.4\,MHz, the rest frequency of hydrogen.  This is what
-the SALSA website and control program was designed for and most of the
-available documentation is related to this particular task. For an extended
-description of how to perform and understand this task, see the document 
-\emph{Mapping the Milky Way}.
+frequencies close to 1420.4\,MHz.  This is what the SALSA website and control
+program was designed for and most of the available documentation is related to
+this particular project. For an extended description of this project, see the
+document \emph{Mapping the Milky Way}.
 
-\subsection{Andromeda?}
+\subsection{The Sun}
+The Sun is a bright radio source and can be detected easily with SALSA. 
+Observations of the Sun can be used to determine the reception pattern
+of the SALSA antenna. More information about this project can be found
+in the document \emph{Measure the beam of SALSA}.
 
-\subsection{Beam size of SALSA?}
+%\subsection{Cassiopeia A}
+%Cassiopeia A is a bright radio source and should be observable
+%with SALSA in a way similar to how we observe the Sun. We have not yet
+%had the time to verify that we can indeed detect Cas. A, but as soon
+%as we do we will provide instructions on the SALSA website. 
+%
+%\subsection{The Andromeda galaxy}
+%The Andromeda galaxy contains a lot of neutral hydrogen, just like the Milky
+%Way. In theory we should be able to detect hydrogen emission from Andromeda and
+%derive the rotational speed of the galactic disc. However, because the galaxy
+%is much further away than the gas clouds in the Milky Way, we will probably
+%need to measure for many hours. Unfortunately, SALSA is, for technical reasons,
+%not yet capable of doing such long measurements. We aim to improve the system
+%in the future to make it possible to detect Andromeda, and when we have
+%confirmed that it works we will provide a set of instructions on the SALSA
+%website.
 
 \section{Connecting to SALSA} 
 \label{sect-connect}
@@ -74,6 +93,12 @@ then the computer is \emph{brage.oso.chalmers.se}.
 	system shows all times in your selected timezone. You may check the time
 	right now in your selected timezone by looking at the clock on the SALSA
 	website. 
+\item Some users who connect to SALSA using the NoMachine program will
+by default get a window which is so small that one cannot see the bottom 
+part of the control program window. This means that one may be unable to
+see the Upload-button, and hence unable to save measurements. This can
+be solved by manually adjusting your window size or screen resolution,
+either in NoMachine or remotely at the control computer. 
 \end{itemize}
 
 \section{The telescope control program} 
@@ -92,7 +117,6 @@ program looking very similar to Fig. \ref{fig:controlstart}.
 \caption{Startup display of the SALSA control program.}
 \label{fig:controlstart}
 \end{figure}
-
 The control program is used to move the telescope and to record measurements.
 We will start by describing how to move the telescope, and then we describe
 how to record data.
@@ -139,6 +163,9 @@ at the SALSA website to check that the telescope is indeed moving.  Once you
 reach the target you will probably not notice the minor tracking movement by
 eye, but if you look carefully you will see the \emph{Current} coordinates will
 changing slightly over time to follow the change in the calculated position.
+Note that it may take up to a few minutes to reach your desired position if you
+started pointing far away on the sky. Measuring while moving will produce
+nonsense data.  
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=\textwidth]{../figures/Controller_move.png}
@@ -147,15 +174,16 @@ changing slightly over time to follow the change in the calculated position.
 \label{fig:controlmove}
 \end{figure}
 
-\subsubsection{Close enough to measure}
-Note that it may take up to a few minutes to reach your desired position if you
-started pointing far away on the sky. Measuring while moving will produce
-nonsense data.  Please wait until the telescope is within 1 degree of your
+\subsubsection{What is the tracking accuracy?}
+The telescope is limited to a tracking accuracy of 0.5$^\circ$
+because of its mechanical design. This is however much smaller than the angular
+size of the antenna \emph{beam}, which has been measured to about 5.4$^\circ$
+at 1420\,MHz.  Please wait until the telescope is within 1$^\circ$ of your
 desired position before you measure anything.  The control program will assist
 you by changing the background color of the \emph{Current} coordinates from
 yellow (meaning still not close enough to measure, see e.g. Fig.
 \ref{fig:controlmove}) to white (meaning close enough to measure).  Further
-information on positional accuracy can be found in Sect. \ref{sect:tech}.
+information on positional accuracy can be found in chapter \ref{chap:tech}.
 
 \subsubsection{Keep above 15$^\circ$ altitude}
 The telescope will refuse to move if you give it unreachable position, and you
@@ -163,7 +191,7 @@ will be informed what the allowed limits are (i.e. you cannot break it).
 However, although the telescope can move down to the horizon it is wise to only
 measure at high enough altidudes to avoid disturbing radio emission from the
 Earth itself.  As a rule of thumb, make sure that the target altitude is larger
-than 15 degrees.
+than 15$^\circ$.
 
 \subsection{Receiver control: To measure a spectrum}
 When the telescope has reached a desired target coordinate you are ready to
@@ -192,7 +220,7 @@ the signal from space). This means that if you select a \emph{Target
 integration time} of 20 seconds, it will take approximately 40 seconds for the
 measurement to complete.  
 
-\section{Measurement results}
+\subsection{Measurement results}
 \label{sect:inspect}
 When a measurement is completed the resulting spectra is stored temporarily
 within the control program.  To look at your measured spectra, click on the tab
@@ -225,26 +253,62 @@ within seconds of pressing the upload-button, so please check that you data has 
 uploaded before leaving the control program. Please note that if you do not
 upload your measurement it will be deleted once you exit the control program.
 
-\section{Data analysis}
-As mentioned in the previous section you may inspect your data directly within the control
-program itself. This is the simples option, and in some cases it may be the right way.
-However, in many cases you want to do a more careful analysis offline. In this section
-we describe briefly how to download data from the archive and what software you may use to 
-inspect the data offline. 
+\section{How to process archived data}
+\label{sect:archiveprocess}
+As mentioned in the previous section you may inspect your data directly within
+the control program itself. This is the simples option, but in some cases you
+may want to do a more careful analysis offline. In this section we describe
+briefly how to download data from the archive and what software you may use to
+inspect the data offline. Aside from direct inspection in the control program,
+the most common way to process the data is by using Matlab to read the FITS
+files, see below.
 
 \subsection{PNG: Images}
 The PNG format is an image of the spectrum just as it looked in the control
 program when you pressed the upload button. This is useful for a quick look,
 but is less accurate than inspecting the data in the control program since you
-cannot get the exact values from the graph in a simple way. However, it may still
-be accurate enough for quick estimates of, for example, the center velocities of peaks
-in the spectrum.
+cannot get the exact values from the graph in a simple way. However, it may
+still be accurate enough for quick estimates of, for example, the center
+velocities of peaks in the spectrum. An accurate analysis of your data will
+however probably require access to the actual numbers, which is provided
+as TXT and FITS, see below.
 
 \subsection{TXT: Textfiles}
 The TXT format contains the spectrum in plain text, i.e. as list of
 velocity/intensity pairs. This format can be read by many programs, for example
-the free office suite LibreOffice available at http://www.libreoffice.org.
-\subsubsection{Tutorial: Showing a TXT file with LibreOffice}
+the free office suite LibreOffice available at http://www.libreoffice.org.  If
+you know computer programming you may also write your own code to display the
+data in the TXT files using your favourite programming language.
+%\subsubsection{Tutorial: Plotting a spectrum from TXT with LibreOffice}
 
 \subsection{FITS: A common format for astronomical data}
+A FITS file\footnote{Flexible Image Transport System (FITS) format.  A FITS
+file contains two parts: a header followed by a binary record of the data.  The
+binary table can be interpreted and displayed with FITS-reading software, for
+example with MATLAB - see the SALSA website.} is a common format in astronomy.
+This format provides the most functionality and meta-information. Because this 
+format is popular, there are multiple ways to process the data. Below we list
+the most common ways to read FITS file from SALSA.
 
+\subsubsection{SalsaJ - Free graphical software}
+The software SalsaJ is available at http://www.euhou.net/ (click on Software
+and then on SalsaJ).  This is a program which you download to your computer.
+SalsaJ can read the FITS files easily. However, there is a minor discrepancy
+between the current version of SalsaJ and the FITS files produced by the
+recently upgraded SALSA control program. You can still try to read your files,
+but at the time of writing this we know that some additional testing is
+necessary before you can read SALSA FITS files properly with SalsaJ.
+
+\subsubsection{Matlab: The SalsaSpectrum class}
+SalsaSpectrum is a data reduction software, written in the popular MATLAB
+language, which can be used to view and analyse data from SALSA. For users that
+are familiar with MATLAB, it may be the best option as there are both plotting
+and programming capabilities available. It is possible to reduce large numbers
+of spectra simultaneously, and to easily plot the results. The SalsaSpectrum
+software is available at the SALSA website, along with extensive documentation.
+Pleas note that Matlab is not free software and you need to have a license to
+use it - the observatory cannot provide Matlab licenses.  
+
+\subsubsection{Python}
+If you are familiar with the programming language Python you can read the FITS files
+using the library \emph{astropy}.

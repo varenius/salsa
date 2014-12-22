@@ -1,0 +1,7 @@
+spec=SalsaSpectrum('sample_data.fits')
+spec.plot()
+spec.fitBaseline()
+spec.subtractBaseline()
+spec.plot()
+spec.fitGaussiansInteractive()
+spec.plot()
