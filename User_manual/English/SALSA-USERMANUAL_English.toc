@@ -1,0 +1,31 @@
+\select@language {english}
+\contentsline {chapter}{Abstract}{2}{chapter*.4}
+\contentsline {chapter}{\numberline {1}The SALSA website}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Create an account}{3}{section.1.1}
+\contentsline {section}{\numberline {1.2}Book observing time}{3}{section.1.2}
+\contentsline {section}{\numberline {1.3}Live webcam}{5}{section.1.3}
+\contentsline {section}{\numberline {1.4}Online data archive}{5}{section.1.4}
+\contentsline {chapter}{\numberline {2}Observing with SALSA}{6}{chapter.2}
+\contentsline {section}{\numberline {2.1}What can we observe with SALSA?}{6}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Galactic hydrogen}{6}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}Andromeda?}{6}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}Beam size of SALSA?}{6}{subsection.2.1.3}
+\contentsline {section}{\numberline {2.2}Connecting to SALSA}{6}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Ending your session}{7}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Troubleshooting}{7}{subsection.2.2.2}
+\contentsline {section}{\numberline {2.3}The telescope control program}{7}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Movement control: To point the telescope}{8}{subsection.2.3.1}
+\contentsline {subsubsection}{Tracking}{9}{section*.9}
+\contentsline {subsubsection}{Close enough to measure}{9}{section*.11}
+\contentsline {subsubsection}{Keep above 15$^\circ $ altitude}{9}{section*.12}
+\contentsline {subsection}{\numberline {2.3.2}Receiver control: To measure a spectrum}{9}{subsection.2.3.2}
+\contentsline {section}{\numberline {2.4}Measurement results}{10}{section.2.4}
+\contentsline {section}{\numberline {2.5}Data analysis}{12}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}PNG: Images}{12}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}TXT: Textfiles}{13}{subsection.2.5.2}
+\contentsline {subsubsection}{Tutorial: Showing a TXT file with LibreOffice}{13}{section*.15}
+\contentsline {subsection}{\numberline {2.5.3}FITS: A common format for astronomical data}{13}{subsection.2.5.3}
+\contentsline {chapter}{\numberline {3}Technical specifications}{14}{chapter.3}
+\contentsline {section}{\numberline {3.1}Angular resolution and accuracy}{14}{section.3.1}
+\contentsline {section}{\numberline {3.2}Spectral resolution and accuracy}{14}{section.3.2}
+\contentsline {chapter}{Acknowledgements}{15}{chapter*.16}

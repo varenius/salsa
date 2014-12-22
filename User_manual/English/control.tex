@@ -1,0 +1,250 @@
+\chapter{Observing with SALSA}
+It is important to be well prepared before you start observing with SALSA.
+Time is not only limited, because of the Earth's rotation some objects on the
+sky can only be seen during a specific part of the day.  Please try to get a
+clear understanding of what you want to do before using the telescope.  In this
+chapter we describe what can be observed, how to control the telescope, and how
+to extract your measurements. We strongly recommend you to read this document
+before starting your first observations. 
+
+\section{What can we observe with SALSA?}
+Although the SALSA system was primarily designed for observing galactic
+hydrogen there are a few other ways to use the telescope. In the following
+subsections we describe the ideas we have tested so far. 
+
+\subsection{Galactic hydrogen}
+Most users of SALSA aim to detect emission from hydrogen gas in our galaxy the
+Milky Way.  The aim here is to detect emission from hydrogen gas emitting at
+frequencies close to 1420.4\,MHz, the rest frequency of hydrogen.  This is what
+the SALSA website and control program was designed for and most of the
+available documentation is related to this particular task. For an extended
+description of how to perform and understand this task, see the document 
+\emph{Mapping the Milky Way}.
+
+\subsection{Andromeda?}
+
+\subsection{Beam size of SALSA?}
+
+\section{Connecting to SALSA} 
+\label{sect-connect}
+The SALSA telescopes are controlled from a computer in Onsala. If you are at
+the observatory, then you can login to the computer directly. However, most
+observations are done remotely via internet. To control SALSA you thus need to
+login remotely to a computer in Onsala. This remote control has been tested
+on Windows, Mac OS X and Linux so you should be able to connect using almost
+any computer. There are two common ways to connect to the computer in Onsala:
+
+\begin{itemize}
+	\item{\emph{The free software NoMachine.} This is the most common way to control a
+SALSA telescope. Before your first observations, you will need to download
+the free software NoMachine from  www.nomachine.com and install it on
+your computer.  The first time you connect using the NoMachine software you may
+follow the step-by-step guide in Appendix \ref{app:nomachine}.} Once you are
+connected you may start the control program by clicking on the SALSA-shortcut
+on the virtual desktop.
+\item{\emph{The terminal.} If you are used to working in the terminal you may login
+	through SSH with graphics support using the command "ssh -X
+username@computer".  You may then start the control program from the terminal
+with the command {\tt  SALSA}.}
+\end{itemize}
+
+\subsection{Ending your session}
+When you are done observing, please close the control program using the
+\emph{x} in the upper right corner. Then close your connection to the SALSA
+computer. If you are connected using NoMachine, you close your connection by
+closing the NoMachine window (e.g. by clicking the \emph{x} in the upper corner) 
+and then chose {\tt Terminate} when asked how to quit the
+session. If you are connected via SSH in a terminal, you close your connection by 
+typing {\tt exit}.
+
+\subsection{Troubleshooting}
+Do you have trouble connecting to the telescope? Before contacting support,
+please check the three most common issues:
+\begin{itemize} 
+\item The password for the control computer may be different from the password
+you chose for the webpage (to make bookings). To log in to a control computer
+you need to use your \emph{telescope password} which you can find under
+\emph{my account} on the SALSA website.
+\item Make sure you connect to the right computer. The host adress is different
+for different telecopes, but it has always the same format. For example, if
+you have booked the telescope \emph{vale} then the computer is
+\emph{vale.oso.chalmers.se}. If you have booked the telescope \emph{brage}
+then the computer is \emph{brage.oso.chalmers.se}. 
+\item Make sure you have made a reservation at the correct time. The booking
+	system shows all times in your selected timezone. You may check the time
+	right now in your selected timezone by looking at the clock on the SALSA
+	website. 
+\end{itemize}
+
+\section{The telescope control program} 
+\label{sect-control}
+When you are logged in on a telescope computer you can start the control
+program, by either clicking the icon \emph{SALSA} on your desktop, or by
+running \emph{SALSA} in a terminal.  You should \footnote{Sometimes the window
+	takes more than 10 seconds to appear, be patient. If you do not see any
+window, try again and wait up to 30 seconds. If you still see nothing, please
+contact support as described on the SALSA website.} now see the main control
+program looking very similar to Fig. \ref{fig:controlstart}. 
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/Controller_start.png}
+\end{center}
+\caption{Startup display of the SALSA control program.}
+\label{fig:controlstart}
+\end{figure}
+
+The control program is used to move the telescope and to record measurements.
+We will start by describing how to move the telescope, and then we describe
+how to record data.
+
+\subsection{Movement control: To point the telescope}
+The startup display of the SALSA control program contains a box labelled
+\emph{Telescope movement control}. This box contains four rows of white
+fields. We now describe the purpose of these fields in detail. 
+
+The first two rows are for user input, i.e. you may enter values here.  The
+first row is labelled \emph{Desired}. This row must be specified by you, this
+is where you specify where you want the telescope to point. Different
+coordinate systems are valid, but Galactic coordinates are most common since
+they are used when observing galactic hydrogen. A few special objects can also
+be selected directly, for example the Sun.
+
+The second row is labelled
+\emph{Desired horizontal offset}. This row is only used in special cases, for
+example when doing beam measurments, and should be left at 0 for most
+observations, e.g. for galactic hydrogen. 
+
+The rows three and four are for display only, i.e. you do not enter any values
+here.  The third row is labelled \emph{Calc. target horizontal}. This row
+displays the target local (altitude-azimuth) coordinates as calculated by the
+control program given the desired coordinates you have entered (including a
+possible offset from the second row). Note that the coordinates are changing
+as the current pointing is re-calculated every second. These calculations
+are done automatically by the program. 
+
+The fourth and last coordinate row shows the current local coordinates, i.e.
+where the antenna is pointing at this very moment. Once you tell the antenna
+to move, see below, it will start moving until the current coordinates (row four)
+is the same as (or very close to) the position calculated in row three.
+
+\subsubsection{Tracking}
+Tracking means to track or \emph{follow} a specific object or coordinate on the
+sky. This means that the telescope needs to move to correct for the movement of
+the Earth (the rotation is about 0.25$^\circ$ per minute). Once you have
+specified the target coordinates correctly, click on the button {\tt Track}.
+The telescope will now start moving, see Fig. \ref{fig:controlmove}, and will
+keep calculating and moving to follow your target on the sky until you tell it
+to stop by pressing the button {\tt Stop}.  Don't forget to look at the webcam
+at the SALSA website to check that the telescope is indeed moving.  Once you
+reach the target you will probably not notice the minor tracking movement by
+eye, but if you look carefully you will see the \emph{Current} coordinates will
+changing slightly over time to follow the change in the calculated position.
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/Controller_move.png}
+\end{center}
+\caption{The telescope control program display when the telescope is moving.}
+\label{fig:controlmove}
+\end{figure}
+
+\subsubsection{Close enough to measure}
+Note that it may take up to a few minutes to reach your desired position if you
+started pointing far away on the sky. Measuring while moving will produce
+nonsense data.  Please wait until the telescope is within 1 degree of your
+desired position before you measure anything.  The control program will assist
+you by changing the background color of the \emph{Current} coordinates from
+yellow (meaning still not close enough to measure, see e.g. Fig.
+\ref{fig:controlmove}) to white (meaning close enough to measure).  Further
+information on positional accuracy can be found in Sect. \ref{sect:tech}.
+
+\subsubsection{Keep above 15$^\circ$ altitude}
+The telescope will refuse to move if you give it unreachable position, and you
+will be informed what the allowed limits are (i.e. you cannot break it).
+However, although the telescope can move down to the horizon it is wise to only
+measure at high enough altidudes to avoid disturbing radio emission from the
+Earth itself.  As a rule of thumb, make sure that the target altitude is larger
+than 15 degrees.
+
+\subsection{Receiver control: To measure a spectrum}
+When the telescope has reached a desired target coordinate you are ready to
+measure a spectrum. It is important to keep tracking during the measurement, so
+do not stop the tracking until your measurement is finished.  Before starting a
+measurment you need to decide for how long you want to measure. A longer time
+means a clearer signal. The measurement time is called \emph{integration time}
+and you find it in the box marked \emph{Receiver control} in the middle of the
+control program window.  One usually obtains a good spectrum of galactic
+hydrogen after 20 seconds.  After entering the integration time, click on {\tt
+Measure}. You will now se ee a progress bar increasing from left to right at
+the bottom part of the program, see Fig.
+\ref{fig:controlmeasure}.
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/Controller_measure.png}
+\end{center}
+\caption{The telescope control program display when the telescope is measuring.}
+\label{fig:controlmeasure}
+\end{figure}
+
+{\bf Note:} The telescope will measure for twice the specified integration
+time.  This is because in addition to measure on the target (the signal you
+want), the telescope also needs to measure itself (how the receiver disturbs
+the signal from space). This means that if you select a \emph{Target
+integration time} of 20 seconds, it will take approximately 40 seconds for the
+measurement to complete.  
+
+\section{Measurement results}
+\label{sect:inspect}
+When a measurement is completed the resulting spectra is stored temporarily
+within the control program.  To look at your measured spectra, click on the tab
+\emph{Measured spectra} at the top of the program window. You will see a window
+looking like Fig.  \ref{fig:controlspectra}. On the left side is a list of all
+spectra taken in this session (seince you started the program). On the right
+side is a graph over the currently marked spectrum. This plot is useful for
+a quick inspection of the data. You can zoom using the buttons below the figure,
+and if you hover with the mouse pointer in the figure the values for that particular point
+in the graph will appear below the plot. 
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/Controller_spectra.png}
+\end{center}
+\caption{The tab \emph{Measured spectra} in the control program. To the left is
+	a list of all measurements done in this session. The right plot shows the
+	currently selected spectrum. You may select a different spectrum by clickin
+	in the list. In the bottom left corner there is a button to save the
+selected spectrum to the website data archive.}
+\label{fig:controlspectra}
+\end{figure}
+While this is the easiest way to extract information from your measurement, it
+may not be the most convenient. Instead, you may want to spend your time with
+SALSA doing observations, and then do a careful analysis of your measurements
+at another time. If so, you need to save your data.  In the bottom left corner
+there is a button to save the selected spectrum to the online data archive on.
+After saving a measurement it will be available to you at any time via the
+SALSA website, see Sect.  \ref{sect:archive}. The data should appear in the archive
+within seconds of pressing the upload-button, so please check that you data has indeed been
+uploaded before leaving the control program. Please note that if you do not
+upload your measurement it will be deleted once you exit the control program.
+
+\section{Data analysis}
+As mentioned in the previous section you may inspect your data directly within the control
+program itself. This is the simples option, and in some cases it may be the right way.
+However, in many cases you want to do a more careful analysis offline. In this section
+we describe briefly how to download data from the archive and what software you may use to 
+inspect the data offline. 
+
+\subsection{PNG: Images}
+The PNG format is an image of the spectrum just as it looked in the control
+program when you pressed the upload button. This is useful for a quick look,
+but is less accurate than inspecting the data in the control program since you
+cannot get the exact values from the graph in a simple way. However, it may still
+be accurate enough for quick estimates of, for example, the center velocities of peaks
+in the spectrum.
+
+\subsection{TXT: Textfiles}
+The TXT format contains the spectrum in plain text, i.e. as list of
+velocity/intensity pairs. This format can be read by many programs, for example
+the free office suite LibreOffice available at http://www.libreoffice.org.
+\subsubsection{Tutorial: Showing a TXT file with LibreOffice}
+
+\subsection{FITS: A common format for astronomical data}
+
