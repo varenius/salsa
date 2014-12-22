@@ -72,6 +72,7 @@ class SALSA_spectrum:
                      [1420.4-3.197, 0.04],
                      [1420.4-2.39, 0.04],
                      [1420.4-0.395, 0.02],
+                     [1420.4+6.21, 0.04],
                      ]
         for item in known_RFI:
             RFI_freq = item[0] *1e6 
