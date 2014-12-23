@@ -3,13 +3,19 @@
 % INPUT: A tex file produced by the script "batch_fit", i.e. one line for each spectrum with 
 % coordinates and fitted velocities
 % OUTPUT: A pdf-file with a plot. This file may have some unnecessary whitespace around the figure,
-% which can be removed by e.g. using the linux program "pdfcrop". 
+% which can be removed by e.g. using the linux program "pdfcrop". Also saves an output file
+% with the R and V values for plotting elsewhere.
 
 % Define radius and velocity of the Sun.
 R0 = 8.5; % kpc
 V0 = 220; % km/s
 
+% Infile
 fid= fopen('ALLDATA.txt');
+% Outfile
+oid= fopen('ROTVALUES.txt', 'w');
+fprintf(oid,'# R V(R) \n');
+
 clf
 % Read first line
 tline = fgetl(fid);
@@ -26,6 +32,8 @@ while ischar(tline)
         % Calculate distance and rotational velocity. Convert to radians for the sin-function.
         R = R0*sin(GLON*pi/180.0);
         V = vmax + V0*sin(GLON*pi/180.0);
+        % Write line in outfile
+        fprintf(oid,'%f %f \n',R, V);
         % Plot
         plot(R,V,'*')
         hold on
