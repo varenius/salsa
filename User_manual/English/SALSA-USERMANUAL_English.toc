@@ -1,35 +1,43 @@
 \select@language {english}
-\contentsline {chapter}{Abstract}{2}{chapter*.4}
-\contentsline {chapter}{\numberline {1}The SALSA website}{3}{chapter.1}
-\contentsline {section}{\numberline {1.1}Create an account}{3}{section.1.1}
-\contentsline {section}{\numberline {1.2}Book observing time}{3}{section.1.2}
-\contentsline {section}{\numberline {1.3}Live webcam}{5}{section.1.3}
-\contentsline {section}{\numberline {1.4}Online data archive}{5}{section.1.4}
-\contentsline {chapter}{\numberline {2}Observing with SALSA}{6}{chapter.2}
-\contentsline {section}{\numberline {2.1}What can we observe with SALSA?}{6}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}The Milky Way}{6}{subsection.2.1.1}
-\contentsline {subsection}{\numberline {2.1.2}The Sun}{6}{subsection.2.1.2}
-\contentsline {section}{\numberline {2.2}Connecting to SALSA}{6}{section.2.2}
-\contentsline {subsection}{\numberline {2.2.1}Ending your session}{7}{subsection.2.2.1}
-\contentsline {subsection}{\numberline {2.2.2}Troubleshooting}{7}{subsection.2.2.2}
-\contentsline {section}{\numberline {2.3}The telescope control program}{8}{section.2.3}
-\contentsline {subsection}{\numberline {2.3.1}Movement control: To point the telescope}{8}{subsection.2.3.1}
-\contentsline {subsubsection}{Tracking}{9}{section*.9}
-\contentsline {subsubsection}{What is the tracking accuracy?}{9}{section*.11}
-\contentsline {subsubsection}{Keep above 15$^\circ $ altitude}{10}{section*.12}
-\contentsline {subsection}{\numberline {2.3.2}Receiver control: To measure a spectrum}{10}{subsection.2.3.2}
-\contentsline {subsection}{\numberline {2.3.3}Measurement results}{11}{subsection.2.3.3}
-\contentsline {section}{\numberline {2.4}How to process archived data}{13}{section.2.4}
-\contentsline {subsection}{\numberline {2.4.1}PNG: Images}{13}{subsection.2.4.1}
-\contentsline {subsection}{\numberline {2.4.2}TXT: Textfiles}{13}{subsection.2.4.2}
-\contentsline {subsection}{\numberline {2.4.3}FITS: A common format for astronomical data}{13}{subsection.2.4.3}
-\contentsline {subsubsection}{SalsaJ - Free graphical software}{13}{section*.15}
-\contentsline {subsubsection}{Matlab: The SalsaSpectrum class}{14}{section*.16}
-\contentsline {subsubsection}{Python}{14}{section*.17}
-\contentsline {chapter}{\numberline {3}Technical specifications}{15}{chapter.3}
-\contentsline {section}{\numberline {3.1}Angular resolution and accuracy}{15}{section.3.1}
-\contentsline {section}{\numberline {3.2}Spectral resolution and accuracy}{15}{section.3.2}
-\contentsline {chapter}{Appendices}{17}{chapter*.19}
-\contentsline {chapter}{\numberline {A}How to connect to SALSA using Nomachine 4}{18}{appendix.A}
-\contentsline {section}{\numberline {A.1}Quick summary}{18}{section.A.1}
-\contentsline {section}{\numberline {A.2}Connecting: Step-by-step instructions}{18}{section.A.2}
+\contentsline {chapter}{Abstract}{3}{chapter*.4}
+\contentsline {chapter}{\numberline {1}The SALSA website}{4}{chapter.1}
+\contentsline {section}{\numberline {1.1}Create an account}{4}{section.1.1}
+\contentsline {section}{\numberline {1.2}Book observing time}{4}{section.1.2}
+\contentsline {section}{\numberline {1.3}Live webcam}{6}{section.1.3}
+\contentsline {section}{\numberline {1.4}Online data archive}{6}{section.1.4}
+\contentsline {chapter}{\numberline {2}Observing with SALSA}{7}{chapter.2}
+\contentsline {section}{\numberline {2.1}What can be observed with SALSA?}{7}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}The Milky Way}{7}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}The Sun}{7}{subsection.2.1.2}
+\contentsline {section}{\numberline {2.2}When can SALSA see my desired target?}{8}{section.2.2}
+\contentsline {section}{\numberline {2.3}Connecting to SALSA}{8}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Ending your session}{8}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Troubleshooting}{8}{subsection.2.3.2}
+\contentsline {section}{\numberline {2.4}The telescope control program}{9}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Movement control: To point the telescope}{9}{subsection.2.4.1}
+\contentsline {subsubsection}{Tracking}{10}{section*.9}
+\contentsline {subsubsection}{What is the tracking accuracy?}{11}{section*.11}
+\contentsline {subsubsection}{Keep above 15$^\circ $ altitude}{12}{section*.12}
+\contentsline {subsection}{\numberline {2.4.2}Receiver control: To measure a spectrum}{12}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}Measurement results}{12}{subsection.2.4.3}
+\contentsline {section}{\numberline {2.5}How to process archived data}{13}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}PNG: Images}{13}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}TXT: Textfiles}{14}{subsection.2.5.2}
+\contentsline {subsubsection}{Tutorial: Plotting a spectrum from TXT with LibreOffice}{14}{section*.15}
+\contentsline {subsection}{\numberline {2.5.3}FITS: A common format for astronomical data}{15}{subsection.2.5.3}
+\contentsline {subsubsection}{SalsaJ - Free graphical software}{15}{section*.16}
+\contentsline {subsubsection}{Matlab: The SalsaSpectrum class}{15}{section*.17}
+\contentsline {subsubsection}{Python}{15}{section*.18}
+\contentsline {chapter}{\numberline {3}Technical specifications}{16}{chapter.3}
+\contentsline {section}{\numberline {3.1}Angular resolution and accuracy}{16}{section.3.1}
+\contentsline {section}{\numberline {3.2}Spectral resolution and accuracy}{16}{section.3.2}
+\contentsline {chapter}{Appendices}{18}{chapter*.20}
+\contentsline {chapter}{\numberline {A}How to connect to SALSA using Nomachine 4}{19}{appendix.A}
+\contentsline {section}{\numberline {A.1}Quick summary}{19}{section.A.1}
+\contentsline {section}{\numberline {A.2}Connecting: Step-by-step instructions}{19}{section.A.2}
+\contentsline {chapter}{\numberline {B}The celestial sphere and astronomical coordinates}{25}{appendix.B}
+\contentsline {section}{\numberline {B.1}A place on Earth}{25}{section.B.1}
+\contentsline {section}{\numberline {B.2}The celestial sphere}{25}{section.B.2}
+\contentsline {subsection}{\numberline {B.2.1}Equatorial coordinates}{25}{subsection.B.2.1}
+\contentsline {subsection}{\numberline {B.2.2}The Local Sidereal Time}{26}{subsection.B.2.2}
+\contentsline {subsection}{\numberline {B.2.3}How can I know whether my source is up?}{28}{subsection.B.2.3}
