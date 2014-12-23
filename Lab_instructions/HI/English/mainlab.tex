@@ -53,15 +53,24 @@ we can relate the angle $c$ to galactic longitude $l$ as
 (90-l)+90+c=180 \quad \Rightarrow \quad c=l.
 \label{eqn:c}
 \end{equation}
-We now want to relate $\alpha$ to the longitude $l$. Looking at the
-triangles {\bf CST} and {\bf CMT} we find that the distance between the
-Galactic Center ({\bf C}) and the tangential point ({\bf T}) can be expressed
-in two different ways: 
+We now want to relate also the angle $\alpha$ to the longitude $l$. 
+We note that the angle between $V$ and $R$ is 90$^\circ$ and can be written
+as the sum of $a$ och $\alpha$, i.e. $90^\circ = b + \alpha$. 
+From the triangle {\bf CMT} we also note that $b = 90^\circ - a$.
+Put together we get  
 \begin{equation}
-	{\rm\bf CT} = R_0\sin l = R \cos\alpha \quad \Rightarrow \quad \cos \alpha = \frac{R_0\sin l}{R}
+    90 = 90-a+\alpha \quad \Rightarrow \quad a = \alpha
+\label{eqn:a}
+\end{equation}
+Looking at the triangles {\bf CST} and {\bf CMT} we find that the distance
+between the Galactic Center ({\bf C}) and the tangential point ({\bf T}) can be
+expressed in two different ways: 
+\begin{equation}
+	{\rm\bf CT} = R_0\sin l = R \cos a \quad \Rightarrow \quad \cos a = \frac{R_0\sin l}{R}
 \label{eqn:cosalpha}
 \end{equation}
-Using eqns. \ref{eqn:c} and \ref{eqn:cosalpha} we can now re-write eqn. \ref{eqn:vrel1} as
+Using eqns. \ref{eqn:c}, \ref{eqn:a}, and \ref{eqn:cosalpha} we can now
+re-write eqn. \ref{eqn:vrel1} as
 \begin{equation}
 \boxed{V_r = V \frac{R_0}{R}\sin l - V_0 \sin l .}
 \label{eqn:vrel2}
@@ -103,11 +112,8 @@ V = V_{r,max} + V_0 \sin l .
 
 We may now use SALSA to measure $V_{\rm r,max}$ at different $l$ in the first
 quadrant.  Using equations \ref{eqn:rotR} and \ref{eqn:rotV} we may then
-calculate the rotation curve $V(R)$. We note that even though we only measure
-in the first quadrant, we can measure velocities of clouds both closer to, and
-further away from, the glactic center than the Sun.  It is therefore reasonable
-to assume the measured rotation curve to be valid also in the other three
-quadrants.
+calculate the rotation curve $V(R)$. It is reasonable to assume the measured
+rotation curve to be valid also in the other three quadrants.
 
 \subsection{Measure the rotation curve with SALSA}
 \label{sect:SALSArot}
@@ -120,7 +126,7 @@ at a few selected longitudes, extract the maximum velocity of each spectrum and
 plot the rotation curve.   
 The simplest way is to use the cursor to inspect the spectrum directly in the
 control program, but you can also use more advanced tools such as
-Matlab.Instructions for how to extract velocity information from the spectra
+Matlab. Instructions for how to extract velocity information from the spectra
 can also be found in the \emph{SALSA users manual}.
 To make the final plot of the rotation curve you may use your favourite
 plotting program.  A simple free solution is to use the \emph{Excel-like}

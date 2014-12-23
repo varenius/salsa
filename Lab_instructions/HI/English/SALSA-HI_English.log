@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  23 DEC 2014 01:40
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  23 DEC 2014 17:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -501,69 +501,69 @@ Package pdftex.def Info: ../figures/galgeom.pdf used on input line 16.
  [8
 
 ]
-<../figures/vmax.pdf, id=234, 279.0425pt x 197.73875pt>
+<../figures/vmax.pdf, id=235, 279.0425pt x 197.73875pt>
 File: ../figures/vmax.pdf Graphic file (type pdf)
 
 <use ../figures/vmax.pdf>
-Package pdftex.def Info: ../figures/vmax.pdf used on input line 79.
+Package pdftex.def Info: ../figures/vmax.pdf used on input line 88.
 (pdftex.def)             Requested size: 284.52756pt x 201.63051pt.
  [9 <../figures/galgeom.pdf>] [10 <../figures/vmax.pdf>] <../figures/SALSA_rotc
-urve.pdf, id=317, 504.08327pt x 354.12299pt>
+urve.pdf, id=319, 504.08327pt x 354.12299pt>
 File: ../figures/SALSA_rotcurve.pdf Graphic file (type pdf)
 
 <use ../figures/SALSA_rotcurve.pdf>
-Package pdftex.def Info: ../figures/SALSA_rotcurve.pdf used on input line 136.
+Package pdftex.def Info: ../figures/SALSA_rotcurve.pdf used on input line 142.
 (pdftex.def)             Requested size: 338.5863pt x 237.86635pt.
  [11 <../figures/SALSA_rotcurve.pdf>]
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 215.
+(hyperref)                removing `math shift' on input line 221.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 215.
+(hyperref)                removing `math shift' on input line 221.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 215.
+(hyperref)                removing `math shift' on input line 221.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 215.
+(hyperref)                removing `math shift' on input line 221.
 
-[12] <../figures/coordinate.pdf, id=385, 281.05pt x 281.05pt>
+[12] <../figures/coordinate.pdf, id=387, 281.05pt x 281.05pt>
 File: ../figures/coordinate.pdf Graphic file (type pdf)
 
 <use ../figures/coordinate.pdf>
-Package pdftex.def Info: ../figures/coordinate.pdf used on input line 239.
+Package pdftex.def Info: ../figures/coordinate.pdf used on input line 245.
 (pdftex.def)             Requested size: 241.84842pt x 241.84837pt.
  [13 <../figures/coordinate.pdf>]
-<../figures/galaxopenoffice1.pdf, id=420, 342.27875pt x 413.545pt>
+<../figures/galaxopenoffice1.pdf, id=422, 342.27875pt x 413.545pt>
 File: ../figures/galaxopenoffice1.pdf Graphic file (type pdf)
 
 <use ../figures/galaxopenoffice1.pdf>
-Package pdftex.def Info: ../figures/galaxopenoffice1.pdf used on input line 288
+Package pdftex.def Info: ../figures/galaxopenoffice1.pdf used on input line 294
 .
 (pdftex.def)             Requested size: 290.22105pt x 350.67564pt.
 ) (./appendix.tex [14 <../figures/galaxopenoffice1.pdf>] [15
 
 ]
 Appendix A.
-<../figures/cdrot.pdf, id=436, 263.98625pt x 221.82875pt>
+<../figures/cdrot.pdf, id=438, 263.98625pt x 221.82875pt>
 File: ../figures/cdrot.pdf Graphic file (type pdf)
 
 <use ../figures/cdrot.pdf>
 Package pdftex.def Info: ../figures/cdrot.pdf used on input line 23.
 (pdftex.def)             Requested size: 233.3125pt x 196.0527pt.
 
-<../figures/solsystrot.pdf, id=437, 257.96375pt x 219.82124pt>
+<../figures/solsystrot.pdf, id=439, 257.96375pt x 219.82124pt>
 File: ../figures/solsystrot.pdf Graphic file (type pdf)
 
 <use ../figures/solsystrot.pdf>
 Package pdftex.def Info: ../figures/solsystrot.pdf used on input line 24.
 (pdftex.def)             Requested size: 233.3125pt x 198.82005pt.
 
-<../figures/mwrot.pdf, id=438, 263.98625pt x 222.8325pt>
+<../figures/mwrot.pdf, id=440, 263.98625pt x 222.8325pt>
 File: ../figures/mwrot.pdf Graphic file (type pdf)
 
 <use ../figures/mwrot.pdf>
@@ -574,26 +574,32 @@ Package pdftex.def Info: ../figures/mwrot.pdf used on input line 25.
 ] [17 <../figures/cdrot.pdf> <../figures/solsystrot.pdf> <../figures/mwrot.pdf>
 ] [18]
 Appendix B.
-) (./references.tex [19
+<../figures/ev2.pdf, id=477, 850.17625pt x 702.625pt>
+File: ../figures/ev2.pdf Graphic file (type pdf)
+ <use ../figures/ev2.pdf>
+Package pdftex.def Info: ../figures/ev2.pdf used on input line 102.
+(pdftex.def)             Requested size: 227.62204pt x 188.11382pt.
 
-])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 43.
- [20
+[19
+
+ <../figures/ev2.pdf>]) (./references.tex [20])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 42.
+ [21
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 43.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 42.
  (./SALSA-HI_English.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 43.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 43.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 42.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 42.
 Package rerunfilecheck Info: File `SALSA-HI_English.out' has not changed.
-(rerunfilecheck)             Checksum: 6B6DF2F34B7481BF237B6BF18590A455;1368.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 43.
+(rerunfilecheck)             Checksum: FFDBED8B8CE2DA0103BA6021B9982F14;1368.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 42.
  ) 
 Here is how much of TeX's memory you used:
- 8655 strings out of 493304
- 127068 string characters out of 6139871
- 235061 words of memory out of 5000000
- 11864 multiletter control sequences out of 15000+600000
+ 8665 strings out of 493304
+ 127222 string characters out of 6139871
+ 235324 words of memory out of 5000000
+ 11870 multiletter control sequences out of 15000+600000
  17613 words of font info for 67 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  36i,9n,38p,1030b,396s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -613,10 +619,10 @@ r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on SALSA-HI_English.pdf (21 pages, 6829851 bytes).
+Output written on SALSA-HI_English.pdf (22 pages, 7578228 bytes).
 PDF statistics:
- 569 PDF objects out of 1000 (max. 8388607)
- 390 compressed objects within 4 object streams
- 84 named destinations out of 1000 (max. 500000)
- 223 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 582 PDF objects out of 1000 (max. 8388607)
+ 400 compressed objects within 4 object streams
+ 87 named destinations out of 1000 (max. 500000)
+ 228 words of extra memory for PDF output out of 10000 (max. 10000000)
 

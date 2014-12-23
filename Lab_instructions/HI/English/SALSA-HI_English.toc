@@ -17,4 +17,4 @@
 \contentsline {section}{\numberline {A.2}Keplerian rotation: the Solar system}{16}{section.A.2}
 \contentsline {section}{\numberline {A.3}The rotation curve of a spiral galaxy}{16}{section.A.3}
 \contentsline {chapter}{\numberline {B}Early history of 21 cm line observations}{19}{appendix.B}
-\contentsline {chapter}{Bibliography}{20}{appendix*.15}
+\contentsline {chapter}{Bibliography}{21}{appendix*.16}
