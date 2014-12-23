@@ -17,14 +17,14 @@
 \contentsline {subsection}{\numberline {2.4.1}Movement control: To point the telescope}{9}{subsection.2.4.1}
 \contentsline {subsubsection}{Tracking}{10}{section*.9}
 \contentsline {subsubsection}{What is the tracking accuracy?}{11}{section*.11}
-\contentsline {subsubsection}{Keep above 15$^\circ $ altitude}{12}{section*.12}
+\contentsline {subsubsection}{Keep above 15$^\circ $ altitude}{11}{section*.12}
 \contentsline {subsection}{\numberline {2.4.2}Receiver control: To measure a spectrum}{12}{subsection.2.4.2}
-\contentsline {subsection}{\numberline {2.4.3}Measurement results}{12}{subsection.2.4.3}
-\contentsline {section}{\numberline {2.5}How to process archived data}{13}{section.2.5}
-\contentsline {subsection}{\numberline {2.5.1}PNG: Images}{13}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.4.3}Measurement results}{13}{subsection.2.4.3}
+\contentsline {section}{\numberline {2.5}How to process archived data}{14}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}PNG: Images}{14}{subsection.2.5.1}
 \contentsline {subsection}{\numberline {2.5.2}TXT: Textfiles}{14}{subsection.2.5.2}
 \contentsline {subsubsection}{Tutorial: Plotting a spectrum from TXT with LibreOffice}{14}{section*.15}
-\contentsline {subsection}{\numberline {2.5.3}FITS: A common format for astronomical data}{15}{subsection.2.5.3}
+\contentsline {subsection}{\numberline {2.5.3}FITS: A common format for astronomical data}{14}{subsection.2.5.3}
 \contentsline {subsubsection}{SalsaJ - Free graphical software}{15}{section*.16}
 \contentsline {subsubsection}{Matlab: The SalsaSpectrum class}{15}{section*.17}
 \contentsline {subsubsection}{Python}{15}{section*.18}
@@ -35,9 +35,10 @@
 \contentsline {chapter}{\numberline {A}How to connect to SALSA using Nomachine 4}{19}{appendix.A}
 \contentsline {section}{\numberline {A.1}Quick summary}{19}{section.A.1}
 \contentsline {section}{\numberline {A.2}Connecting: Step-by-step instructions}{19}{section.A.2}
-\contentsline {chapter}{\numberline {B}The celestial sphere and astronomical coordinates}{25}{appendix.B}
-\contentsline {section}{\numberline {B.1}A place on Earth}{25}{section.B.1}
-\contentsline {section}{\numberline {B.2}The celestial sphere}{25}{section.B.2}
-\contentsline {subsection}{\numberline {B.2.1}Equatorial coordinates}{25}{subsection.B.2.1}
-\contentsline {subsection}{\numberline {B.2.2}The Local Sidereal Time}{26}{subsection.B.2.2}
-\contentsline {subsection}{\numberline {B.2.3}How can I know whether my source is up?}{28}{subsection.B.2.3}
+\contentsline {section}{\numberline {A.3}Troubleshooting: changing screen resolution}{24}{section.A.3}
+\contentsline {chapter}{\numberline {B}The celestial sphere and astronomical coordinates}{27}{appendix.B}
+\contentsline {section}{\numberline {B.1}A place on Earth}{27}{section.B.1}
+\contentsline {section}{\numberline {B.2}The celestial sphere}{27}{section.B.2}
+\contentsline {subsection}{\numberline {B.2.1}Equatorial coordinates}{27}{subsection.B.2.1}
+\contentsline {subsection}{\numberline {B.2.2}The Local Sidereal Time}{28}{subsection.B.2.2}
+\contentsline {subsection}{\numberline {B.2.3}How can I know whether my source is up?}{30}{subsection.B.2.3}
