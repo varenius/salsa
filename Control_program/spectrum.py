@@ -10,7 +10,7 @@ from datetime import datetime
 
 
 class SALSA_spectrum:
-    def __init__(self, data, bandwidth, nchans, cfreq, site, alt, az, int_time, username, config):
+    def __init__(self, data, bandwidth, nchans, cfreq, site, alt, az, int_time, username, config, offset_alt, offset_az):
         # All units shall be S.I. (Hz, etc. not MHz)
         self.rest_freq = 1420.40575177e6 # Hz, from Wiki.
         self.obs_freq = float(cfreq)
@@ -43,6 +43,8 @@ class SALSA_spectrum:
         self.freq_vlsr_corr = 0
         self.vlsr_corr = 0
         self.config = config
+        self.offset_alt = offset_alt
+        self.offset_az = offset_az
 
     def auto_edit_bad_data(self):
         #print "Autoflagging known RFI."
@@ -271,3 +273,13 @@ class SALSA_spectrum:
             cur.execute(mysqlcmd)
         con.close()
         self.uploaded = True
+
+    def get_total_power(self):
+        # Calculate total power (sum of values in spectra divided by number of channels)
+        # Use only inner 75% to avoid band edge effects
+        nchans = self.nchans
+        totpow = np.sum(self.data[0.25*nchans:0.75*nchans]) / (0.5*nchans)
+        return totpow
+
+    def print_total_power(self):
+        print "SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4))

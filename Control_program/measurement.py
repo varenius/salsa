@@ -8,7 +8,7 @@ import os
 
 class Measurement:
 
-    def __init__(self, c_freq, int_time, bandwidth, alt, az, site, noutchans, username, config):
+    def __init__(self, c_freq, int_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az):
         # Copy everything to make sure immutable operations
         # do not change the original input objects in case
         # we pass references to this constructor.
@@ -40,6 +40,8 @@ class Measurement:
         self.site.name = site.name
         self.observer = username
         self.config = config
+        self.offset_alt = offset_alt
+        self.offset_az = offset_az
 
         # Create receiver object to run GNUradio flowgraph.
         # Using both upper and lower sideband, so bandwidth is equal to 
@@ -72,7 +74,7 @@ class Measurement:
         # TODO: Proper amplitude calibration! For now just single scale factor.
         calfactor = 500 # K/USRP input unit with 60dB gain. 
         spec = calfactor * spec/(1.0*nspec)
-        self.spectrum = SALSA_spectrum(spec, samp_rate, fftsize, cfreq, self.site, self.alt, self.az, self.int_time, self.observer, self.config)
+        self.spectrum = SALSA_spectrum(spec, samp_rate, fftsize, cfreq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
         # Clean up temporary object and file
         del signal
         os.remove(infile)

@@ -140,15 +140,11 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         # Plot spectra of currently selected item
         spectrum = self.spectra[str(self.listWidget_spectra.currentItem().text())]
         self.plot(spectrum)
+        spectrum.print_total_power()
         if spectrum.uploaded:
             self.btn_upload.setEnabled(False)
         else:
             self.btn_upload.setEnabled(True)
-        # Print total power (sum of values in spectra divided by number of channels)
-        nchans = spectrum.nchans
-        totpow = np.sum(spectrum.data[0.25*nchans:0.75*nchans]) / (0.5*nchans)
-        print "CONTINUUM LEVEL (area under middle half of measured spectrum/(0.5*nchans)), ALT, AZ"
-        print round(totpow,4), spectrum.alt, spectrum.az 
 
     def clear_progressbar(self):
         self.lapsedtime = 0
@@ -271,11 +267,12 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         # has input order AZ, ALT, i.e. inverted to most other functions.
         # Then, make ephem object to pass to measurement
         (calt_deg, caz_deg) = self.telescope.get_current_alaz()
+        (coff_alt, coff_az) = self.get_desired_alaz_offset()
         self.sigworker = Worker()
         self.sigthread = Thread() # Create thread to run GNURadio in background
         self.sigthread.setTerminationEnabled(True)
         self.sigworker.moveToThread(self.sigthread)
-        self.sigworker.measurement = Measurement(freq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config)
+        self.sigworker.measurement = Measurement(freq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az)
         self.sigthread.started.connect(self.sigworker.work)
         self.sigworker.finished.connect(self.sigthread.quit)
         if self.mode_switched.isChecked():
@@ -296,11 +293,12 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             # has input order AZ, ALT, i.e. inverted to most other functions.
             # Then, make ephem object to pass to measurement
             (calt_deg, caz_deg) = self.telescope.get_current_alaz()
+            (coff_alt, coff_az) = self.get_desired_alaz_offset()
             self.refworker = Worker()
             self.refthread = Thread() # Create thread to run GNURadio in background
             self.refthread.setTerminationEnabled(True)
             self.refworker.moveToThread(self.refthread)
-            self.refworker.measurement = Measurement(reffreq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config)
+            self.refworker.measurement = Measurement(reffreq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az)
             self.refthread.started.connect(self.refworker.work)
             self.refworker.finished.connect(self.refthread.quit)
             # When obs is finished, process data and plot
@@ -467,14 +465,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
     #        rightval = newpos.lat
     #    return (str(leftval), str(rightval))
 
-    def calculate_desired_alaz(self):
-	"""Calculates the desired alt/az for the current time based on current desired target position."""
-        target = self.coordselector.currentText()
-
-        # Convert from QString to String to not confuse ephem
-        leftcoord = str(self.inputleftcoord.text())
-        rightcoord= str(self.inputrightcoord.text())
-        
+    def get_desired_alaz_offset(self):
         # Read specified offset
         # Convert from QString to String to not confuse ephem,then to decimal degrees in case the string had XX:XX:XX.XX format.
         try:
@@ -483,6 +474,19 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         except ValueError:
             offset_alt_deg = 0.0
             offset_az_deg = 0.0
+       
+        return (offset_alt_deg, offset_az_deg)
+
+    def calculate_desired_alaz(self):
+	"""Calculates the desired alt/az for the current time based on current desired target position."""
+        target = self.coordselector.currentText()
+
+        # Convert from QString to String to not confuse ephem
+        leftcoord = str(self.inputleftcoord.text())
+        rightcoord= str(self.inputrightcoord.text())
+        
+        # Get current offset
+        (offset_alt_deg, offset_az_deg) = self.get_desired_alaz_offset()
 
         # Reset values in case they are "The Sun"
         # since otherwise errors appear when switchin from "The Sun"-mode 
