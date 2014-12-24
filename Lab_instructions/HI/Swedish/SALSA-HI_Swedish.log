@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  24 DEC 2014 22:14
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  24 DEC 2014 22:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -697,13 +697,13 @@ File: ../figures/CHALMERS-logo.pdf Graphic file (type pdf)
 Package pdftex.def Info: ../figures/CHALMERS-logo.pdf used on input line 8.
 (pdftex.def)             Requested size: 101.725pt x 113.81102pt.
 
-<../figures/Milky_Way_236084_annotated.jpg, id=82, 5621.0pt x 5621.0pt>
-File: ../figures/Milky_Way_236084_annotated.jpg Graphic file (type jpg)
+<../figures/Milky_Way_236084_annotated_small.jpg, id=82, 1124.2pt x 1124.2pt>
+File: ../figures/Milky_Way_236084_annotated_small.jpg Graphic file (type jpg)
 
-<use ../figures/Milky_Way_236084_annotated.jpg>
-Package pdftex.def Info: ../figures/Milky_Way_236084_annotated.jpg used on inpu
-t line 22.
-(pdftex.def)             Requested size: 341.43306pt x 341.36238pt.
+<use ../figures/Milky_Way_236084_annotated_small.jpg>
+Package pdftex.def Info: ../figures/Milky_Way_236084_annotated_small.jpg used o
+n input line 22.
+(pdftex.def)             Requested size: 341.43306pt x 341.431pt.
 LaTeX Font Info:    Try loading font information for OT1+lmr on input line 27.
 
 (/usr/share/texmf/tex/latex/lm/ot1lmr.fd
@@ -753,7 +753,8 @@ Package babel Info: Redefining swedish shorthand "~
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <../figures/OSO-logo.jpg> <
-../figures/CHALMERS-logo.pdf> <../figures/Milky_Way_236084_annotated.jpg>])
+../figures/CHALMERS-logo.pdf> <../figures/Milky_Way_236084_annotated_small.jpg>
+])
 (./SALSA-HI_Swedish.toc)
 \tf@toc=\write4
 \openout4 = `SALSA-HI_Swedish.toc'.
@@ -1161,7 +1162,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 38.
  ) 
 Here is how much of TeX's memory you used:
  9248 strings out of 493304
- 133991 string characters out of 6139871
+ 134021 string characters out of 6139871
  237652 words of memory out of 5000000
  12395 multiletter control sequences out of 15000+600000
  111236 words of font info for 82 fonts, out of 8000000 for 9000
@@ -1181,7 +1182,7 @@ c/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/te
 xmf/fonts/type1/public/lm/lmri12.pfb></usr/share/texmf/fonts/type1/public/lm/lm
 sy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fo
 nts/type1/public/lm/lmtt12.pfb>
-Output written on SALSA-HI_Swedish.pdf (21 pages, 7649464 bytes).
+Output written on SALSA-HI_Swedish.pdf (21 pages, 2337006 bytes).
 PDF statistics:
  592 PDF objects out of 1000 (max. 8388607)
  411 compressed objects within 5 object streams
