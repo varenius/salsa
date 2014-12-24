@@ -1,0 +1,44 @@
+\select@language {swedish}
+\contentsline {chapter}{Sammanfattning}{3}{chapter*.4}
+\contentsline {chapter}{\numberline {1}SALSA-hemsidan}{4}{chapter.1}
+\contentsline {section}{\numberline {1.1}Skapa ett konto}{4}{section.1.1}
+\contentsline {section}{\numberline {1.2}Boka teleskoptid}{4}{section.1.2}
+\contentsline {section}{\numberline {1.3}Live webkamera}{6}{section.1.3}
+\contentsline {section}{\numberline {1.4}Webarkiv f\IeC {\"o}r m\IeC {\"a}tdata}{6}{section.1.4}
+\contentsline {chapter}{\numberline {2}Att observera med SALSA}{7}{chapter.2}
+\contentsline {section}{\numberline {2.1}Vad kan observeras med SALSA?}{7}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Vintergatan}{7}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}Solen}{7}{subsection.2.1.2}
+\contentsline {section}{\numberline {2.2}N\IeC {\"a}r kan SALSA se ett viss objekt?}{8}{section.2.2}
+\contentsline {section}{\numberline {2.3}Att ansluta till SALSA}{8}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Att avsluta din session}{8}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Fels\IeC {\"o}kning}{9}{subsection.2.3.2}
+\contentsline {section}{\numberline {2.4}Kontrollprogrammet f\IeC {\"o}r SALSA}{9}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Movement control: Att peka \IeC {\r a}t r\IeC {\"a}tt h\IeC {\r a}ll}{9}{subsection.2.4.1}
+\contentsline {subsubsection}{Tracking}{10}{section*.9}
+\contentsline {subsubsection}{Hur noggrannt \IeC {\"a}r SALSA?}{11}{section*.11}
+\contentsline {subsubsection}{M\IeC {\"a}t endast ovanf\IeC {\"o}r 15$^\circ $ altitud}{12}{section*.12}
+\contentsline {subsection}{\numberline {2.4.2}Receiver control: Att g\IeC {\"o}ra en m\IeC {\"a}tning}{12}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}M\IeC {\"a}tresultat}{12}{subsection.2.4.3}
+\contentsline {section}{\numberline {2.5}Att analysera data fr\IeC {\r a}n webarkivet}{13}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}PNG: Bilder}{13}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}TXT: Textfiler}{14}{subsection.2.5.2}
+\contentsline {subsubsection}{Guide: Att visa spektrum fr\IeC {\r a}n TXT-filer i LibreOffice}{14}{section*.15}
+\contentsline {subsection}{\numberline {2.5.3}FITS: Ett vanligt format f\IeC {\"o}r astronomidata}{15}{subsection.2.5.3}
+\contentsline {subsubsection}{SalsaJ - Gratis grafisk mjukvara}{15}{section*.16}
+\contentsline {subsubsection}{Matlab: Verktyget SalsaSpectrum}{15}{section*.17}
+\contentsline {subsubsection}{Python}{15}{section*.18}
+\contentsline {chapter}{\numberline {3}Tekniska specifikationer}{16}{chapter.3}
+\contentsline {section}{\numberline {3.1}Vinkeluppl\IeC {\"o}sning och precision}{16}{section.3.1}
+\contentsline {section}{\numberline {3.2}Frekvensuppl\IeC {\"o}sning och precision}{16}{section.3.2}
+\contentsline {chapter}{Bilagor}{18}{chapter*.20}
+\contentsline {chapter}{\numberline {A}Att koppla upp sig mot SALSA med programmet Nomachine 4}{19}{appendix.A}
+\contentsline {section}{\numberline {A.1}Snabb sammanfattning}{19}{section.A.1}
+\contentsline {section}{\numberline {A.2}Guide: steg f\IeC {\"o}r steg}{19}{section.A.2}
+\contentsline {section}{\numberline {A.3}Fels\IeC {\"o}kning: att \IeC {\"o}ka kontrolldatorns sk\IeC {\"a}rmuppl\IeC {\"o}sning}{24}{section.A.3}
+\contentsline {chapter}{\numberline {B}Himmelssf\IeC {\"a}ren och astronomiska koordinatsystem}{27}{appendix.B}
+\contentsline {section}{\numberline {B.1}En position p\IeC {\r a} jorden}{27}{section.B.1}
+\contentsline {section}{\numberline {B.2}Himmelsf\IeC {\"a}ren}{27}{section.B.2}
+\contentsline {subsection}{\numberline {B.2.1}Ekvatoriella koordinater}{27}{subsection.B.2.1}
+\contentsline {subsection}{\numberline {B.2.2}Den lokala stj\IeC {\"a}rntiden}{28}{subsection.B.2.2}
+\contentsline {subsection}{\numberline {B.2.3}Hur kan jag veta om min k\IeC {\"a}lla \IeC {\"a}r synlig?}{29}{subsection.B.2.3}

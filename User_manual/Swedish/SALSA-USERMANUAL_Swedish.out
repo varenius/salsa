@@ -1,0 +1,36 @@
+\BOOKMARK [0][-]{chapter*.4}{Sammanfattning}{}% 1
+\BOOKMARK [0][-]{chapter.1}{SALSA-hemsidan}{}% 2
+\BOOKMARK [1][-]{section.1.1}{Skapa ett konto}{chapter.1}% 3
+\BOOKMARK [1][-]{section.1.2}{Boka teleskoptid}{chapter.1}% 4
+\BOOKMARK [1][-]{section.1.3}{Live webkamera}{chapter.1}% 5
+\BOOKMARK [1][-]{section.1.4}{Webarkiv f\366r m\344tdata}{chapter.1}% 6
+\BOOKMARK [0][-]{chapter.2}{Att observera med SALSA}{}% 7
+\BOOKMARK [1][-]{section.2.1}{Vad kan observeras med SALSA?}{chapter.2}% 8
+\BOOKMARK [2][-]{subsection.2.1.1}{Vintergatan}{section.2.1}% 9
+\BOOKMARK [2][-]{subsection.2.1.2}{Solen}{section.2.1}% 10
+\BOOKMARK [1][-]{section.2.2}{N\344r kan SALSA se ett viss objekt?}{chapter.2}% 11
+\BOOKMARK [1][-]{section.2.3}{Att ansluta till SALSA}{chapter.2}% 12
+\BOOKMARK [2][-]{subsection.2.3.1}{Att avsluta din session}{section.2.3}% 13
+\BOOKMARK [2][-]{subsection.2.3.2}{Fels\366kning}{section.2.3}% 14
+\BOOKMARK [1][-]{section.2.4}{Kontrollprogrammet f\366r SALSA}{chapter.2}% 15
+\BOOKMARK [2][-]{subsection.2.4.1}{Movement control: Att peka \345t r\344tt h\345ll}{section.2.4}% 16
+\BOOKMARK [2][-]{subsection.2.4.2}{Receiver control: Att g\366ra en m\344tning}{section.2.4}% 17
+\BOOKMARK [2][-]{subsection.2.4.3}{M\344tresultat}{section.2.4}% 18
+\BOOKMARK [1][-]{section.2.5}{Att analysera data fr\345n webarkivet}{chapter.2}% 19
+\BOOKMARK [2][-]{subsection.2.5.1}{PNG: Bilder}{section.2.5}% 20
+\BOOKMARK [2][-]{subsection.2.5.2}{TXT: Textfiler}{section.2.5}% 21
+\BOOKMARK [2][-]{subsection.2.5.3}{FITS: Ett vanligt format f\366r astronomidata}{section.2.5}% 22
+\BOOKMARK [0][-]{chapter.3}{Tekniska specifikationer}{}% 23
+\BOOKMARK [1][-]{section.3.1}{Vinkeluppl\366sning och precision}{chapter.3}% 24
+\BOOKMARK [1][-]{section.3.2}{Frekvensuppl\366sning och precision}{chapter.3}% 25
+\BOOKMARK [0][-]{chapter*.20}{Bilagor}{}% 26
+\BOOKMARK [0][-]{appendix.A}{Att koppla upp sig mot SALSA med programmet Nomachine 4}{}% 27
+\BOOKMARK [1][-]{section.A.1}{Snabb sammanfattning}{appendix.A}% 28
+\BOOKMARK [1][-]{section.A.2}{Guide: steg f\366r steg}{appendix.A}% 29
+\BOOKMARK [1][-]{section.A.3}{Fels\366kning: att \366ka kontrolldatorns sk\344rmuppl\366sning}{appendix.A}% 30
+\BOOKMARK [0][-]{appendix.B}{Himmelssf\344ren och astronomiska koordinatsystem}{}% 31
+\BOOKMARK [1][-]{section.B.1}{En position p\345 jorden}{appendix.B}% 32
+\BOOKMARK [1][-]{section.B.2}{Himmelsf\344ren}{appendix.B}% 33
+\BOOKMARK [2][-]{subsection.B.2.1}{Ekvatoriella koordinater}{section.B.2}% 34
+\BOOKMARK [2][-]{subsection.B.2.2}{Den lokala stj\344rntiden}{section.B.2}% 35
+\BOOKMARK [2][-]{subsection.B.2.3}{Hur kan jag veta om min k\344lla \344r synlig?}{section.B.2}% 36
