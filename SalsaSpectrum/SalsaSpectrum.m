@@ -13,6 +13,12 @@ classdef SalsaSpectrum<handle
     % tested, but there may still be bugs. It can be downloaded on the
     % SALSA onsala Web site at vale.oso.chalmers.se.
     
+    % version 1.92
+    % 27 dec, 2014
+    % - Changed from theoretical 6.4 to measured 5.4 degrees for SALSA beam when downloading from LAB.
+	% - Noted that showConfInt seems to be broken on this new (2014a) Matlab version. Added
+	%   issue to Github tracker.
+	
     % version 1.91
     % 2 aug, 2014
     % - small bugfix to accept both old and new matlab versions in GaussianFitting.
@@ -25,7 +31,6 @@ classdef SalsaSpectrum<handle
     % version 1.8
     % 11 mars, 2013
     %  - readLab now works on windows (via the "urlwrite" command). 
-    
     
     % version 1.7
     % 7 december, 2012
@@ -628,26 +633,27 @@ classdef SalsaSpectrum<handle
                 
                 indpeak = indpeak*os;
                 
-                % exclude the negative peak sometimes present around 200 - 225 pixels.
-                indremove = obj.getIndices(-130,'vel');
-                badpeak = find(indpeak>indremove);
-                
-                if ~ismember(badpeak,[])
-                    indpeak(badpeak) = [];
-                    hpeak(badpeak) = [];
-                end
-                
-                % exclude everything above 220 km/s (there is never any real signal
-                % there).
-                indremove = obj.getIndices(130,'vel');
-                badpeak = find(indpeak<indremove);
-                
-                if ~ismember(badpeak,[])
-                    indpeak(badpeak) = [];
-                    hpeak(badpeak) = [];
-                end
+                %% exclude the negative peak sometimes present around 200 - 225 pixels.
+                %indremove = obj.getIndices(-130,'vel');
+                %badpeak = find(indpeak>indremove);
+                %
+                %if ~ismember(badpeak,[])
+                %    indpeak(badpeak) = [];
+                %    hpeak(badpeak) = [];
+                %end
+                %
+                %% exclude everything above 220 km/s (there is never any real signal
+                %% there).
+                %indremove = obj.getIndices(130,'vel');
+                %badpeak = find(indpeak<indremove);
+                %
+                %if ~ismember(badpeak,[])
+                %    indpeak(badpeak) = [];
+                %    hpeak(badpeak) = [];
+                %end
                 %plot(indpeak, hpeak, 'gx')
                 guess = [];
+
                 % this always assumes a linewidth sigma of 7 pixels. That simple
                 % assumption works very well most of the time.
                 for i = 1:length(indpeak)
@@ -915,7 +921,10 @@ classdef SalsaSpectrum<handle
             hold on
             xx = [obj.vel fliplr(obj.vel)];
             yy = [obj.gaussConfInt(:,1)' fliplr(obj.gaussConfInt(:,2)')];
-            
+           
+			size(xx)
+			size(yy)
+			
             hh = fill(xx,yy,'k');
             greycol = .75*[1 1 1];
             set(hh, 'facecolor', greycol, 'edgecolor', greycol);
@@ -945,9 +954,13 @@ classdef SalsaSpectrum<handle
                 return
             end
             
-            salsares = round( (1.22 * 0.21 / 2.3) * 180/pi * 10 ...
-                ) / 10;
-            
+			% Theoretical calculation
+            %salsares = round( (1.22 * 0.21 / 2.3) * 180/pi * 10 ...
+            %    ) / 10;
+
+			% Use measured SALSA resolution 5.4 degrees.
+			salsares = 5.4; 
+
             % dowload spectra with resolution given by user.
             if nargin == 2
                 salsares = varargin{1};

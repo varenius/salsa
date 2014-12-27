@@ -1,0 +1,24 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{The SalsaSpectrum class}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Installation}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Read a spectrum}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Plot a spectrum}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Fit and subtract a baseline}{section.2}% 6
+\BOOKMARK [3][-]{subsubsection.2.4.1}{Manual method}{subsection.2.4}% 7
+\BOOKMARK [3][-]{subsubsection.2.4.2}{Interactive fit}{subsection.2.4}% 8
+\BOOKMARK [2][-]{subsection.2.5}{Fit gaussians to the spectrum}{section.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.5.1}{Manual method}{subsection.2.5}% 10
+\BOOKMARK [3][-]{subsubsection.2.5.2}{Automatic method}{subsection.2.5}% 11
+\BOOKMARK [3][-]{subsubsection.2.5.3}{Interactive method}{subsection.2.5}% 12
+\BOOKMARK [3][-]{subsubsection.2.5.4}{Extracting fit parameters}{subsection.2.5}% 13
+\BOOKMARK [2][-]{subsection.2.6}{Saving your work}{section.2}% 14
+\BOOKMARK [2][-]{subsection.2.7}{Getting help}{section.2}% 15
+\BOOKMARK [1][-]{section.3}{Cookbook}{}% 16
+\BOOKMARK [1][-]{section.4}{Additional functions}{}% 17
+\BOOKMARK [2][-]{subsection.4.1}{Download data from the LAB survey}{section.4}% 18
+\BOOKMARK [2][-]{subsection.4.2}{Reduce several spectra}{section.4}% 19
+\BOOKMARK [1][-]{section.5}{List of functions and properties}{}% 20
+\BOOKMARK [2][-]{subsection.5.1}{List of properties}{section.5}% 21
+\BOOKMARK [2][-]{subsection.5.2}{List of functions}{section.5}% 22
+\BOOKMARK [1][-]{section.6}{Changelog}{}% 23
+\BOOKMARK [1][-]{section.7}{Conclusions and outlook}{}% 24
