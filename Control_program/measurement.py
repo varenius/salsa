@@ -72,7 +72,7 @@ class Measurement:
         # integration time and Calibrate intensity
         # from comparison with LAB survey
         # TODO: Proper amplitude calibration! For now just single scale factor.
-        calfactor = 500 # K/USRP input unit with 60dB gain. 
+        calfactor = 300 # K/USRP input unit with 60dB gain. 
         spec = calfactor * spec/(1.0*nspec)
         self.spectrum = SALSA_spectrum(spec, samp_rate, fftsize, cfreq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
         # Clean up temporary object and file
