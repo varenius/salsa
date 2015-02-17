@@ -1,0 +1,14 @@
+SPECTRUM INFO: Offset_alt=-5.0 deg. Offset_az=0.0 deg. Total power = 760.4895
+SPECTRUM INFO: Offset_alt=-4.0 deg. Offset_az=0.0 deg. Total power = 981.6063
+SPECTRUM INFO: Offset_alt=-2.0 deg. Offset_az=0.0 deg. Total power = 2048.5413
+SPECTRUM INFO: Offset_alt=-5.0 deg. Offset_az=0.0 deg. Total power = 760.4895
+SPECTRUM INFO: Offset_alt=-4.0 deg. Offset_az=0.0 deg. Total power = 981.6063
+SPECTRUM INFO: Offset_alt=-3.0 deg. Offset_az=0.0 deg. Total power = 1548.8118
+SPECTRUM INFO: Offset_alt=-2.0 deg. Offset_az=0.0 deg. Total power = 2048.5413
+SPECTRUM INFO: Offset_alt=-1.0 deg. Offset_az=0.0 deg. Total power = 2589.3094
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=0.0 deg. Total power = 2739.2103
+SPECTRUM INFO: Offset_alt=1.0 deg. Offset_az=0.0 deg. Total power = 2557.5935
+SPECTRUM INFO: Offset_alt=2.0 deg. Offset_az=0.0 deg. Total power = 2041.9543
+SPECTRUM INFO: Offset_alt=3.0 deg. Offset_az=0.0 deg. Total power = 1469.0116
+SPECTRUM INFO: Offset_alt=4.0 deg. Offset_az=0.0 deg. Total power = 998.6833
+SPECTRUM INFO: Offset_alt=5.0 deg. Offset_az=0.0 deg. Total power = 536.9587

@@ -1,0 +1,11 @@
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=-5.0 deg. Total power = 446.3387
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=-4.0 deg. Total power = 731.1842
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=-3.0 deg. Total power = 1241.1167
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=-2.0 deg. Total power = 1801.1622
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=-1.0 deg. Total power = 2212.8541
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=0.0 deg. Total power = 2386.3644
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=1.0 deg. Total power = 2222.5494
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=2.0 deg. Total power = 1790.1785
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=3.0 deg. Total power = 1267.9386
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=4.0 deg. Total power = 777.5536
+SPECTRUM INFO: Offset_alt=0.0 deg. Offset_az=5.0 deg. Total power = 509.1824
