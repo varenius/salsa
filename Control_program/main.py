@@ -605,7 +605,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
     def track(self):
         try:
             self.set_telescope_target()
-            self.telescope.move()
+            #self.telescope.move()
         except Exception as e: 
             print e.message
             self.stop()
@@ -624,7 +624,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
     def reset(self):
         self.telescope.reset()
-        self.resettimer.start(1000)
+        self.resettimer.start(2000)
 
     def resettimer_action(self):
         self.inputleftcoord.setReadOnly(True)
