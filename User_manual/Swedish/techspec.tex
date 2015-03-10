@@ -5,15 +5,17 @@ för mätningar vid frekvensen 1420\,MHz.
 
 \section{Vinkelupplösning och precision}
 \label{sect:ares}
-SALSA har en vinkelupplösning på ca 5.4$^\circ$ (\emph{full width half
+SALSA har en vinkelupplösning på ca 6$^\circ$ (\emph{full width half
 maximum}) vid 1420\,MHz. Detta värde har uppmätts genom observationer av solen,
 se Fig. \ref{fig:beam}. För att jämföra, kom ihåg att fullmånen har en
-vinkelutsträckning på ca en halv grad, eller 30 bågminuter. Tracking-precisionen
-är begränsad av mekaniken till 0.5$^\circ$.  Vi arbetar med att göra teleskopet
-noggrannare genom att förbättra hårdvaran. Notera att precisionen alltid är densamma
-för alla riktningar, eventuella fel åt ett håll hänger inge med till nästa riktning.
-Detta innebär att även om teleskopet pekar lite fel så kommer detta fel 
-aldrig att bli större även om du observerar väldigt länge. 
+vinkelutsträckning på ca en halv grad, eller 30 bågminuter. Motorerna trackar
+i steg om 0.125$^\circ$, och detta är alltså teleskopets precision vid ideala
+förhållanden. Men, om det är blåsigt\footnote{Du kan kolla hur mycket det blåser
+vid SALSA just nu på http://wx.oso.chalmers.se/weather/} så kan teleskopet
+röra sig lite i vinden (kring den önskade positionen) och då störa riktningen på
+teleskopet under små tidsintervall med ca 1-2 $^\circ$. Detta bör dock inte vara
+något problem för användare då rörelserna från vinden är mindre än teleskopets
+vinkelupplösning.
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=\textwidth]{../figures/Beam_vale_2014-10-03.pdf}

@@ -5,16 +5,17 @@ to operate at 1420\,MHz.
 
 \section{Angular resolution and accuracy}
 \label{sect:ares}
-SALSA has an angular resolution of about 5.4$^\circ$ (\emph{full width half
+SALSA has an angular resolution of about 6$^\circ$ (\emph{full width half
 maximum}) at 1420\,MHz. This value has been measured using the Sun, see Fig.
 \ref{fig:beam}. For comparision, remember that the full moon has an angular
-diameter of about half a degree, or 30~minutes of arc. The tracking is limited
-by the mechanical design to an accuracy of about 0.5$^\circ$.  We are working
-to make the telescope even more accurate by improving the hardware design. Note
-that the accuracy is always the same for any position, any error present for
-one observation does not carry or accumulate to the next one.  This means that
-while the position may have a small error, the error will never get worse even
-if you observe for a very long time. 
+diameter of about half a degree, or 30~minutes of arc. The motors track 
+in steps of 0.125$^\circ$ around each axis, hence this is the telescope
+accuracy in perfect conditions. However, if it is windy\footnote{You can check
+the current wind speed at http://wx.oso.chalmers.se/weather/} the telescope
+may wobble in the wind (around the wanted position) and hence disturb
+the pointing of the telescope during small time intervals with 1-2$^\circ$. 
+This should however not be a big concern for users since the wobbles are smaller
+than the angular resolution.
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[width=\textwidth]{../figures/Beam_vale_2014-10-03.pdf}
