@@ -154,6 +154,7 @@ class TelescopeController:
     
     def _get_current_al_cog(self):
         """Return the current altitude cog number from the telescope as an integer."""
+        #print self._get_value_from_telescope('c_el')
         return self._get_value_from_telescope('c_el')
     
     def _get_current_az_cog(self):
@@ -163,59 +164,40 @@ class TelescopeController:
     def _set_target_al_cog(self, new_al_cog):
         """Set the target altitude of the telescope. Argument in cognr."""
         self._cmd('t_el='+str(new_al_cog))
+        #print('t_el='+str(new_al_cog))
         if self._get_msg()==':':
             pass
     
     def _set_target_az_cog(self, new_az_cog):
         """Set the target azimuth of the telescope. Argument in cognr."""
         self._cmd('t_az='+str(new_az_cog))
+        #print('t_az='+str(new_az_cog))
         if self._get_msg()==':':
             pass
     
-    # Not used, and variable renamed in RIO
-    #def _set_azerror_cog(self, azerror):
-    #    """Set tolerance in azimuth in number. Argument in cogsteps."""
-    #    self._cmd('err_az='+str(azerror))
-    #    if self._get_msg()==':':
-    #        pass
-    #
-    #def _set_alerror_cog(self, alerror):
-    #    """Set tolerance in azimuth in number. Argument in cogsteps."""
-    #    self._cmd('err_al='+str(alerror))
-    #    if self._get_msg()==':':
-    #        pass
-    
     def _get_current_al(self):
         """Return the current altitude in degrees."""
-        result = self.minal_deg + self._get_current_al_cog()*(self.maxal_deg-self.minal_deg)/self.maxal_cog
-        # If force to range 0 to 90
-        #result = result % 90.0
+        result = self.minal_deg + self.cogstep_al_deg*self._get_current_al_cog()
         return result
     
     def _get_current_az(self):
         """Return the current azimuth in degrees."""
-        result = self.minaz_deg + self._get_current_az_cog()*(self.maxaz_deg-self.minaz_deg)/self.maxaz_cog
-        # Make sure result is returned in range 0 to 360
-        result = result % 360.0
+        result = self.minaz_deg + self.cogstep_az_deg*self._get_current_az_cog()
         return result
     
     def _get_target_al(self):
         """Return the target altitude in degrees."""
-        result =  self.minal_deg + self._get_target_al_cog()*(self.maxal_deg-self.minal_deg)/self.maxal_cog
-        # If force to range 0 to 90
-        # result = result % 90.0
+        result = self.minal_deg + self.cogstep_al_deg*self._get_target_al_cog()
         return result
     
     def _get_target_az(self):
         """Return the target azimuth in degrees."""
-        result =  self.minaz_deg + self._get_target_az_cog()*(self.maxaz_deg-self.minaz_deg)/self.maxaz_cog
-        # Make sure result is returned in range 0 to 360
-        result = result % 360.0
+        result = self.minaz_deg + self.cogstep_az_deg*self._get_target_az_cog()
         return result
 
     def _set_target_al(self, al):
         """Set the target altitude of the telescope. Argument in degrees."""
-        new_al_cog = int(self.maxal_cog*al/self.maxal_deg)
+        new_al_cog = int(round((al-self.minal_deg)/self.cogstep_al_deg))
         self._set_target_al_cog(new_al_cog)
     
     def _set_target_az(self, az):
@@ -225,55 +207,13 @@ class TelescopeController:
         # cover a whole 360 degrees. 
         if az > self.maxaz_deg:
             az = az-360.0
-        new_az_cog = int(self.maxaz_cog * (az-self.minaz_deg)/(self.maxaz_deg-self.minaz_deg))
+        new_az_cog = int(round((az-self.minaz_deg)/self.cogstep_az_deg))
         self._set_target_az_cog(new_az_cog)
 
-    #def move(self):
-    #    """Move the telescope from the current position to target position."""
-    #    curaz = self._get_current_az_cog()
-    #    curalt = self._get_current_al_cog()
-    #    taraz = self._get_target_az_cog()
-    #    taralt = self._get_target_al_cog()
-    #    self._cmd('XQ #MOVE')
-    #    if self._get_msg()==':':
-    #        #print 'RIO: Telescope moving to target position...'
-    #        #print 'RIO: Moving from cogs ALT='+str(curalt) + '->'+str(taralt) + ', AZ='+str(curaz) + '->'+str(taraz)
-    #        #print 'RIO: Moving from DEG ALT='+str(self._get_current_al()) + '->'+str(self._get_target_al()) + ', AZ='+str(self._get_current_az()) + '->'+str(self._get_target_az())
-    #        pass
-    
     def stop(self):
-        """Stops any movement of the telescope and reset all indicators to off. """
-        ## First, abort running move thread
-        #self._cmd('AB 0')
-        #if self._get_msg()==':':
-        #    print 'RIO: Move thread aborted.'
-        #self._cmd('XQ #STOP')
-        #if self._get_msg()==':':
-        #    print 'RIO: Telescope halted.'
-        #self._cmd('XQ #CHECKS')
-        #if self._get_msg()==':':
-        #    print 'RIO: Check loop re-started.'
-        ## Restart moveloop
+        """Stops any movement of the telescope by setting target to current. """
         self._set_target_az_cog(self._get_current_az_cog())
         self._set_target_al_cog(self._get_current_al_cog())
-        #self._cmd('XQ #MOVE')
-        #if self._get_msg()==':':
-        #    print 'RIO: Move loop re-started.'
-
-    #def is_moving(self):
-    #    """Check if telescope is moving or not."""
-    #    # TODO, maybe check the two motors instead, i.e. OUT0 and OUT2?
-    #    self._cmd('TB')
-    #    status = self._get_msg()[1:-3]
-    #    if status=='1':
-    #        # Telescope is resting.
-    #        return False
-    #    elif status=='129':
-    #        # Telescope is moving (with echo on).
-    #        return True
-    #    else:
-    #        # raise exception
-    #        pass
 
     def can_reach(self, al, az):
         """Check if telescope can reach this position. Assuming input in degrees.
@@ -324,16 +264,19 @@ class TelescopeController:
         if self.can_reach(al,az):
             self._set_target_al(al)
             self._set_target_az(az)
+            #print "Setting taget alaz to " + str(al) + ', ' + str(az)
         else: 
-            raise TelescopeError('You requested the telescope to move to horizontal coordinates alt=' + str(round(al,2)) + ', az=' + str(round(az,2)) + '. Sorry, but this telescope cannot reach this position. This telescope cannot reach targets below ' + str(round(self.minal_deg,2)) + ' degrees altitude, or between ' + str(round(self.maxaz_deg%360,2)) + ' and ' + str(round(self.minaz_deg%360,2)) + ' azimuth. If you are trying to reach a moving coordinate, such as the Sun or the galaxy, try later when your object have moved to an observable direction.')
+            raise TelescopeError('You requested the telescope to move to horizontal coordinates alt=' + str(round(al,2)) + ', az=' + str(round(az,2)) + '. Sorry, but this telescope cannot reach this position. In altitude the telescope cannot reach below ' + str(round(self.minal_deg,2)) + ' or above ' + str(round(self.maxal_deg,2)) + ' degrees. In azimuth, the telescope cannot reach values between ' + str(round(self.maxaz_deg%360,2)) + ' and ' + str(round(self.minaz_deg%360,2)) + ' degrees. If you are trying to reach a moving coordinate, such as the Sun or the galaxy, try later when your object have moved to an observable direction.')
     
     def get_target_alaz(self):
         """Returns the target altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
         return (self._get_target_al(), self._get_target_az())
     
     def get_current_alaz(self):
-        """Returns the current altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
-        return (self._get_current_al(), self._get_current_az())
+        """Returns the current altitude and azimuth of the telescope as a tuple of decimal numbers [degrees].
+        Will return azimuth in interval 0-360"""
+
+        return (self._get_current_al(), self._get_current_az()%360.0)
 
     def is_close_to_target(self):
         """Returns true if telescope is close enough to observe, else False."""
@@ -345,6 +288,28 @@ class TelescopeController:
         else:
             return False
         
+    def get_azimuth_distance(self, az1, az2):
+        """ This function calculates the distance needed to move in azimuth to between two angles. This takes into account that the 
+        telescope may need to go 'the other way around' to reach some positions, i.e. the distance to travel can be much larger than the 
+        simple angular distance. This assumes that both azimuth positions are valid, something which can be checked first with the can_reach function."""
+        
+       # CHECK AZIMUTH
+       # This assumes that azimuth is always given in range 0 to 360,
+       # something assured by the high-level system. But, here we need to
+       # account for the fact that the telescope works in a range which
+       # might be negative (for practical programming reasons).
+        if (az1 > self.maxaz_deg):
+            az1 = az1-360.0
+        elif (az1 < self.minaz_deg):
+            az1 = az1+360.0
+        # Second position
+        if (az2 > self.maxaz_deg):
+            az2 = az2-360.0
+        elif (az2 < self.minaz_deg):
+            az2 = az2+360.0
+        # Now return the distance needed to travel in degrees
+        return np.abs(az1-az2)
+
 
     # Takes angular coordinates of two points and calculates the 
     # angular distance between them by converting to cartesian unit vectors and taking the dot product.

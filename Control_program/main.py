@@ -546,9 +546,42 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             az = fixedbody.az
             alt_deg = float(alt)*180.0/np.pi
             az_deg = float(az)*180.0/np.pi
+        
+        # Include possible offset, e.g. for beam observations on the Sun
+        fin_alt_deg = alt_deg + offset_alt_deg
+        fin_az_deg = az_deg + offset_az_deg
 
-        return (alt_deg + offset_alt_deg, az_deg + offset_az_deg)
-    
+        if target == 'Horizontal':
+            return (fin_alt_deg, fin_az_deg)
+        else:
+            # Check if the desired direction is best reached via simple alt, az
+            # or at 180-alt, az+180.
+            flip_alt_deg = 180-fin_alt_deg
+            flip_az_deg = (fin_az_deg+180)%360
+            # Check if directions are reachable
+            finreach = self.telescope.can_reach(fin_alt_deg, fin_az_deg) 
+            flipreach = self.telescope.can_reach(flip_alt_deg, flip_az_deg) 
+            # If flip direction cannot be reached, return original one.
+            # (even if this one may not be reached)
+            if not flipreach:
+                return (fin_alt_deg, fin_az_deg)
+            # But, if flip direction can be reached, but not original one,
+            # then we have to go to flipdirection to point to this position
+            # E.g. in mecanically forbidden azimuth range
+            elif flipreach and (not finreach):
+                return (flip_alt_deg, flip_az_deg)
+            # If both directions are valid, which is the most common case,
+            # then we find the closest one (in azimuth driving, not in angular distance)
+            # to the current pointing
+            elif flipreach and finreach: 
+                (calt_deg, caz_deg) = self.telescope.get_current_alaz()
+                flipd = self.telescope.get_azimuth_distance(caz_deg, flip_az_deg)
+                find = self.telescope.get_azimuth_distance(caz_deg, fin_az_deg)
+                if flipd<find:
+                    return (flip_alt_deg, flip_az_deg)
+                else:
+                    return (fin_alt_deg, fin_az_deg)
+
     def set_telescope_target(self):
 	"""Set the target position of the telescope from chosen values and
         coordinate system."""
@@ -605,7 +638,6 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
     def track(self):
         try:
             self.set_telescope_target()
-            #self.telescope.move()
         except Exception as e: 
             print e.message
             self.stop()
