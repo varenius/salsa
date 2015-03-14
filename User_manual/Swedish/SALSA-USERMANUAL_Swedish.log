@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  14 MAR 2015 10:32
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  14 MAR 2015 10:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1130,17 +1130,17 @@ Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 5.
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 5.
+
+Overfull \hbox (81.79398pt too wide) in paragraph at lines 7--15
+\T1/lmr/m/n/12 SALSA-teleskopen. Den-na gui-de gjor-des med ver-sion 4 av No-Ma
+chi-ne, häm-tat från http://www.nomachine.com.
+ []
+
 Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 16.
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 16.
-
-Overfull \hbox (90.62767pt too wide) in paragraph at lines 21--27
-[]\T1/lmr/m/n/12 När No-Machi-ne är in-stal-le-rat, öpp-na en webb-lä-sa-re och
- gå till SALSA-hemsidan http://vale.oso.chalmers.se.
- []
-
-<../figures/nomachinefigs/SALSA_login.png, id=389, 720.6925pt x 485.815pt>
+<../figures/nomachinefigs/SALSA_login.png, id=390, 720.6925pt x 485.815pt>
 File: ../figures/nomachinefigs/SALSA_login.png Graphic file (type png)
 
 <use ../figures/nomachinefigs/SALSA_login.png>
@@ -1158,7 +1158,7 @@ Package babel Info: Redefining swedish shorthand "~
  [19
 
 ]
-<../figures/nomachinefigs/fig_virtual.png, id=399, 813.0375pt x 516.93124pt>
+<../figures/nomachinefigs/fig_virtual.png, id=401, 813.0375pt x 516.93124pt>
 File: ../figures/nomachinefigs/fig_virtual.png Graphic file (type png)
 
 <use ../figures/nomachinefigs/fig_virtual.png>
@@ -1174,7 +1174,7 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 56.
  [20 <../figures/nomachinefigs/SALSA_login.png>]
-<../figures/nomachinefigs/fig9-connected.pdf, id=410, 824.07875pt x 637.38126pt
+<../figures/nomachinefigs/fig9-connected.pdf, id=412, 824.07875pt x 637.38126pt
 >
 File: ../figures/nomachinefigs/fig9-connected.pdf Graphic file (type pdf)
  <use ../figures/nomachinefigs/fig9-connected.pdf>
@@ -1200,7 +1200,7 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 79.
 
-<../figures/nomachinefigs/fig9_toosmallwin.png, id=426, 532.389pt x 347.49825pt
+<../figures/nomachinefigs/fig9_toosmallwin.png, id=428, 532.389pt x 347.49825pt
 >
 File: ../figures/nomachinefigs/fig9_toosmallwin.png Graphic file (type png)
  <use ../figures/nomachinefigs/fig9_toosmallwin.png>
@@ -1216,7 +1216,7 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 97.
  [22 <../figures/nomachinefigs/fig9-connected.pdf>]
-<../figures/nomachinefigs/fig10_menu.png, id=436, 398.6895pt x 290.88675pt>
+<../figures/nomachinefigs/fig10_menu.png, id=438, 398.6895pt x 290.88675pt>
 File: ../figures/nomachinefigs/fig10_menu.png Graphic file (type png)
 
 <use ../figures/nomachinefigs/fig10_menu.png>
@@ -1224,7 +1224,7 @@ Package pdftex.def Info: ../figures/nomachinefigs/fig10_menu.png used on input
 line 100.
 (pdftex.def)             Requested size: 347.47758pt x 253.51663pt.
 
-<../figures/nomachinefigs/fig11_monitors.png, id=437, 529.98pt x 346.896pt>
+<../figures/nomachinefigs/fig11_monitors.png, id=439, 529.98pt x 346.896pt>
 File: ../figures/nomachinefigs/fig11_monitors.png Graphic file (type png)
 
 <use ../figures/nomachinefigs/fig11_monitors.png>
@@ -1260,7 +1260,7 @@ Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 118.
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 118.
-<../figures/longlat.pdf, id=448, 395.4775pt x 402.50375pt>
+<../figures/longlat.pdf, id=450, 395.4775pt x 402.50375pt>
 File: ../figures/longlat.pdf Graphic file (type pdf)
 
 <use ../figures/longlat.pdf>
@@ -1275,7 +1275,7 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 154.
 
-<../figures/celestial.pdf, id=449, 395.4775pt x 424.58624pt>
+<../figures/celestial.pdf, id=451, 395.4775pt x 424.58624pt>
 File: ../figures/celestial.pdf Graphic file (type pdf)
 
 <use ../figures/celestial.pdf>
@@ -1297,7 +1297,7 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 217.
 
-<../figures/lst.pdf, id=459, 427.5975pt x 404.51125pt>
+<../figures/lst.pdf, id=461, 427.5975pt x 404.51125pt>
 File: ../figures/lst.pdf Graphic file (type pdf)
 
 <use ../figures/lst.pdf>
@@ -1354,8 +1354,8 @@ d.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 38.
  ) 
 Here is how much of TeX's memory you used:
- 9298 strings out of 493304
- 135734 string characters out of 6139871
+ 9299 strings out of 493304
+ 135745 string characters out of 6139871
  237988 words of memory out of 5000000
  12423 multiletter control sequences out of 15000+600000
  83816 words of font info for 69 fonts, out of 8000000 for 9000
@@ -1372,10 +1372,10 @@ usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/pu
 blic/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/sha
 re/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb>
-Output written on SALSA-USERMANUAL_Swedish.pdf (30 pages, 1398200 bytes).
+Output written on SALSA-USERMANUAL_Swedish.pdf (30 pages, 1398427 bytes).
 PDF statistics:
- 664 PDF objects out of 1000 (max. 8388607)
- 468 compressed objects within 5 object streams
- 104 named destinations out of 1000 (max. 500000)
+ 666 PDF objects out of 1000 (max. 8388607)
+ 470 compressed objects within 5 object streams
+ 105 named destinations out of 1000 (max. 500000)
  381 words of extra memory for PDF output out of 10000 (max. 10000000)
 
