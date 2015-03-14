@@ -33,12 +33,11 @@
 \contentsline {section}{\numberline {3.2}Spectral resolution and accuracy}{16}{section.3.2}
 \contentsline {chapter}{Appendices}{18}{chapter*.20}
 \contentsline {chapter}{\numberline {A}How to connect to SALSA using Nomachine 4}{19}{appendix.A}
-\contentsline {section}{\numberline {A.1}Quick summary}{19}{section.A.1}
-\contentsline {section}{\numberline {A.2}Connecting: Step-by-step instructions}{19}{section.A.2}
-\contentsline {section}{\numberline {A.3}Troubleshooting: changing screen resolution}{24}{section.A.3}
-\contentsline {chapter}{\numberline {B}The celestial sphere and astronomical coordinates}{27}{appendix.B}
-\contentsline {section}{\numberline {B.1}A place on Earth}{27}{section.B.1}
-\contentsline {section}{\numberline {B.2}The celestial sphere}{27}{section.B.2}
-\contentsline {subsection}{\numberline {B.2.1}Equatorial coordinates}{27}{subsection.B.2.1}
-\contentsline {subsection}{\numberline {B.2.2}The Local Sidereal Time}{28}{subsection.B.2.2}
-\contentsline {subsection}{\numberline {B.2.3}How can I know whether my source is up?}{30}{subsection.B.2.3}
+\contentsline {section}{\numberline {A.1}Connecting: Step-by-step instructions}{19}{section.A.1}
+\contentsline {section}{\numberline {A.2}Troubleshooting: changing screen resolution}{22}{section.A.2}
+\contentsline {chapter}{\numberline {B}The celestial sphere and astronomical coordinates}{25}{appendix.B}
+\contentsline {section}{\numberline {B.1}A place on Earth}{25}{section.B.1}
+\contentsline {section}{\numberline {B.2}The celestial sphere}{25}{section.B.2}
+\contentsline {subsection}{\numberline {B.2.1}Equatorial coordinates}{25}{subsection.B.2.1}
+\contentsline {subsection}{\numberline {B.2.2}The Local Sidereal Time}{26}{subsection.B.2.2}
+\contentsline {subsection}{\numberline {B.2.3}How can I know whether my source is up?}{28}{subsection.B.2.3}

@@ -4,89 +4,75 @@
 
 \chapter{Att koppla upp sig mot SALSA med programmet Nomachine 4}
 \label{app:nomachine}
-Programmet NoMachine 4 kan användas för att koppla upp sig till datorerna som
-kontrollerar SALSA-teleskopen. Denna guide var skriven utifrån Nomachine
-version 4.0.366 för Windows XP/7/8, hämtat från http://www.nomachine.com
-2013-11-25.  Guiden är troligen också användbar för Mac (OS X) eller Unix/Linux
-och för senare versioner av NoMachine-programmet, även om den inte testats för
-detta. Om guiden inte verkar stämma med programmet du hittar på
-NoMachine-hemsidan, vänligen meddela SALSA-support (se SALSA-hemsidan) så att
-vi kan uppdatera denna guide.
-
-\section{Snabb sammanfattning}
-När du skapar en anslutning till SALSA så behöver du välja ``Protocol: SSH'',
-samt trycka på knappen ``Advanced'' och välja alternativ två: ``Use the NoMachine
-login'', se figurerna \ref{fig:create} och \ref{fig:advanced}. 
+Programmet NoMachine kan användas för att koppla upp sig till datorerna som
+kontrollerar SALSA-teleskopen. Denna guide gjordes med version 4 av NoMachine,
+, hämtat från http://www.nomachine.com. NoMachine-programmet fungerar på Windows,
+Mac eller Linux så du bör kunna styra SALSA från nästan vilken dator som helst. 
+Om du, när du försöker använda denna guide, märker att instruktionerna inte passar
+med vad du ser på skärmen så beror det troligen på att NoMachine-programmet har 
+ändrats utan att vi uppdaterat guiden. Isåfall, vänligen meddela SALSA-support 
+(se SALSA-hemsidan) så att vi kan uppdatera denna guide.
 
 \section{Guide: steg för steg}
 I detta exempel så ansluter vi till en SALSA-dator som kallas \emph{vale}.
-Först måste du ladda hem och installera NoMachine-programmet från
-http://www.nomachine.com.  När programmet är intallerat: starta det och klicka
-dig igenom välkomstrutorna tills du kommer till fönstret \emph{Recent
-connections} som visas i fig. \ref{fig:recentconn}. Följ nu instruktionerna
-under de bilderna med start i Fig. \ref{fig:recentconn}. 
+\begin{enumerate}
+	\item Ladda först hem och installera programmet NoMachine som finns gratis
+		på hemsidan http://www.nomachine.com. 
+\item När NoMachine är installerat, öppna en webbläsare och gå till SALSA-hemsidan 
+	http://vale.oso.chalmers.se. På sidan "Software" så finns ett stycke om 
+	NoMachibe. I detta stycke finns en länk till en fil som heter "SALSA-Vale.nxs.
+	Spara ner denna fil till din dator (använd höger-klick och välj Spara länk som).
+	Obs: Om du har en Mac, försäkra dig om att filen sparas korrekt utan att något
+	extra till filens namn.
+\item Öppna filen SALSA-Vale.nxs, antingen genom att dubbelklicka på filen, eller genom
+	att starta NoMachine-programmet och använd knappen "Open" för att öppna filen. 
+	Du kanske nu ser lite välkomstinformation från NoMachine, klicka bara OK tills du
+	kan skriva in användarnamn och lösenord, alltså du ser något liknande Fig. 
+	\ref{fig:login}. (Om du får en fråga om att "Verify host authenticity", svara 
+	\emph{Yes}.)
 \begin{figure}[H]
     \centering
-    \includegraphics[height=0.25\paperheight]{../figures/nomachinefigs/fig1_recentconn.png}
-    \caption{Startfönstret för Nomachine 4 efter att man klickat sig igenom välkomstinformationen. Klicka på \emph{Add computer}, markerat med en pil i denna figur.}
-    \label{fig:recentconn}
+    \includegraphics[height=0.5\textwidth]{../figures/nomachinefigs/SALSA_login.png}
+    \caption{Vänligen skriv in ditt SALSA-användarnamn och telescope password.}
+    \label{fig:login}
 \end{figure}
+\item Vänligen skriv in ditt SALSA användarnamn och telescope password och klicka OK. 
+	Du kanske igen får se lite information från Nomachine, du kan bara klicka OK
+	på dessa bilder. 
+{\bf Obs:} Här måste du använda ditt ``telescope password'', som kan vara annorlunda än 
+det lösenord som du använder för att boka observationstid. Kolla på SALSA-hemsidan, under
+``My account'' för att hitta ditt telescope password. Kom även ihåg att du bara kan ansluta
+till SALSA-datorn om du har bokat observationstid. 
+\item Några användare frågas om olika val för att "Create a new virtual desktop", se 
+	Fig. \ref{fig:virtual}. Om du får dessa val, välj GNOME-alternativet och klicka continue.
 \begin{figure}[H]
     \centering
-    \includegraphics[height=0.25\paperheight]{../figures/nomachinefigs/fig2_create.png}
-    \caption{Fönstret för att skapa en ny anslutning. Här behöver du välja ``host adress''=vale.oso.chalmers.se (eller brage om du bokat den), ``protocol''=SSH och till sist klicka på knappen \emph{Advanced}.}
-    \label{fig:create}
+    \includegraphics[height=0.5\textwidth]{../figures/nomachinefigs/fig_virtual.png}
+	\caption{Om du ser denna eller en liknande skärmbild (det gäller inte alla användare)
+		välj GNOME och klicka på continue.
+	}
+    \label{fig:virtual}
 \end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[height=0.25\paperheight]{../figures/nomachinefigs/fig3_advanced.png}
-    \caption{Efter att du klickat på \emph{Advanced} så msåte du välja alternativ 2: 
-``Use the NoMachine login'', se fig. \ref{fig:advanced}. Tryck sedan på \emph{Continue}.}
-    \label{fig:advanced}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[height=0.25\paperheight]{../figures/nomachinefigs/fig4_connect.png}
-    \caption{Bekräfta nu att adressen är rätt, t.ex. vale.oso.chalmers.se för att 
-ansluta till datorn ``vale'', eller brage.oso.chalmers.se för att ansluta till ``brage''. Se till så att ``Port''=22 och ``Protocol''=SSH, klicka sedan \emph{Connect}.}
-    \label{fig:connect}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[height=0.25\paperheight]{../figures/nomachinefigs/fig5_verify.png}
-    \caption{Första gången du ansluter till SALSA så får du troligtvis en varning att du måste ``Verify host authenticity''. Se till att adressen är korrekt och klicka sedan på \emph{Yes}.}
-    \label{fig:verify}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[height=0.25\paperheight]{../figures/nomachinefigs/fig6_userpass.png}
-    \caption{Fyll i användarnamn och lösenord, klicka sedan \emph{OK}.  {\bf
-OBS:} Här ska du använda ditt ``telescope password'', det kan vara ett annat
-lösenord än det du använder för att boka observationstid. Kolla SALSA-hemsidan,
-under ``My account'' för att hitta ditt teleskop-lösenord.  }
-    \label{fig:userpass}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[height=0.25\paperheight]{../figures/nomachinefigs/fig7_session.png}
-    \caption{Klicka på texten i mitten av skärmen: \emph{New virtual desktop or custom session}. }
-    \label{fig:session}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[height=0.25\paperheight]{../figures/nomachinefigs/fig8_gnome.png}
-    \caption{Välj alternativt "Gnome" och klicka sedan \emph{Continue}. Nu kanske du får se ett antal informationsfönster från NoMachine, klicka bara OK för att gå vidare. 
-}
-    \label{fig:gnome}
-\end{figure}
+\item Du bör nu vara uppkopplad till datorn Vale och du bör se ett fönster på skärmen 
+	med ett virtuellt skrivbord, som om du satt framför datorn Vale, se Fig. 
+	\ref{fig:connected}.  Du kanske vill maximera fönstret för att se hela skrivbordet.
+\item Nu kan du starta SALSA-programmet genom att dubbelklicka på SALSA-ikonen på
+	skrivbordet. {\bf Obs}: Om du inte kan se hela SALSA-programmet, 
+	(som i Fig. \ref{fig:toosmall}) så kan du behöva ändra skärmupplösning,
+	se avsnitt 	\ref{sect:screenres} nedan.
+\end{enumerate}
 
 \begin{figure}[H]
     \centering
 	\includegraphics[width=0.9\textwidth]{../figures/nomachinefigs/fig9-connected.pdf}
-    \caption{Nu bör du se ett fönster som liknar detta. Grattis - du har nu anslutit till SALSA och kan
-		börja observera. För att styra telskopet, dubbelklicka på genvängen "SALSA". Obs.: Om du inte
-		kan se hela kontrollprogrammet, som i Fig. \ref{fig:toosmall}, så kan du öka upplösningen för
-		kontrolldatorn genom att följa instruktionerna i avsnitt. \ref{sect:screenres} nedan.} 
+	\caption{Nu ser du förhoppningsvis, kanske efter några välkomstbilder från
+		NoMachine, något liknande detta på skärmen. Grattis - du är nu
+		uppkopplad mot SALSA och du kan börja observera! För att styra
+		teleskopet, dubbelklicka på genvägen SALSA på skrivbordet. {\bf Obs}:
+		Om du inte kan se hela SALSA-programmet, (som i Fig.
+		\ref{fig:toosmall}) så kan du behöva ändra skärmupplösning, se avsnitt
+		\ref{sect:screenres} nedan.
+} 
 \label{fig:connected} 
 \end{figure}
 
