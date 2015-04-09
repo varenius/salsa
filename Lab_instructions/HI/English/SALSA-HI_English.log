@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  24 DEC 2014 22:24
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  9 APR 2015 10:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -543,7 +543,7 @@ Package pdftex.def Info: ../figures/coordinate.pdf used on input line 245.
 File: ../figures/galaxopenoffice1.pdf Graphic file (type pdf)
 
 <use ../figures/galaxopenoffice1.pdf>
-Package pdftex.def Info: ../figures/galaxopenoffice1.pdf used on input line 294
+Package pdftex.def Info: ../figures/galaxopenoffice1.pdf used on input line 296
 .
 (pdftex.def)             Requested size: 290.22105pt x 350.67564pt.
 ) (./appendix.tex [14 <../figures/galaxopenoffice1.pdf>] [15
@@ -620,7 +620,7 @@ r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on SALSA-HI_English.pdf (22 pages, 2265599 bytes).
+Output written on SALSA-HI_English.pdf (22 pages, 2265786 bytes).
 PDF statistics:
  582 PDF objects out of 1000 (max. 8388607)
  400 compressed objects within 4 object streams
