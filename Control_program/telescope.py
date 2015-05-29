@@ -75,8 +75,10 @@ class TelescopeController:
             print 'RIO: Moving telescope to end position. Please wait...'
 
     def isreset(self):
+        elmotor = self._get_value_from_telescope('@OUT[0]')
+        azmotor = self._get_value_from_telescope('@OUT[1]')
         """Check if telescope has reached reset position."""
-        if (self.minal_cog == self._get_current_al_cog() and  self.minaz_cog == self._get_current_az_cog()):
+        if (self.minal_cog == self._get_current_al_cog() and  self.minaz_cog == self._get_current_az_cog() and azmotor == 0 and elmotor ==0):
             return True
         else:
             return False

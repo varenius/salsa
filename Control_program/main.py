@@ -656,7 +656,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
     def reset(self):
         self.telescope.reset()
-        self.resettimer.start(2000)
+        self.resettimer.start(1000)
 
     def resettimer_action(self):
         self.inputleftcoord.setReadOnly(True)
