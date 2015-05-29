@@ -339,7 +339,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
                 ax.set_xlabel('Velocity relative to observer [km/s]')
             else:
                 ax.set_xlabel('Measured freq.-1420.4 [MHz]')
-        ax.set_ylabel('Uncalibrated brightness temperature [K]')
+        ax.set_ylabel('Uncalibrated antenna temperature [K]')
         ax.minorticks_on()
         ax.tick_params('both', length=6, width=0.5, which='minor')
         ax.set_title('Galactic long=' + glon + ', lat='+glat)
