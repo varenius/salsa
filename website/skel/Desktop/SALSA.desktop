@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Icon[en_US]=mate-panel-launcher
+Name[en_US]=SALSA
+Exec=SALSA
+Name=SALSA
+Icon=/opt/salsa/icon.png
