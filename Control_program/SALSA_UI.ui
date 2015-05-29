@@ -556,7 +556,7 @@
           <item row="9" column="1">
            <widget class="QLineEdit" name="RefFreqInput">
             <property name="text">
-             <string>1424.4</string>
+             <string>1425.4</string>
             </property>
            </widget>
           </item>
