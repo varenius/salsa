@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SALSA_UI.ui'
 #
-# Created: Fri Dec 19 23:37:09 2014
+# Created: Fri May 29 18:24:24 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -387,7 +387,7 @@ class Ui_MainWindow(object):
         self.BandwidthInput.setText(_translate("MainWindow", "2.0", None))
         self.ChannelsLabel.setText(_translate("MainWindow", "Channels [#]", None))
         self.RefFreqLabel.setText(_translate("MainWindow", "Reference freq. [MHz]", None))
-        self.RefFreqInput.setText(_translate("MainWindow", "1424.4", None))
+        self.RefFreqInput.setText(_translate("MainWindow", "1425.4", None))
         self.autoedit_bad_data_checkBox.setText(_translate("MainWindow", "Remove RFI", None))
         self.FrequencyLabel.setText(_translate("MainWindow", "Frequency [MHz]", None))
         self.FrequencyInput.setText(_translate("MainWindow", "1420.4", None))
