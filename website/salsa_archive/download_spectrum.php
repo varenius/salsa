@@ -5,8 +5,8 @@
 $id = htmlspecialchars($_GET["id"]);
 $kind = htmlspecialchars($_GET["kind"]);
 // Connect to database. This should be made safe
-mysql_connect("localhost","salsa_archiver","PASSWORD"); 
-mysql_select_db("salsa_vale_drupa"); 
+mysql_connect("localhost","salsa_archive","PASSWORD"); 
+mysql_select_db("salsa_drupal"); 
 // Get data
 $query = "SELECT " . $kind . " FROM salsa_archive where id=$id"; 
 $result = mysql_query($query) or die (mysql_error()); 
@@ -17,6 +17,7 @@ if ($kind=='file_fits')
     {
     header("Content-Disposition: attachment; filename=\"spectrum_" . $id. ".fits\"");
     header("Content-type: application/octet-stream");
+    header("Content-Transfer-Encoding: binary");
 }
 elseif ($kind=='file_png')
 {
@@ -28,5 +29,4 @@ elseif ($kind=='file_txt')
     header("Content-Disposition: attachment; filename=\"spectrum_" . $id. ".txt\"");
     header("Content-type: text/plain");
 }
-print $data; 
-?> 
+print $data; // IMPORTANT: No PHP end tag. If end tag will corrupt fits file.

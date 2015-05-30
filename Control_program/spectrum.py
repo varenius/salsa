@@ -14,7 +14,7 @@ class SALSA_spectrum:
         # All units shall be S.I. (Hz, etc. not MHz)
         self.rest_freq = 1420.40575177e6 # Hz, from Wiki.
         self.obs_freq = float(cfreq)
-        self.data = np.copy(data)
+        self.data = data[:]
         self.bandwidth = float(bandwidth)
         self.nchans = int(nchans)
         self.int_time = int(int_time)
@@ -182,56 +182,60 @@ class SALSA_spectrum:
                 text_file.write("{0} {1}\n".format(vels[i], data[i]))
 
     def save_to_fits(self, outfile):
-        # Standard according to old SALSA files from Qradio and from http://archive.stsci.edu/fits/fits_standard/node39.html
-        header = fits.Header()
-        header['SIMPLE']  = 'T'
+        # Instructions for writing FITS at https://python4astronomers.github.io/astropy/fits.html
+        # Set of keywords chosen to match SalsaJ requirements.
+        hdu = fits.PrimaryHDU()
+        hdu.data = self.data.reshape(1, 1, self.nchans).astype(np.int16) # 16 bit for SalsaJ
+        glon = float(self.target.lon)*180/np.pi # degrees
+        glat = float(self.target.lat)*180/np.pi # degrees
         # The NAXIS keywords are set by pyfits automatically
-        # Written to work with XS, as decribed in mace.fits shipped with XS.
-        header['RESTFREQ'] = self.rest_freq # Rest frequency of center channel
-        header['CTYPE1'] = 'FREQ'
-        header['CRPIX1'] = self.nchans/2 # number of channels
-        header['CRVAL1'] = self.freq_vlsr_corr # Offset from RESTFREQ, i.e. doppler shift for center freq.
-        header['CDELT1'] = self.bandwidth/self.nchans # Channel width
-        header['VLSR'] = self.vlsr_corr
-        header['CTYPE2'] = 'GLON'
-        header['CRPIX2'] = 0
-        header['CRVAL2'] = float(self.target.lon)*180/np.pi # Degrees
-        header['CDELT2'] = 1.0
-        header['CTYPE3'] = 'GLAT'
-        header['CRPIX3'] = 0
-        header['CRVAL3'] = float(self.target.lat)*180/np.pi # Degrees
-        header['CDELT3'] = 1.0
+        hdu.header['BSCALE']  = 1
+        hdu.header['BZERO']  = 0
+        hdu.header['BUNIT']  = 'K'
+        hdu.header['CTYPE1'] = 'FREQ'
+        hdu.header['CRPIX1'] = self.nchans/2 # number of channels
+        hdu.header['CRVAL1'] = self.obs_freq
+        hdu.header['CDELT1'] = self.bandwidth/self.nchans # Channel width
+        hdu.header['CUNIT1'] = 'Hz'
+        hdu.header['CTYPE2'] = 'GLON'
+        hdu.header['CRPIX2'] = 0
+        hdu.header['CRVAL2'] = glon
+        hdu.header['CDELT2'] = 1.0
+        hdu.header['CUNIT2'] = 'DEGREE'
+        hdu.header['CTYPE3'] = 'GLAT'
+        hdu.header['CRPIX3'] = 0
+        hdu.header['CRVAL3'] = glat
+        hdu.header['CDELT3'] = 1.0
+        hdu.header['CUNIT3'] = 'DEGREE'
+        hdu.header['TELESCOP'] = 'SALSA 2m'
+        hdu.header['RESTFREQ'] = self.rest_freq # Rest frequency of line
+        hdu.header['VELO-LSR'] = self.vlsr_corr/1000.0 # in km/s, as needed by SalsaJ
+        hdu.header['VLSRUNIT']= 'km/s'
         dateobs = self.site.date.tuple()
         YYYY=str(dateobs[0]); MM=str(dateobs[1]); DD=str(dateobs[2]); hh = str(dateobs[3]); mm=str(dateobs[4]); ss=str(round(dateobs[5]))
-        header['DATE-OBS'] = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(2)
+        hdu.header['DATE-OBS'] = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(3)
         datemade = ephem.now().tuple()
         YYYY=str(datemade[0]); MM=str(datemade[1]); DD=str(datemade[2]); hh = str(datemade[3]); mm=str(datemade[4]); ss=str(round(datemade[5]))
-        header['DATE'] = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(2)
-        header['ORIGIN'] = 'ONSALA, SWEDEN'
-        header['TELESCOP'] = 'SALSA 2m'
-        header['INSTRUME'] = self.config.get('SITE', 'name')
-        header['OBSTIME'] = self.int_time
-        header['OBSERVER'] = self.observer
+        hdu.header['DATE'] = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(3)
+        hdu.header['ORIGIN'] = 'ONSALA, SWEDEN'
+        hdu.header['INSTRUME'] = self.config.get('SITE', 'name')
+        hdu.header['OBSTIME'] = self.int_time
+        hdu.header['OBSERVER'] = self.observer
         #header['OBJECT'] = 'Milky Way'
         #eq = self.target.epoch.triple()
         #header['EQUINOX'] = str(eq[0] + eq[1]/12.0 + eq[2]/(24*12.0)) # Epoch in decimal years.
-        header['EQUINOX'] = 2000
-        header['BUNIT']  = 'K'
-        header['DATAMAX']  = np.max(self.data)
-        header['DATAMIN']  = np.min(self.data)
+        hdu.header['EQUINOX'] = 2000
+        hdu.header['DATAMAX']  = np.max(self.data)
+        hdu.header['DATAMIN']  = np.min(self.data)
         #header['LINE'] = 'HI(21CM)'           
-        header['AZIMUTH'] = self.az # Degrees
-        header['ELEVATIO'] = self.alt # Degrees
-        header['INTTIME'] = self.int_time
+        hdu.header['AZIMUTH'] = self.az # Degrees
+        hdu.header['ELEVATIO'] = self.alt # Degrees
+        hdu.header['INTTIME'] = self.int_time
         try:
             os.remove(outfile)
         except OSError:
             pass
-        # Include dummy indices to get glon, glat coordinates correct in 
-        # FITS header, else pyfits will overwrite naxis to 1.
-        hdu = fits.PrimaryHDU(data = self.data.reshape(1, 1, self.nchans).astype(np.int16), header = header)
-        hdulist = fits.HDUList([hdu])
-        hdulist.writeto(outfile)
+        hdu.writeto(outfile)
 
     def upload_to_archive(self, fitsfile, pngfile, txtfile):
         host = self.config.get('ARCHIVE', 'host')
