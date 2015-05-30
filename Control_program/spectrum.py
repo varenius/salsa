@@ -174,7 +174,7 @@ class SALSA_spectrum:
             text_file.write("# This file contains data from the SALSA 2m radio telescope.\n")
             dateobs = self.site.date.tuple()
             YYYY=str(dateobs[0]); MM=str(dateobs[1]); DD=str(dateobs[2]); hh = str(dateobs[3]); mm=str(dateobs[4]); ss=str(round(dateobs[5]))
-            date = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(3)
+            date = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(4)
             text_file.write("# DATE=" + date + "\n")
             text_file.write("# GLON and GLAT given in degrees\n")
             text_file.write("# GLON={0}\n".format(float(self.target.lon)*180/np.pi)) # Degrees
@@ -217,10 +217,10 @@ class SALSA_spectrum:
         hdu.header['VLSRUNIT']= 'km/s'
         dateobs = self.site.date.tuple()
         YYYY=str(dateobs[0]); MM=str(dateobs[1]); DD=str(dateobs[2]); hh = str(dateobs[3]); mm=str(dateobs[4]); ss=str(round(dateobs[5]))
-        hdu.header['DATE-OBS'] = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(3)
+        hdu.header['DATE-OBS'] = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(4)
         datemade = ephem.now().tuple()
         YYYY=str(datemade[0]); MM=str(datemade[1]); DD=str(datemade[2]); hh = str(datemade[3]); mm=str(datemade[4]); ss=str(round(datemade[5]))
-        hdu.header['DATE'] = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(3)
+        hdu.header['DATE'] = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(4)
         hdu.header['ORIGIN'] = 'ONSALA, SWEDEN'
         hdu.header['INSTRUME'] = self.config.get('SITE', 'name')
         hdu.header['OBSTIME'] = self.int_time
