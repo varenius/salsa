@@ -165,9 +165,6 @@ class SALSA_spectrum:
         # The -1 sign is introduced by comparison with the LAB survey. Velocity
         # conversions... always the other one.
         vels = -1*(freqs-self.rest_freq)*c/self.rest_freq 
-        print self.rest_freq
-        print c
-        print vels
         return vels
 
     def save_to_txt(self, outfile):
