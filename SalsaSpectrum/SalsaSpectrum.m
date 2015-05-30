@@ -1,7 +1,7 @@
 classdef SalsaSpectrum<handle
     
     % Class to initialize and do operations on spectra from the Salsa
-    % Onsala telescopes and the Qradio software. Create a spectrum object
+    % Onsala telescopes and the control software. Create a spectrum object
     % using the syntax
     %
     % spec = SalsaSpectrum('filename.fits');
@@ -13,6 +13,11 @@ classdef SalsaSpectrum<handle
     % tested, but there may still be bugs. It can be downloaded on the
     % SALSA onsala Web site at vale.oso.chalmers.se.
     
+    % version 2.0
+	% 30 may, 2015
+    % - Changed to read ONLY new SALSA files, i.e. with proper
+	%   keywords also adjusted for SalsaJ, so no use of RESTFREQ etc.
+
     % version 1.92
     % 27 dec, 2014
     % - Changed from theoretical 6.4 to measured 5.4 degrees for SALSA beam when downloading from LAB.
@@ -111,23 +116,11 @@ classdef SalsaSpectrum<handle
             % get the frequency scale from the spec.header of the fits files
             freq_ref_pix = getKeyword(spec, 'CRPIX1');
             freq_delta = getKeyword(spec, 'CDELT1');
+            disp(2*freq_delta)
             freq_ref = getKeyword(spec, 'CRVAL1');
             n_chan = getKeyword(spec, 'NAXIS1');
-            vlsr = getKeyword(spec, 'VLSR');
-            
-            % the fits headers written by qradio changed on
-            % 2012/10/11. The RESTFREQ keyword is now present. The
-            % following is needed for both the new and old headers to be
-            % readable.
-            
-            try
-                restfreq = getKeyword(spec, 'RESTFREQ');
-            catch me
-                restfreq = 0;
-            end
-            
-            freq_ref = freq_ref+restfreq;
-            
+            vlsr = getKeyword(spec, 'VELO-LSR')*1000;
+                   
             spec.freq = freq_ref + ( (1:n_chan) - freq_ref_pix )*freq_delta;
             spec.vel = (  -(spec.freq - freq_ref)/freq_ref * ...
                 spec.c + vlsr) / 1000;
@@ -955,11 +948,11 @@ classdef SalsaSpectrum<handle
             end
             
 			% Theoretical calculation
-            %salsares = round( (1.22 * 0.21 / 2.3) * 180/pi * 10 ...
-            %    ) / 10;
+            salsares = round( (1.22 * 0.21 / 2.3) * 180/pi * 10 ...
+                ) / 10;
 
-			% Use measured SALSA resolution 5.4 degrees.
-			salsares = 5.4; 
+			% Specify resolution
+			%salsares = 6.4; 
 
             % dowload spectra with resolution given by user.
             if nargin == 2
@@ -984,10 +977,11 @@ classdef SalsaSpectrum<handle
                     fclose(fid);
                 else
                     coords = sscanf(tline, '%%%% %f %f %f %f');
+      
                     fclose(fid)
                     
-                    if [(coords(1) == glon) && (coords(2) == ...
-                            glat)]
+                    if [(round(coords(1)) == round(glon)) && (round(coords(2)) == ...
+                            round(glat))]
                         % The correct file is already downloaded.
                         download = 0;
                         disp('correct file already downloaded');
@@ -1013,7 +1007,7 @@ classdef SalsaSpectrum<handle
                     url = [comm1,comm2];
                     
                     sprintf(['Downloading LAB data for galactic longitude ' ...
-                        '%d and latitude %d'], glon, glat)                    
+                        '%d and latitude %d'], glon, glat)      
                     try
                         [a, status] = urlwrite(url, 'lab.txt');
                     catch me
@@ -1027,7 +1021,7 @@ classdef SalsaSpectrum<handle
                     % command returns 0 if the download command works.
                     [wgetstatus, ~] = system('wget -q www.google.com');
                     [curlstatus, ~] = system('curl -s www.google.com');
-                    
+
                     if  wgetstatus == 0
                         comm1 = 'wget -q -O lab.txt ';
                     elseif curlstatus == 0
