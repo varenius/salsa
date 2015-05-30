@@ -161,6 +161,9 @@ class SALSA_spectrum:
         # The -1 sign is introduced by comparison with the LAB survey. Velocity
         # conversions... always the other one.
         vels = -1*(freqs-self.rest_freq)*c/self.rest_freq 
+        print self.rest_freq
+        print c
+        print vels
         return vels
 
     def save_to_txt(self, outfile):
@@ -171,7 +174,7 @@ class SALSA_spectrum:
             text_file.write("# This file contains data from the SALSA 2m radio telescope.\n")
             dateobs = self.site.date.tuple()
             YYYY=str(dateobs[0]); MM=str(dateobs[1]); DD=str(dateobs[2]); hh = str(dateobs[3]); mm=str(dateobs[4]); ss=str(round(dateobs[5]))
-            date = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(2)
+            date = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(3)
             text_file.write("# DATE=" + date + "\n")
             text_file.write("# GLON and GLAT given in degrees\n")
             text_file.write("# GLON={0}\n".format(float(self.target.lon)*180/np.pi)) # Degrees
@@ -193,7 +196,8 @@ class SALSA_spectrum:
         hdu.header['BZERO']  = 0
         hdu.header['BUNIT']  = 'K'
         hdu.header['CTYPE1'] = 'FREQ'
-        hdu.header['CRPIX1'] = self.nchans/2 # number of channels
+        hdu.header['CRPIX1'] = self.nchans/2+2 # number of channels
+        # The extra number 2 comes from comparing SalsaJ/Matlab plot with LABSURVEY.
         hdu.header['CRVAL1'] = self.obs_freq
         hdu.header['CDELT1'] = self.bandwidth/self.nchans # Channel width
         hdu.header['CUNIT1'] = 'Hz'
