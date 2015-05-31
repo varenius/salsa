@@ -76,6 +76,10 @@ class SALSA_spectrum:
                      [1420.4-0.395, 0.02],
                      [1420.4+6.21, 0.04],
                      [1420.4+4.535, 0.003],
+                     [1420.4-0.38, 0.01],
+                     [1420.4-0.209, 0.005],
+                     [1420.4-0.084, 0.005],
+                     [1420.4-0.523, 0.005],
                      ]
         for item in known_RFI:
             RFI_freq = item[0] *1e6 
@@ -161,9 +165,6 @@ class SALSA_spectrum:
         # The -1 sign is introduced by comparison with the LAB survey. Velocity
         # conversions... always the other one.
         vels = -1*(freqs-self.rest_freq)*c/self.rest_freq 
-        print self.rest_freq
-        print c
-        print vels
         return vels
 
     def save_to_txt(self, outfile):
