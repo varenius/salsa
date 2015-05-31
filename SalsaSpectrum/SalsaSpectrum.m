@@ -13,6 +13,11 @@ classdef SalsaSpectrum<handle
     % tested, but there may still be bugs. It can be downloaded on the
     % SALSA onsala Web site at vale.oso.chalmers.se.
     
+    % version 2.1
+	% 31 may, 2015
+    % - Fixed readLAB function to use https instead of http. Now urlwrite
+    % works also for linux! Removed wget, curl from the code.
+    
     % version 2.0
 	% 30 may, 2015
     % - Changed to read ONLY new SALSA files, i.e. with proper
@@ -997,47 +1002,20 @@ classdef SalsaSpectrum<handle
             
             
             if download
-                
-                % on windows, use urlwrite instead of wget or curl                    
-                if ispc                
-                    
-                    comm1 = 'http://www.astro.uni-bonn.de/hisurvey/profile/download.php?';
-                    comm2 = sprintf('ral=%3.2f\\&decb=%3.2f\\&csys=0\\&beam=%3.2f', ...
-                        glon, glat, salsares);
-                    url = [comm1,comm2];
-                    
-                    sprintf(['Downloading LAB data for galactic longitude ' ...
-                        '%d and latitude %d'], glon, glat)      
-                    try
-                        [a, status] = urlwrite(url, 'lab.txt');
-                    catch me
-                        disp('Could not download LAB data');
-                    end
-                    
-                else
-                    
-                    % on linux or mac                    
-                    % Use wget or curl depending on platform. The system
-                    % command returns 0 if the download command works.
-                    [wgetstatus, ~] = system('wget -q www.google.com');
-                    [curlstatus, ~] = system('curl -s www.google.com');
 
-                    if  wgetstatus == 0
-                        comm1 = 'wget -q -O lab.txt ';
-                    elseif curlstatus == 0
-                        comm1 = 'curl -o lab.txt ';
-                    end
-                    
-                    comm2 = 'http://www.astro.uni-bonn.de/hisurvey/profile/download.php?';
-                    comm3 = sprintf(['ral=%3.2f\\&decb=%3.2f\\&csys=0\\&beam=%3.2f'], ...
-                        glon, glat, salsares);
-                    dlcommand = [comm1,comm2,comm3];
-                    [systemstatus, result] = system(dlcommand);
-                    if systemstatus ~= 0
-                        disp('Unfortunately, LAB data could not be downloaded.')
-                        return
-                    end
+                comm1 = 'https://www.astro.uni-bonn.de/hisurvey/profile/download.php?';
+                comm2 = sprintf('ral=%3.2f\\&decb=%3.2f\\&csys=0\\&beam=%3.2f', ...
+                    glon, glat, salsares);
+                url = [comm1,comm2];
+                
+                sprintf(['Downloading LAB data for galactic longitude ' ...
+                    '%d and latitude %d'], glon, glat)
+                try
+                    [a, status] = urlwrite(url, 'lab.txt');
+                catch me
+                    disp('Could not download LAB data');
                 end
+        
             end
             
             fid = fopen('lab.txt','r');
