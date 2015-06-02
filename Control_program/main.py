@@ -13,8 +13,8 @@ import getpass # To find current username
 import ConfigParser
 
 # Make sure only one instance is running of this program
-#from tendo import singleton
-#me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
+from tendo import singleton
+me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
 ##### SET CONFIG FILE #######
 configfile = os.path.dirname(__file__) + '/SALSA.config'
