@@ -32,12 +32,9 @@
 \contentsline {section}{\numberline {3.1}Vinkeluppl\IeC {\"o}sning och precision}{16}{section.3.1}
 \contentsline {section}{\numberline {3.2}Frekvensuppl\IeC {\"o}sning och precision}{16}{section.3.2}
 \contentsline {chapter}{Bilagor}{18}{chapter*.20}
-\contentsline {chapter}{\numberline {A}Att koppla upp sig mot SALSA med programmet Nomachine 4}{19}{appendix.A}
-\contentsline {section}{\numberline {A.1}Guide: steg f\IeC {\"o}r steg}{19}{section.A.1}
-\contentsline {section}{\numberline {A.2}Fels\IeC {\"o}kning: att \IeC {\"o}ka kontrolldatorns sk\IeC {\"a}rmuppl\IeC {\"o}sning}{22}{section.A.2}
-\contentsline {chapter}{\numberline {B}Himmelssf\IeC {\"a}ren och astronomiska koordinatsystem}{25}{appendix.B}
-\contentsline {section}{\numberline {B.1}En position p\IeC {\r a} jorden}{25}{section.B.1}
-\contentsline {section}{\numberline {B.2}Himmelsf\IeC {\"a}ren}{25}{section.B.2}
-\contentsline {subsection}{\numberline {B.2.1}Ekvatoriella koordinater}{25}{subsection.B.2.1}
-\contentsline {subsection}{\numberline {B.2.2}Den lokala stj\IeC {\"a}rntiden}{26}{subsection.B.2.2}
-\contentsline {subsection}{\numberline {B.2.3}Hur kan jag veta om min k\IeC {\"a}lla \IeC {\"a}r synlig?}{27}{subsection.B.2.3}
+\contentsline {chapter}{\numberline {A}Himmelssf\IeC {\"a}ren och astronomiska koordinatsystem}{19}{appendix.A}
+\contentsline {section}{\numberline {A.1}En position p\IeC {\r a} jorden}{19}{section.A.1}
+\contentsline {section}{\numberline {A.2}Himmelsf\IeC {\"a}ren}{19}{section.A.2}
+\contentsline {subsection}{\numberline {A.2.1}Ekvatoriella koordinater}{19}{subsection.A.2.1}
+\contentsline {subsection}{\numberline {A.2.2}Den lokala stj\IeC {\"a}rntiden}{20}{subsection.A.2.2}
+\contentsline {subsection}{\numberline {A.2.3}Hur kan jag veta om min k\IeC {\"a}lla \IeC {\"a}r synlig?}{21}{subsection.A.2.3}
