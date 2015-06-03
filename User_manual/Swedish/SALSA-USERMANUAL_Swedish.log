@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  2 JUN 2015 21:55
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  3 JUN 2015 10:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -926,14 +926,14 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 108.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 112.
+(babel)             in language  on input line 108.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 112.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 112.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 112.
+(babel)             in language  on input line 108.
  [8]
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 108.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 108.
 Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 127.
 Package babel Info: Redefining swedish shorthand "~
@@ -957,13 +957,13 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 147.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 175.
+(babel)             in language  on input line 170.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 175.
+(babel)             in language  on input line 170.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 175.
+(babel)             in language  on input line 170.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 175.
+(babel)             in language  on input line 170.
  [9]
 <../figures/Controller_move.png, id=245, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_move.png Graphic file (type png)
@@ -1234,7 +1234,7 @@ Here is how much of TeX's memory you used:
  12379 multiletter control sequences out of 15000+600000
  83816 words of font info for 69 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 36i,10n,38p,1038b,399s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,10n,38p,1038b,394s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dv
 ips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share
 /texmf/fonts/enc/dvips/lm/lm-mathsy.enc}</usr/share/texmf/fonts/type1/public/lm
@@ -1246,7 +1246,7 @@ usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/pu
 blic/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/sha
 re/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb>
-Output written on SALSA-USERMANUAL_Swedish.pdf (24 pages, 976479 bytes).
+Output written on SALSA-USERMANUAL_Swedish.pdf (24 pages, 976473 bytes).
 PDF statistics:
  584 PDF objects out of 1000 (max. 8388607)
  404 compressed objects within 5 object streams
