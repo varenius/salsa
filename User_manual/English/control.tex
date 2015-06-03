@@ -67,30 +67,37 @@ The SALSA telescopes are controlled from a computer in Onsala. If you are at
 the observatory, then you can login to the computer directly. However, most
 observations are done remotely via internet. To control SALSA you thus need to
 login remotely to a computer in Onsala. This remote control has been tested
-on Windows, Mac OS X and Linux so you should be able to connect using almost
-any computer. There are two common ways to connect to the computer in Onsala:
+on Windows, Mac OS X and Linux so you should be able to connect using any 
+computer. There are two common ways to connect to the computer in Onsala:
 
 \begin{itemize}
-	\item{\emph{The free software NoMachine.} This is the most common way to control a
-SALSA telescope. Before your first observations, you will need to download
-the free software NoMachine from  www.nomachine.com and install it on
-your computer.  The first time you connect using the NoMachine software you may
-follow the step-by-step guide in Appendix \ref{app:nomachine}.} Once you are
-connected you may start the control program by clicking on the SALSA-shortcut
-on the virtual desktop.
-\item{\emph{The terminal.} If you are used to working in the terminal you may login
-	through SSH with graphics support using the command "ssh -X
-username@computer".  You may then start the control program from the terminal
-with the command {\tt  SALSA}.}
+	\item{\emph{In your browser.} This is the most common way to control a
+			SALSA telescope. No software is needed except for a recent 
+			webbrowser. You find the links to the browser login pages for
+			the telescopes at the page \emph{Observe} at the SALSA webpage.
+			
+		Note: Your browser will complain that the connection is \emph{untrusted},
+			because we have no certificate for the SALSA computers. Please
+			ignore this warning to login to the telescope. To do so in Firefox,
+			select \emph{I Understand The Risk, Add Exception, Confirm
+			Exception}. In Safari: click \emph{continue}. In Explorer: click
+			\emph{continue}.  Once connected you may start the control program by
+			clicking on the SALSA-shortcut on the virtual desktop, or starting
+		a terminal and typing SALSA. }
+
+\item{\emph{In the terminal.} If you are used to working in the terminal you
+		may login through SSH with graphics support using the command \emph{ssh
+		-X username@computer}, where computer is either vale.oso.chalmers.se or
+		brage.oso.chalmers.se depending on what you booked.  You may then start
+		the control program from the terminal with the command {\tt  SALSA}.}
 \end{itemize}
 
 \subsection{Ending your session}
 When you are done observing, please close the control program using the
 \emph{x} in the upper right corner. Then close your connection to the SALSA
-computer. If you are connected using NoMachine, you close your connection by
-closing the NoMachine window (e.g. by clicking the \emph{x} in the upper corner) 
-and then chose {\tt Terminate} when asked how to quit the
-session. If you are connected via SSH in a terminal, you close your connection by 
+computer. If you are connected using the browser, you close your connection by
+closing the virtual desktop, e.g. by clicking the button in the upper corner. 
+If you are connected via SSH in a terminal, you close your connection by 
 typing {\tt exit}.
 
 \subsection{Troubleshooting}

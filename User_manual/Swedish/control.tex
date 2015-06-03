@@ -69,31 +69,39 @@ observatoriet så kan du logga in på en dator direkt. Men, de flesta observatio
 görs genom att fjärrstyra teleskopet via internet. För att kontrollera SALSA
 så måste du alltså logga in på en dator i Onsala via internet. Detta har 
 testats utan problem på Windows, Mac OS X och Linux så du bör kunna ansluta 
-med nästan vilken dator som helst. Det finns två vanliga sätt att ansluta
+med  vilken dator som helst. Det finns två vanliga sätt att ansluta
 till en dator i Onsala:
 
 \begin{itemize}
-	\item{\emph{Gratisprogrammet NoMachine.} Detta är det vanligaste
-			sättet att fjärrstyra ett SALSA-teleskop. Innan dina första 
-			observationer så behöver du ladda hem programmet från \newline
-			www.nomachine.com och installera det på din dator. Första gången
-			som du använder NoMachine så kanske du vill följa steg-för-steg-guiden
-			i Appendix \ref{app:nomachine}. När du har anslutit till datorn i Onsala
-			så kan du starta kontrollprogrammet genom att klicka på SALSA-genvägen
-		på det virtuella skrivbordet. }
+	\item{\emph{I din webbläsare.} Detta är det vanligaste
+			sättet att fjärrstyra ett SALSA-teleskop. Ingen speciell 
+			progamvara behövs förutom en uppdaterad webbläsare. Du hittar länkarna
+			till inloggningssidorna för teleskopen på sidan \emph{Observe} på 
+			SALSA-hemsidan. 
+
+			OBS: Din webbläsare kommer att klara att anslutningen inte är 
+			tillförlitlig, \emph{untrusted}, eftersom vi inte har n[got
+			certifikat för SALSA-datorerna. Vänligen ignorera denna varning
+			för att logga in på datorerna. För att göra detta i Firefox, välj 
+			\emph{Jag förstår riskerna, Lägg till undantag, Bekräfta undantag
+			}. I Safari: klicka \emph{fortsätt}. I Explorer: klicka \emph{fortsätt}.  
+			När du är ansluten så kan du starta kontrollprogrammet genom
+			att klicka på SALSA-genvägen på det virtuella skrivbordet, eller genom att
+			starta en terminal och skriva SALSA. 
+		}
 \item{\emph{Terminalen.} Om du är van att arbeta i terminalen så kan du 
 		logga in via SSH med grafik genom att köra kommandot 
-		{\tt ssh -X username@computer}.  Du kan sedan starta kontrollprogrammet
+		{\tt ssh -X username@computer}, där computer är antingen vale.oso.chalmers.se eller
+		brage.oso.chalmers.se beroende på vad du bokat.  Du kan sedan starta kontrollprogrammet
 		genom att köra kommandot {\tt  SALSA}.}
 \end{itemize}
 
 \subsection{Att avsluta din session}
 När du är har observerat färdigt, vänligen stäng kontrollprogrammet genom
 att klicka på \emph{x} i övre högra hörnet av programmet. Stäng sedan din 
-anslutning till SALSA-datorn. Om du är uppkopplad med NoMachine så stänger
-du din anslutning genom att stänga NoMachine-fönstret (t.ex. genom att
-klicka på \emph{x} i hörnet av NoMachine-fönstret) och sedan välja 
-{\tt Terminate} när du får frågan om hur du vill avsluta programmet. 
+anslutning till SALSA-datorn. Om du är uppkopplad i webbläsaren, stäng din 
+anslutning genom att stänga det virtuella skrivbordet, t.ex. genom att
+klicka på knappen uppe i höger hörn. 
 Om du är uppkopplad via SSH i en terminal så kan du stänga din anslutning
 genom att köra kommandot {\tt exit}.
 
