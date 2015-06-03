@@ -10,7 +10,7 @@ mysql_password="PASSWORD"
 
 # The hostname of the webserver.
 # On a one computer configuration where the webserver is the same as the telescope computer this should be set to "localhost"
-mysql_host="localhost"
+mysql_host="vale.oso.chalmers.se"
 
 # The name of the MySQL database on the webserver
 mysql_db_name="salsa_drupal"
@@ -20,7 +20,10 @@ logfile="/opt/salsa/crontab/update_salsa_users.log"
 # This is the default shell that users get when they login to the telescope computer
 default_shell="/bin/bash"
 
-telescope_name='Vale' # As in drupal NODE table
+telescope_name="Brage" # As in drupal NODE table
+
+# Define group of users permitted to login via the ThinLinc webaccess
+weblogingrp="salsa_weblogin"
 
 telescope_id=$(/usr/bin/mysql -u "$mysql_user" --host="$mysql_host" --password="$mysql_password" --silent --skip-column-names "$mysql_db_name" -e "SELECT node.nid FROM node WHERE node.title='$telescope_name' AND node.type = 'telescope';")
 # Need to select on type telescope. If not, select will match also merci_reservations with title = telescope_name,
@@ -64,6 +67,16 @@ for user in $( members salsa_users ); do
     if [ "$user" == "$booked_user" ]; then
         # Enable the currently booked user by assigning real login shell (i.e. bash)
         /usr/sbin/usermod -s $default_shell $user >> /dev/null 2>&1
+        # Check if user is currently enabled for weblogin
+        if id -nG "$user" | grep -qw "$weblogingrp"; then
+            # Already enabled, do nothing.
+            :
+        else
+            echo "Adding user to weblogin"
+            # Enable webaccess by adding user to group salsa_weblogin
+            echo "$(date): Enabling webaccess for user $user" >> $logfile
+            /usr/bin/gpasswd -a $user $weblogingrp >> $logfile 2>&1
+        fi
     else
         # If the user is still logged in after his/her booking, kill all processes running and force logout the user.
         /usr/bin/pkill -KILL -u $user >> /dev/null 2>&1
@@ -71,8 +84,13 @@ for user in $( members salsa_users ); do
         if [ -a "/tmp/-opt-salsa-controller-SALSA-.lock" ]; then 
             rm /tmp/-opt-salsa-controller-SALSA-.lock
         fi
-        # Disable user from logging in via ssh and nx
+        # Disable user from logging in via ssh and ThinLinc client. However, webaccess is not blocked by this.
         /usr/sbin/usermod -s /usr/sbin/nologin $user >> /dev/null 2>&1
-        /usr/NX/bin/nxserver --userdel $user >> /dev/null 2>&1
+        # Check if user is currently enabled for weblogin
+        if id -nG "$user" | grep -qw "$weblogingrp"; then
+            # Also disable webaccess by removing user from group salsa_weblogin
+            echo "$(date): Disabling webaccess for user $user" >> $logfile
+            /usr/bin/gpasswd -d $user $weblogingrp >> $logfile 2>&1
+        fi
     fi;
 done
