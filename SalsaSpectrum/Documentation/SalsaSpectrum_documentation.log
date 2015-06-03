@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  27 DEC 2014 01:45
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  3 JUN 2015 07:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -392,51 +392,55 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 93.
  [2]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 158.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 149.
 
-[3] <figures/spec_vel.pdf, id=190, 382.42876pt x 311.1625pt>
+[3] <figures/spec_vel.pdf, id=189, 382.42876pt x 311.1625pt>
 File: figures/spec_vel.pdf Graphic file (type pdf)
 
 <use figures/spec_vel.pdf>
-Package pdftex.def Info: figures/spec_vel.pdf used on input line 228.
+Package pdftex.def Info: figures/spec_vel.pdf used on input line 219.
 (pdftex.def)             Requested size: 382.42781pt x 311.16174pt.
 
-<figures/spec_pix.pdf, id=191, 382.42876pt x 311.1625pt>
+<figures/spec_pix.pdf, id=190, 382.42876pt x 311.1625pt>
 File: figures/spec_pix.pdf Graphic file (type pdf)
 
 <use figures/spec_pix.pdf>
-Package pdftex.def Info: figures/spec_pix.pdf used on input line 229.
+Package pdftex.def Info: figures/spec_pix.pdf used on input line 220.
 (pdftex.def)             Requested size: 382.42781pt x 311.16174pt.
- [4 <./figures/spec_vel.pdf> <./figures/spec_pix.pdf>] [5] <figures/baseline_fi
-tted.pdf, id=261, 386.44376pt x 311.1625pt>
+ [4 <./figures/spec_vel.pdf> <./figures/spec_pix.pdf>] <figures/baseline_fitted
+.pdf, id=214, 386.44376pt x 311.1625pt>
 File: figures/baseline_fitted.pdf Graphic file (type pdf)
 
 <use figures/baseline_fitted.pdf>
-Package pdftex.def Info: figures/baseline_fitted.pdf used on input line 340.
-(pdftex.def)             Requested size: 386.44281pt x 311.16174pt.
-
-<figures/baseline_subtracted.pdf, id=263, 386.44376pt x 311.1625pt>
-File: figures/baseline_subtracted.pdf Graphic file (type pdf)
-
-<use figures/baseline_subtracted.pdf>
-Package pdftex.def Info: figures/baseline_subtracted.pdf used on input line 363
-.
+Package pdftex.def Info: figures/baseline_fitted.pdf used on input line 331.
 (pdftex.def)             Requested size: 386.44281pt x 311.16174pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[6 <./figures/baseline_fitted.pdf>]
-Overfull \hbox (8.71909pt too wide) in paragraph at lines 385--386
+<figures/baseline_subtracted.pdf, id=216, 386.44376pt x 311.1625pt>
+File: figures/baseline_subtracted.pdf Graphic file (type pdf)
+
+<use figures/baseline_subtracted.pdf>
+Package pdftex.def Info: figures/baseline_subtracted.pdf used on input line 354
+.
+(pdftex.def)             Requested size: 386.44281pt x 311.16174pt.
+ [5]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (8.71909pt too wide) in paragraph at lines 376--377
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
+[6 <./figures/baseline_fitted.pdf>]
 <figures/baseline_interactive.png, id=283, 505.89pt x 404.51125pt>
 File: figures/baseline_interactive.png Graphic file (type png)
 
 <use figures/baseline_interactive.png>
-Package pdftex.def Info: figures/baseline_interactive.png used on input line 40
-7.
+Package pdftex.def Info: figures/baseline_interactive.png used on input line 39
+8.
 (pdftex.def)             Requested size: 505.88875pt x 404.51025pt.
 
 
@@ -444,134 +448,123 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [7 <./figures/baseline_subtracted.pdf>] [8 <./figures/baseline_interactive.png>
 ]
-Overfull \hbox (15.90839pt too wide) in paragraph at lines 479--484
+Overfull \hbox (15.90839pt too wide) in paragraph at lines 470--475
 \OT1/cmr/m/n/10.95 The pa-ram-e-ters \OT1/cmtt/m/n/10.95 gaussFit\OT1/cmr/m/n/1
 0.95 , \OT1/cmtt/m/n/10.95 gaussPar\OT1/cmr/m/n/10.95 , \OT1/cmtt/m/n/10.95 gau
 ssParVel \OT1/cmr/m/n/10.95 and \OT1/cmtt/m/n/10.95 gaussParFreq \OT1/cmr/m/n/1
 0.95 are now non-empty. \OT1/cmtt/m/n/10.95 gaussFit
  []
 
-<figures/three_gauss_fitted.pdf, id=322, 386.44376pt x 311.1625pt>
+<figures/three_gauss_fitted.pdf, id=328, 386.44376pt x 311.1625pt>
 File: figures/three_gauss_fitted.pdf Graphic file (type pdf)
 
 <use figures/three_gauss_fitted.pdf>
-Package pdftex.def Info: figures/three_gauss_fitted.pdf used on input line 491.
+Package pdftex.def Info: figures/three_gauss_fitted.pdf used on input line 482.
 
 (pdftex.def)             Requested size: 386.44281pt x 311.16174pt.
  [9 <./figures/three_gauss_fitted.pdf>]
-<figures/autogauss_step1.pdf, id=361, 258.9675pt x 212.795pt>
+<figures/autogauss_step1.pdf, id=359, 258.9675pt x 212.795pt>
 File: figures/autogauss_step1.pdf Graphic file (type pdf)
 
 <use figures/autogauss_step1.pdf>
-Package pdftex.def Info: figures/autogauss_step1.pdf used on input line 532.
+Package pdftex.def Info: figures/autogauss_step1.pdf used on input line 523.
 (pdftex.def)             Requested size: 258.96684pt x 212.79446pt.
 
-<figures/autogauss_step2.pdf, id=362, 258.9675pt x 212.795pt>
+<figures/autogauss_step2.pdf, id=360, 258.9675pt x 212.795pt>
 File: figures/autogauss_step2.pdf Graphic file (type pdf)
 
 <use figures/autogauss_step2.pdf>
-Package pdftex.def Info: figures/autogauss_step2.pdf used on input line 533.
+Package pdftex.def Info: figures/autogauss_step2.pdf used on input line 524.
 (pdftex.def)             Requested size: 258.96684pt x 212.79446pt.
 
-<figures/autogauss_step3.pdf, id=363, 258.9675pt x 212.795pt>
+<figures/autogauss_step3.pdf, id=361, 258.9675pt x 212.795pt>
 File: figures/autogauss_step3.pdf Graphic file (type pdf)
 
 <use figures/autogauss_step3.pdf>
-Package pdftex.def Info: figures/autogauss_step3.pdf used on input line 534.
+Package pdftex.def Info: figures/autogauss_step3.pdf used on input line 525.
 (pdftex.def)             Requested size: 258.96684pt x 212.79446pt.
 
-<figures/autogauss_step4.pdf, id=364, 262.9825pt x 202.7575pt>
+<figures/autogauss_step4.pdf, id=362, 262.9825pt x 202.7575pt>
 File: figures/autogauss_step4.pdf Graphic file (type pdf)
 
 <use figures/autogauss_step4.pdf>
-Package pdftex.def Info: figures/autogauss_step4.pdf used on input line 535.
+Package pdftex.def Info: figures/autogauss_step4.pdf used on input line 526.
 (pdftex.def)             Requested size: 262.98184pt x 202.757pt.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 543.
+(Font)              <7> on input line 534.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 543.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-<figures/interactive_gaussian.png, id=366, 514.92375pt x 411.5375pt>
+(Font)              <5> on input line 534.
+ [10 <./figures/autogauss_step1.pdf> <./figures/autogauss_step2.pdf> <./figures
+/autogauss_step3.pdf> <./figures/autogauss_step4.pdf>] <figures/interactive_gau
+ssian.png, id=399, 514.92375pt x 411.5375pt>
 File: figures/interactive_gaussian.png Graphic file (type png)
 
 <use figures/interactive_gaussian.png>
-Package pdftex.def Info: figures/interactive_gaussian.png used on input line 56
-4.
+Package pdftex.def Info: figures/interactive_gaussian.png used on input line 55
+5.
 (pdftex.def)             Requested size: 514.92249pt x 411.5365pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[10] <figures/confint.pdf, id=395, 258.9675pt x 212.795pt>
+ [11 <./figures/interactive_gaussian.png>] <figures/confint.pdf, id=418, 258.96
+75pt x 212.795pt>
 File: figures/confint.pdf Graphic file (type pdf)
 
 <use figures/confint.pdf>
-Package pdftex.def Info: figures/confint.pdf used on input line 610.
+Package pdftex.def Info: figures/confint.pdf used on input line 601.
 (pdftex.def)             Requested size: 258.96684pt x 212.79446pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[11 <./figures/autogauss_step1.pdf> <./figures/autogauss_step2.pdf> <./figures/
-autogauss_step3.pdf> <./figures/autogauss_step4.pdf>] [12 <./figures/interactiv
-e_gaussian.png> <./figures/confint.pdf>] [13] [14]
-<figures/SALSA_vs_LAB.pdf, id=502, 260.975pt x 212.795pt>
+ [12 <./figures/confint.pdf>] [13]
+<figures/SALSA_vs_LAB.pdf, id=492, 260.975pt x 212.795pt>
 File: figures/SALSA_vs_LAB.pdf Graphic file (type pdf)
 
 <use figures/SALSA_vs_LAB.pdf>
-Package pdftex.def Info: figures/SALSA_vs_LAB.pdf used on input line 743.
+Package pdftex.def Info: figures/SALSA_vs_LAB.pdf used on input line 734.
 (pdftex.def)             Requested size: 260.97437pt x 212.79446pt.
- [15 <./figures/SALSA_vs_LAB.pdf>] [16]
-Overfull \hbox (8.71909pt too wide) in paragraph at lines 836--837
+ [14 <./figures/SALSA_vs_LAB.pdf>] [15]
+Overfull \hbox (8.71909pt too wide) in paragraph at lines 827--828
 [][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (8.71909pt too wide) in paragraph at lines 839--840
+Overfull \hbox (8.71909pt too wide) in paragraph at lines 830--831
 [][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (2.4191pt too wide) in paragraph at lines 841--842
+Overfull \hbox (2.4191pt too wide) in paragraph at lines 832--833
 [][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-[17] [18] [19] [20]
+[16] [17] [18] [19]
 Missing character: There is no Ã in font cmtt10!
 Missing character: There is no © in font cmtt10!
- [21]
-Overfull \hbox (0.83398pt too wide) in paragraph at lines 1156--1159
+ [20]
+Overfull \hbox (0.83398pt too wide) in paragraph at lines 1147--1150
 []\OT1/cmr/m/n/10.95 2014-12-27: Up-loaded this doc-u-ment to the SALSA github 
 repos-i-tory to track fu-ture changes.
  []
 
+[21]
+Underfull \hbox (badness 10000) in paragraph at lines 1198--1204
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1205--1206
+
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1209.
 [22]
-Underfull \hbox (badness 10000) in paragraph at lines 1207--1213
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1214--1215
-
- []
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1218.
-[23]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1218.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1209.
  (./SalsaSpectrum_documentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1218.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1218.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1209.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1209.
 
 Package rerunfilecheck Info: File `SalsaSpectrum_documentation.out' has not cha
 nged.
 (rerunfilecheck)             Checksum: D23609ECFA7C17CA1978ABF835D3470A;1596.
  ) 
 Here is how much of TeX's memory you used:
- 10104 strings out of 493304
- 149670 string characters out of 6139871
+ 10103 strings out of 493304
+ 149663 string characters out of 6139871
  278783 words of memory out of 5000000
  12907 multiletter control sequences out of 15000+600000
  13084 words of font info for 48 fonts, out of 8000000 for 9000
@@ -592,10 +585,10 @@ y10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/
 texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on SalsaSpectrum_documentation.pdf (23 pages, 302466 bytes).
+Output written on SalsaSpectrum_documentation.pdf (22 pages, 301345 bytes).
 PDF statistics:
- 987 PDF objects out of 1000 (max. 8388607)
- 912 compressed objects within 10 object streams
- 532 named destinations out of 1000 (max. 500000)
+ 978 PDF objects out of 1000 (max. 8388607)
+ 904 compressed objects within 10 object streams
+ 531 named destinations out of 1000 (max. 500000)
  258 words of extra memory for PDF output out of 10000 (max. 10000000)
 
