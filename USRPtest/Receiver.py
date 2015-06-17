@@ -2,7 +2,7 @@
 ##################################################
 # Gnuradio Python Flow Graph
 # Title: Receiver
-# Generated: Fri Jun  5 17:13:22 2015
+# Generated: Fri Jun  5 17:18:32 2015
 ##################################################
 
 from gnuradio import blocks
@@ -24,7 +24,7 @@ class Receiver(gr.top_block):
         ##################################################
         self.samp_rate = samp_rate = 5000000.0
         self.outfile = outfile = "/tmp/timedata.dat"
-        self.int_time = int_time = 5
+        self.int_time = int_time = 10
         self.gain = gain = 60
         self.fftsize = fftsize = 4096
         self.c_freq = c_freq = 1410.0e6
@@ -33,7 +33,7 @@ class Receiver(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	device_addr="addr=192.168.10.2",
+        	device_addr="addr=192.168.20.2",
         	stream_args=uhd.stream_args(
         		cpu_format="fc32",
         		channels=range(1),
