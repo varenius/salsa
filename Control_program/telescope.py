@@ -44,10 +44,8 @@ class TelescopeController:
         self.maxal_deg = self.minal_deg + self.nsteps_al*self.cogstep_al_deg
         self.close_enough_distance = config.getfloat('RIO', 'close_enough')
 
-        # TODO: test if new RIO box allows smaller margins.
-        # FIX: SHOULD NOW BE CHANGED. /Eskil 2015-03-03
-        #self._set_azerror_cog(4) # Set tolerance in az, default is 4
-        #self._set_alerror_cog(4) # set tolerance in al, default is 4
+        # Make sure Noise Diode is turned off until implemented in GUI etc.
+        self.set_noise_diode(False)
 
     def set_LNA(self, status):
         if status:
@@ -55,9 +53,19 @@ class TelescopeController:
             if self._get_msg()==':':
                 print 'RIO: LNA is now ON.'
         else:
-            self._cmd('CB8') # Turn on LNA
+            self._cmd('CB8') # Turn off LNA
             if self._get_msg()==':':
                 print 'RIO: LNA is now OFF.'
+    
+    def set_noise_diode(self, status):
+        if status:
+            self._cmd('SB9') # Turn on Noise Diode
+            if self._get_msg()==':':
+                print 'RIO: Noise diode is now ON.'
+        else:
+            self._cmd('CB9') # Turn off Noise Diode 
+            if self._get_msg()==':':
+                print 'RIO: Noise diode is now OFF.'
 
     def reset(self):
         # Print message reset is starting
