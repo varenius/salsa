@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ASCII'?>
 <flow_graph>
-  <timestamp>Fri Jun  5 17:13:21 2015</timestamp>
+  <timestamp>Fri Jun  5 17:18:01 2015</timestamp>
   <block>
     <key>options</key>
     <param>
@@ -72,7 +72,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>5</value>
+      <value>10</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -87,7 +87,7 @@
     <key>variable</key>
     <param>
       <key>id</key>
-      <value>samp_rate</value>
+      <value>outfile</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -95,57 +95,11 @@
     </param>
     <param>
       <key>value</key>
-      <value>5000000.0</value>
+      <value>"/tmp/timedata.dat"</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(10, 170)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>id</key>
-      <value>gain</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>60</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(11, 398)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>id</key>
-      <value>fftsize</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>4096</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(10, 98)</value>
+      <value>(14, 477)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -179,7 +133,7 @@
     <key>variable</key>
     <param>
       <key>id</key>
-      <value>outfile</value>
+      <value>fftsize</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -187,11 +141,57 @@
     </param>
     <param>
       <key>value</key>
-      <value>"/tmp/timedata.dat"</value>
+      <value>4096</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(14, 477)</value>
+      <value>(10, 98)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>id</key>
+      <value>gain</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>60</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(11, 398)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>id</key>
+      <value>samp_rate</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>5000000.0</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(10, 170)</value>
     </param>
     <param>
       <key>_rotation</key>
