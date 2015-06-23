@@ -214,7 +214,7 @@ class SALSA_spectrum:
         hdu.header['CUNIT3'] = 'DEGREE'
         hdu.header['TELESCOP'] = 'SALSA 2m'
         hdu.header['RESTFREQ'] = self.rest_freq # Rest frequency of line
-        hdu.header['VELO-LSR'] = self.vlsr_corr/1000.0 # in km/s, as needed by SalsaJ
+        hdu.header['VELO-LSR'] = (-1)*self.vlsr_corr/1000.0 # in km/s, sign as needed by SalsaJ
         hdu.header['VLSRUNIT']= 'km/s'
         dateobs = self.site.date.tuple()
         YYYY=str(dateobs[0]); MM=str(dateobs[1]); DD=str(dateobs[2]); hh = str(dateobs[3]); mm=str(dateobs[4]); ss=str(round(dateobs[5]))

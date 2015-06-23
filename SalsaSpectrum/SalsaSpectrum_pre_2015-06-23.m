@@ -13,12 +13,6 @@ classdef SalsaSpectrum<handle
     % tested, but there may still be bugs. It can be downloaded on the
     % SALSA onsala Web site at vale.oso.chalmers.se.
     
-	% version 2.2
-	% 23 june, 2015
-    % - Changed sign of velocity to reflect change in sign in 
-	%   the controller software writing the FITS files. 
-	%   This is due to sign convention used in SalsaJ.
-    
     % version 2.1
 	% 31 may, 2015
     % - Fixed readLAB function to use https instead of http. Now urlwrite
@@ -134,7 +128,7 @@ classdef SalsaSpectrum<handle
                    
             spec.freq = freq_ref + ( (1:n_chan) - freq_ref_pix )*freq_delta;
             spec.vel = (  -(spec.freq - freq_ref)/freq_ref * ...
-                spec.c - vlsr) / 1000; % Changed VLSR sign 2015-06-23 to work with SalsaJ
+                spec.c + vlsr) / 1000;
             spec.index = 1:n_chan;
             spec.baseSubtracted = 0;
             spec.gaussiansFitted = 0;
