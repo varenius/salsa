@@ -18,6 +18,9 @@ classdef SalsaSpectrum<handle
     % - Changed sign of velocity to reflect change in sign in 
 	%   the controller software writing the FITS files. 
 	%   This is due to sign convention used in SalsaJ.
+	% - Changed offset for reference pixel to be consistent with
+	%   SalsaJ, i.e. instead of +2 in control software I use +2 in 
+	%   matlab code.
     
     % version 2.1
 	% 31 may, 2015
@@ -125,7 +128,7 @@ classdef SalsaSpectrum<handle
             spec.info = fitsinfo(fname);
             
             % get the frequency scale from the spec.header of the fits files
-            freq_ref_pix = getKeyword(spec, 'CRPIX1');
+            freq_ref_pix = getKeyword(spec, 'CRPIX1') + 2;
             freq_delta = getKeyword(spec, 'CDELT1');
             disp(2*freq_delta)
             freq_ref = getKeyword(spec, 'CRVAL1');
