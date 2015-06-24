@@ -271,7 +271,7 @@ med SALSA till att göra observationer, och sedan göra en noggrann analys av di
 mätningar i efterhand. Då måste du spara din data. I nedre vänsta hörnet finns en 
 knapp som du kan använda för att spara det markerade spektrumet till webarkivet.
 Efter att du sparat en mätning så kan du hämta den när som helst via SALSA-hemsidan,
-se avsnitt \ref{sect:archive}. Datan bör finnas i arkivet inom någon sekund
+se avsnitt \ref{sect:archive}. Datan bör finnas i arkivet någon sekund
 efter att du tryck på Upload-knappen, så kolla gärna att din data verkligen 
 har laddats upp innan du avslutar kontrollprogrammet. Notera att om du inte 
 laddar upp dina mätningar så kommer de att tas bort när du stänger programmet.
@@ -295,43 +295,45 @@ av t.ex. vilka hastighetskomponenter som ingår i ditt spektrum. En mer
 noggrann analys av din data kräver dock tillgång till rådatan. Denna 
 kan du hämta som TXT eller FITS, se nedan. 
 
-\subsection{TXT: Textfiler}
-TXT-formatet innehåller ditt spektrum som ren text, d.v.s. som en lista av
-hastigheter och intensiteter. Detta format kan läsas av många program, t.ex. 
-gratisprogrammet LibreOffice Calc som finns att ladda ner på 
-http://www.libreoffice.org.  Om du kan programmera så kan du också skriva egen
-kod för att visa datan i TXT-filerna i ditt favoritspråk. 
-\subsubsection{Guide: Att visa spektrum från TXT-filer i LibreOffice}
-Denna guide kommer att läggas till snart.
 
 \subsection{FITS: Ett vanligt format för astronomidata}
 En FITS-fil\footnote{Flexible Image Transport System (FITS) format.  En FITS-fil
 	innehåller två delar: en header följd av en binär del med datan. Den binära
 	tabellen kan förstås och visas med FITS-läsande mjukvara, t.ex. med MATLAB - se
 	SALSA-hemsidan. } är ett vanligt format inom astronomi. Detta format
-	erbjuder mest funktionalitet och extrainformation. Eftersom formatet är populärt
-	så finns det många sätt att läsa och analysera FITS-filer. Nedan så listar
-	vi de vanligaste sätten att läsa FITS-filer från SALSA.
+	erbjuder mest funktionalitet och extrainformation. Det finns två vanliga sätt att
+	öppna FITS-filer från SALSA:
 
-\subsubsection{SalsaJ - Gratis grafisk mjukvara}
-Mjukvaran SalsaJ finns att hämta gratis via http://www.euhou.net/ (klicka på Software
-och sedan på SalsaJ).  Detta är ett program som du laddar hem till din dator.
-SalsaJ kan läsa FITS-filer, men tyvärr så finns ett problem i den senaste
-versionen av programmet. Prova gärna att läsa dina filer, men i skrivande stund så
-vet vi att fler tester är nödvändiga innan FITS-filer från SALSA återigen kan läsas
-med programmet SalsaJ på ett korrekt sätt. 
+\begin{itemize}
+	\item \textbf{SalsaJ} utvecklades inom projektet EU-HOU och kan användas 
+		för att öppna FITS-filer från SALSA.
+		SalsaJ är gratis och kräver inga kunskaper om programmering. Programmet SalsaJ och utförliga instruktioner för hur du öppnar FITS-filer finns
+		på SALSA-hemsidan {\url{http://vale.oso.chalmers.se/salsa/software}}.
+	\item \textbf{SalsaSpectrum} SalsaSpectrum är ett verktyg, skrivet i det
+		populära programspråket MATLAB, som kan användas för att visa och
+		analysera data från SALSA. För användare som är vana vid MATLAB så är
+		detta troligen den bästa lösningen eftersom det både finns möjligheter
+		att göra figurer och skriva egna program. Med detta verktyg så är det
+		möjligt att analysera många spektra på en gång och lätt att visa
+		resultaten.  SalsaSpektrum-verktyget finns att hämta via
+		SALSA-hemsidan, och där finns också utförlig dokumentation som
+		beskriver hur verktyget kan användas. Vänligen notera att MATLAB kräver
+		inte är gratis utan kräver en licens för att kunna användas -
+		Observatoriet kan inte erbjuda licenser för MATLAB.
+\end{itemize}
 
-\subsubsection{Matlab: Verktyget SalsaSpectrum}
-SalsaSpectrum är ett verktyg, skrivet i det populära programspråket MATLAB,
-som kan användas för att visa och analysera data från SALSA. För användare som
-är vana vid MATLAB så är detta troligen den bästa lösningen eftersom det både finns
-möjligheter att göra figurer och skriva egna program. Med detta verktyg så
-är det möjligt att analysera många spektra på en gång och lätt att visa resultaten. 
-SalsaSpektrum-verktyget finns att hämta via SALSA-hemsidan, och där finns också
-utförlig dokumentation som beskriver hur verktyget kan användas. Vänligen 
-notera att MATLAB kräver inte är gratis utan kräver en licens för att kunna
-användas - Observatoriet kan inte erbjuda licenser för MATLAB.
+\subsection{TXT: Textfiler}
+TXT-formatet innehåller ditt spektrum som ren text, d.v.s. som en lista av
+hastigheter och intensiteter. Detta är ett enkelt format och det går att använda 
+tillsammans med PNG-filerna för att få bra uppskattningar av hastigheter för de olika
+topparna i spektrat. Titta först i PNG-bilden för att få en grov uppskattning om var topparna är.
+Läs sedan av de exakta värdena i TXT-filen. 
+Om du kan programmera så kan du också skriva egen
+kod för att visa datan i TXT-filerna i ditt favoritspråk. 
 
 \subsubsection{Python}
-Om du är bekant med programspråket Python så kan du läsa FITS-filer genom att använda
-biblioteket \emph{astropy}.
+Om du är bekant med programspråket Python så kan du läsa FITS-filer genom att
+använda biblioteket \emph{astropy.io.fits}. Var dock noga med att kontroller
+att du läser in eventuell VLSR-korrektion och referenspixlar på rätt sätt. Du
+kan jämföra med resultatet i TXT och PNG-filerna.  Du kan också läsa
+TXT-filerna direkt och plotta dem med python.

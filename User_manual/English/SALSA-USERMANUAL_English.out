@@ -18,15 +18,16 @@
 \BOOKMARK [2][-]{subsection.2.4.3}{Measurement results}{section.2.4}% 18
 \BOOKMARK [1][-]{section.2.5}{How to process archived data}{chapter.2}% 19
 \BOOKMARK [2][-]{subsection.2.5.1}{PNG: Images}{section.2.5}% 20
-\BOOKMARK [2][-]{subsection.2.5.2}{TXT: Textfiles}{section.2.5}% 21
-\BOOKMARK [2][-]{subsection.2.5.3}{FITS: A common format for astronomical data}{section.2.5}% 22
-\BOOKMARK [0][-]{chapter.3}{Technical specifications}{}% 23
-\BOOKMARK [1][-]{section.3.1}{Angular resolution and accuracy}{chapter.3}% 24
-\BOOKMARK [1][-]{section.3.2}{Spectral resolution and accuracy}{chapter.3}% 25
-\BOOKMARK [0][-]{chapter*.20}{Appendices}{}% 26
-\BOOKMARK [0][-]{appendix.A}{The celestial sphere and astronomical coordinates}{}% 27
-\BOOKMARK [1][-]{section.A.1}{A place on Earth}{appendix.A}% 28
-\BOOKMARK [1][-]{section.A.2}{The celestial sphere}{appendix.A}% 29
-\BOOKMARK [2][-]{subsection.A.2.1}{Equatorial coordinates}{section.A.2}% 30
-\BOOKMARK [2][-]{subsection.A.2.2}{The Local Sidereal Time}{section.A.2}% 31
-\BOOKMARK [2][-]{subsection.A.2.3}{How can I know whether my source is up?}{section.A.2}% 32
+\BOOKMARK [2][-]{subsection.2.5.2}{FITS: A common format for astronomical data}{section.2.5}% 21
+\BOOKMARK [2][-]{subsection.2.5.3}{TXT: Textfiles}{section.2.5}% 22
+\BOOKMARK [2][-]{subsection.2.5.4}{Python}{section.2.5}% 23
+\BOOKMARK [0][-]{chapter.3}{Technical specifications}{}% 24
+\BOOKMARK [1][-]{section.3.1}{Angular resolution and accuracy}{chapter.3}% 25
+\BOOKMARK [1][-]{section.3.2}{Spectral resolution and accuracy}{chapter.3}% 26
+\BOOKMARK [0][-]{chapter*.16}{Appendices}{}% 27
+\BOOKMARK [0][-]{appendix.A}{The celestial sphere and astronomical coordinates}{}% 28
+\BOOKMARK [1][-]{section.A.1}{A place on Earth}{appendix.A}% 29
+\BOOKMARK [1][-]{section.A.2}{The celestial sphere}{appendix.A}% 30
+\BOOKMARK [2][-]{subsection.A.2.1}{Equatorial coordinates}{section.A.2}% 31
+\BOOKMARK [2][-]{subsection.A.2.2}{The Local Sidereal Time}{section.A.2}% 32
+\BOOKMARK [2][-]{subsection.A.2.3}{How can I know whether my source is up?}{section.A.2}% 33
