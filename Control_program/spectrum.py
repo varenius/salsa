@@ -189,12 +189,27 @@ class SALSA_spectrum:
         # Instructions for writing FITS at https://python4astronomers.github.io/astropy/fits.html
         # Set of keywords chosen to match SalsaJ requirements.
         hdu = fits.PrimaryHDU()
-        hdu.data = self.data.reshape(1, 1, self.nchans).astype(np.int16) # 16 bit for SalsaJ
+        datamin = np.min(self.data)
+        datamax = np.max(self.data)
         glon = float(self.target.lon)*180/np.pi # degrees
         glat = float(self.target.lat)*180/np.pi # degrees
-        # The NAXIS keywords are set by pyfits automatically
-        hdu.header['BSCALE']  = 1
-        hdu.header['BZERO']  = 0
+        #hdu.data = self.data.reshape(1, 1, self.nchans).astype(np.int16) # 16 bit for SalsaJ
+
+        #Since using  int16 as datatype we want to 
+        #use bscale and bzero to keep dynamic range. Unfortunately it does not work. Just setting bscale to not 0 or 1 changes BITPIX to 32 automatically. 
+        # SalsaJ cannot read bitpix correctly except 16 bit. If SalsaJ could read bitpix, we could just have BITPIX -64 and skip Bscale, Bzero, i.e. just remove 
+        # astype above.
+        bscale = (datamax-datamin)/65534.0
+        bzero = datamin+bscale*32767.0
+        #hdu.header['BLANK']  = -32768
+        scaledata = (self.data - bzero)/bscale
+        hdu.data = scaledata.reshape(1, 1, self.nchans).astype(np.int16) # 16 bit for SalsaJ
+        hdu.header['BSCALE']  = bscale
+        hdu.header['BZERO']  = bzero
+        
+        #hdu.header['BSCALE']  = 1
+        #hdu.header['BZERO']  = 0
+
         hdu.header['BUNIT']  = 'K'
         hdu.header['CTYPE1'] = 'FREQ'
         hdu.header['CRPIX1'] = self.nchans/2+2 # number of channels
@@ -230,8 +245,8 @@ class SALSA_spectrum:
         #eq = self.target.epoch.triple()
         #header['EQUINOX'] = str(eq[0] + eq[1]/12.0 + eq[2]/(24*12.0)) # Epoch in decimal years.
         hdu.header['EQUINOX'] = 2000
-        hdu.header['DATAMAX']  = np.max(self.data)
-        hdu.header['DATAMIN']  = np.min(self.data)
+        #hdu.header['DATAMAX']  = datamax
+        #hdu.header['DATAMIN']  = datamin
         #header['LINE'] = 'HI(21CM)'           
         hdu.header['AZIMUTH'] = self.az # Degrees
         hdu.header['ELEVATIO'] = self.alt # Degrees
