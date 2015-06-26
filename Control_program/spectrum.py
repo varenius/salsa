@@ -193,10 +193,8 @@ class SALSA_spectrum:
         datamax = np.max(self.data)
         glon = float(self.target.lon)*180/np.pi # degrees
         glat = float(self.target.lat)*180/np.pi # degrees
-        #hdu.data = self.data.reshape(1, 1, self.nchans).astype(np.int16) # 16 bit for SalsaJ
 
-        #Since using  int16 as datatype we want to 
-        #use bscale and bzero to keep dynamic range. Unfortunately it does not work. Just setting bscale to not 0 or 1 changes BITPIX to 32 automatically. 
+        #Since using  int16 as datatype we use bscale and bzero to keep dynamic range. 
         # SalsaJ cannot read bitpix correctly except 16 bit. If SalsaJ could read bitpix, we could just have BITPIX -64 and skip Bscale, Bzero, i.e. just remove 
         # astype above.
         bscale = (datamax-datamin)/65534.0
@@ -206,10 +204,6 @@ class SALSA_spectrum:
         hdu.data = scaledata.reshape(1, 1, self.nchans).astype(np.int16) # 16 bit for SalsaJ
         hdu.header['BSCALE']  = bscale
         hdu.header['BZERO']  = bzero
-        
-        #hdu.header['BSCALE']  = 1
-        #hdu.header['BZERO']  = 0
-
         hdu.header['BUNIT']  = 'K'
         hdu.header['CTYPE1'] = 'FREQ'
         hdu.header['CRPIX1'] = self.nchans/2+2 # number of channels
