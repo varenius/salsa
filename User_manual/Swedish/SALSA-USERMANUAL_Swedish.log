@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  3 JUN 2015 10:56
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  24 JUN 2015 11:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1033,31 +1033,32 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 288.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 298.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 298.
+(babel)             in language  on input line 299.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 304.
+(babel)             in language  on input line 308.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 304.
+(babel)             in language  on input line 308.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 304.
+(babel)             in language  on input line 308.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 304.
+(babel)             in language  on input line 308.
  [13 <../figures/Controller_measure.png>]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 307.
+(babel)             in language  on input line 323.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 307.
+(babel)             in language  on input line 323.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 315.
+(babel)             in language  on input line 323.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 315.
+(babel)             in language  on input line 323.
+ [14 <../figures/Controller_spectra.png>]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 315.
+(babel)             in language  on input line 325.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 315.
- [14 <../figures/Controller_spectra.png>]) (./techspec.tex
+(babel)             in language  on input line 325.
+) (./techspec.tex
 Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining swedish shorthand "~
@@ -1076,7 +1077,7 @@ Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 6.
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 6.
-<../figures/Beam_vale_2014-10-03.pdf, id=298, 915.11888pt x 579.0634pt>
+<../figures/Beam_vale_2014-10-03.pdf, id=296, 915.11888pt x 579.0634pt>
 File: ../figures/Beam_vale_2014-10-03.pdf Graphic file (type pdf)
 
 <use ../figures/Beam_vale_2014-10-03.pdf>
@@ -1134,7 +1135,7 @@ Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 8.
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 8.
-<../figures/longlat.pdf, id=372, 395.4775pt x 402.50375pt>
+<../figures/longlat.pdf, id=370, 395.4775pt x 402.50375pt>
 File: ../figures/longlat.pdf Graphic file (type pdf)
 
 <use ../figures/longlat.pdf>
@@ -1149,7 +1150,7 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 44.
 
-<../figures/celestial.pdf, id=373, 395.4775pt x 424.58624pt>
+<../figures/celestial.pdf, id=371, 395.4775pt x 424.58624pt>
 File: ../figures/celestial.pdf Graphic file (type pdf)
 
 <use ../figures/celestial.pdf>
@@ -1171,7 +1172,7 @@ Package babel Info: Redefining swedish shorthand "|
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 107.
 
-<../figures/lst.pdf, id=383, 427.5975pt x 404.51125pt>
+<../figures/lst.pdf, id=381, 427.5975pt x 404.51125pt>
 File: ../figures/lst.pdf Graphic file (type pdf)
 
 <use ../figures/lst.pdf>
@@ -1224,17 +1225,17 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 38.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 38.
 Package rerunfilecheck Info: File `SALSA-USERMANUAL_Swedish.out' has not change
 d.
-(rerunfilecheck)             Checksum: 4FEE9F22C2C26B82E1AACBDF0286D48F;2313.
+(rerunfilecheck)             Checksum: B183B7C8DB71880A11D53ED072DB8739;2313.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 38.
  ) 
 Here is how much of TeX's memory you used:
- 9225 strings out of 493304
- 134004 string characters out of 6139871
+ 9222 strings out of 493304
+ 133971 string characters out of 6139871
  236333 words of memory out of 5000000
  12379 multiletter control sequences out of 15000+600000
  83816 words of font info for 69 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 36i,10n,38p,1038b,394s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,10n,38p,1038b,413s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dv
 ips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share
 /texmf/fonts/enc/dvips/lm/lm-mathsy.enc}</usr/share/texmf/fonts/type1/public/lm
@@ -1246,10 +1247,10 @@ usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/pu
 blic/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/sha
 re/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb>
-Output written on SALSA-USERMANUAL_Swedish.pdf (24 pages, 976473 bytes).
+Output written on SALSA-USERMANUAL_Swedish.pdf (24 pages, 977472 bytes).
 PDF statistics:
- 584 PDF objects out of 1000 (max. 8388607)
- 404 compressed objects within 5 object streams
- 82 named destinations out of 1000 (max. 500000)
+ 582 PDF objects out of 1000 (max. 8388607)
+ 402 compressed objects within 5 object streams
+ 79 named destinations out of 1000 (max. 500000)
  327 words of extra memory for PDF output out of 10000 (max. 10000000)
 

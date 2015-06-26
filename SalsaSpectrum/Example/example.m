@@ -1,5 +1,9 @@
-spec=SalsaSpectrum('sample_data.fits')
+addpath('../')
+spec=SalsaSpectrum('spectrum_1905.fits')
 spec.plot()
+spec.readLab()
+spec.showLab()
+%spec.vel
 spec.fitBaseline()
 spec.subtractBaseline()
 spec.plot()

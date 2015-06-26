@@ -274,61 +274,59 @@ upload your measurement it will be deleted once you exit the control program.
 \section{How to process archived data}
 \label{sect:archiveprocess}
 As mentioned in the previous section you may inspect your data directly within
-the control program itself. This is the simples option, but in some cases you
-may want to do a more careful analysis offline. In this section we describe the
-different data formats available from the online archive and what software you
-may use to view your archival data. 
-%Aside from direct inspection in the control
-%program, the most common way to process the data is by using Matlab to read the
-%FITS files, see below.
+the control program itself. This is the simplest option, but in some cases you
+may want to do a more careful analysis offline, or you want to focus your 
+observing time on getting data and do the processing later. In this section we 
+briefly describe the most common ways to analyse the SALSA data you can download
+from the archive at the SALSA webpage. 
 
 \subsection{PNG: Images}
 The PNG format is an image of the spectrum just as it looked in the control
 program when you pressed the upload button. This is useful for a quick look,
 but is less accurate than inspecting the data in the control program since you
-cannot get the exact values from the graph in a simple way. However, it may
-still be accurate enough for quick estimates of, for example, the center
-velocities of peaks in the spectrum. An accurate analysis of your data will
-however probably require access to the actual numbers, which is provided
-as TXT and FITS, see below.
-
-\subsection{TXT: Textfiles}
-The TXT format contains the spectrum in plain text, i.e. as list of
-velocity/intensity pairs. This format can be read by many programs, for example
-the free office suite LibreOffice available at http://www.libreoffice.org.  If
-you know computer programming you may also write your own code to display the
-data in the TXT files using your favourite programming language.
-\subsubsection{Tutorial: Plotting a spectrum from TXT with LibreOffice}
-This tutorial will be added soon.
+cannot get the exact values from the graph in a simple way.  An accurate
+analysis of your data will however probably require access to the actual
+numbers, which is provided as TXT and FITS, see below.
 
 \subsection{FITS: A common format for astronomical data}
 A FITS file\footnote{Flexible Image Transport System (FITS) format.  A FITS
 file contains two parts: a header followed by a binary record of the data.  The
 binary table can be interpreted and displayed with FITS-reading software, for
-example with MATLAB - see the SALSA website.} is a common format in astronomy.
-This format provides the most functionality and meta-information. Because this 
-format is popular, there are multiple ways to process the data. Below we list
-the most common ways to read FITS file from SALSA.
+example SalsaJ - see the SALSA website.} is a common format in astronomy.
+This format provides the most functionality and meta-information. There are currently
+two main ways to analyse FITS files from SALSA:
 
-\subsubsection{SalsaJ - Free graphical software}
-The software SalsaJ is available at http://www.euhou.net/ (click on Software
-and then on SalsaJ).  This is a program which you download to your computer.
-SalsaJ can read the FITS files easily. However, there is a minor discrepancy
-between the current version of SalsaJ and the FITS files produced by the
-recently upgraded SALSA control program. You can still try to read your files,
-but at the time of writing this we know that some additional testing is
-necessary before you can read SALSA FITS files properly with SalsaJ.
+\begin{itemize}
+\item \textbf{SalsaJ} was developed within the EU-HOU project.  SalsaJ can be
+	used to analyse spectral data from the SALSA telscopes, but can also be
+	used as a simple image editor and processor.  The main advantage of SalsaJ
+	is its easy-to-use point-and-click interface. The main disadvantage is that
+	reducing many spectra can be tedious. SalsaJ is available from the SALSA
+	webpage {\url{http://vale.oso.chalmers.se/salsa/software}}, together with
+	step-by-step instructions for opening FITS files from the webarchive.
+\item \textbf{SalsaSpectrum} is a data reduction environment written
+  in the popular mathematical software \textsc{\textsc{Matlab}} -
+  aimed for reduction of data from SALSA Onsala, developed by Daniel
+  Dahlin. The main advantage is that many spectra can be processed
+  quickly. The main disadvantage is that it requires the user to have
+  a working installation of Matlab, which is non-free software. Please note 
+  that the observatory cannot provide Matlab licenses, but many university
+  students have free access to Matlab. SalsaSpectrum is available from 
+  the SALSA webpage {\url{http://vale.oso.chalmers.se/salsa/software}}, 
+  together with step-by-step instructions for opening FITS files from the webarchive.
+\end{itemize}
 
-\subsubsection{Matlab: The SalsaSpectrum class}
-SalsaSpectrum is a tool, written in the popular MATLAB
-language, which can be used to view and analyse data from SALSA. For users that
-are familiar with MATLAB, it may be the best option as there are both plotting
-and programming capabilities available. It is possible to reduce large numbers
-of spectra simultaneously, and to easily plot the results. The SalsaSpectrum
-software is available at the SALSA website, along with extensive documentation.
-Pleas note that Matlab is not free software and you need to have a license to
-use it - the observatory cannot provide Matlab licenses.  
+\subsection{TXT: Textfiles}
+The TXT format contains the spectrum in plain text, i.e. as list of
+velocity/intensity pairs. This is a simple format, and it is possible to use 
+the file together with the PNG images to get accurate measurements of the peak
+velocities. First get a rough estimate from the PNG-file, and then read the exact
+values in the TXT file. If you know programming you may also write your own code to
+show the TXT-files in your favourite language.
 
-\subsubsection{Python}
-If you are familiar with the programming language Python you can read the FITS files
-using the library \emph{astropy}.
+\subsection{Python}
+If you are familiar with the programming language Python you can read the FITS
+files using the library \emph{astropy.io.fits}. Please make sure to read the
+VLSR-correction and reference pixels correctly. You can compare with the
+results in the TXT and PNG-files. You may also skip the FITS files and read the
+TXT-files directly with python.
