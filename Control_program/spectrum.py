@@ -207,7 +207,6 @@ class SALSA_spectrum:
         hdu.header['BUNIT']  = 'K'
         hdu.header['CTYPE1'] = 'FREQ'
         hdu.header['CRPIX1'] = self.nchans/2 # number of channels
-        # The extra number 2 comes from comparing SalsaJ/Matlab plot with LABSURVEY.
         hdu.header['CRVAL1'] = self.obs_freq
         hdu.header['CDELT1'] = self.bandwidth/self.nchans # Channel width
         hdu.header['CUNIT1'] = 'Hz'
