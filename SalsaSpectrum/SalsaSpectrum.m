@@ -12,7 +12,7 @@ classdef SalsaSpectrum<handle
     % This software comes with no warranty. It has been thoroughly
     % tested, but there may still be bugs. It can be downloaded on the
     % SALSA onsala Web site at vale.oso.chalmers.se.
-    
+
 	% version 2.2
 	% 23 june, 2015
     % - Changed sign of velocity to reflect change in sign in 
@@ -130,7 +130,7 @@ classdef SalsaSpectrum<handle
             % get the frequency scale from the spec.header of the fits files
             freq_ref_pix = getKeyword(spec, 'CRPIX1') + 2;
             freq_delta = getKeyword(spec, 'CDELT1');
-            disp(2*freq_delta)
+            %disp(2*freq_delta)
             freq_ref = getKeyword(spec, 'CRVAL1');
             n_chan = getKeyword(spec, 'NAXIS1');
             vlsr = getKeyword(spec, 'VELO-LSR')*1000;
