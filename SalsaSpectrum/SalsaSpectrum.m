@@ -12,12 +12,15 @@ classdef SalsaSpectrum<handle
     % This software comes with no warranty. It has been thoroughly
     % tested, but there may still be bugs. It can be downloaded on the
     % SALSA onsala Web site at vale.oso.chalmers.se.
-    
+
 	% version 2.2
 	% 23 june, 2015
     % - Changed sign of velocity to reflect change in sign in 
 	%   the controller software writing the FITS files. 
 	%   This is due to sign convention used in SalsaJ.
+	% - Changed offset for reference pixel to be consistent with
+	%   SalsaJ, i.e. instead of +2 in control software I use +2 in 
+	%   matlab code.
     
     % version 2.1
 	% 31 may, 2015
@@ -125,9 +128,9 @@ classdef SalsaSpectrum<handle
             spec.info = fitsinfo(fname);
             
             % get the frequency scale from the spec.header of the fits files
-            freq_ref_pix = getKeyword(spec, 'CRPIX1');
+            freq_ref_pix = getKeyword(spec, 'CRPIX1') + 2;
             freq_delta = getKeyword(spec, 'CDELT1');
-            disp(2*freq_delta)
+            %disp(2*freq_delta)
             freq_ref = getKeyword(spec, 'CRVAL1');
             n_chan = getKeyword(spec, 'NAXIS1');
             vlsr = getKeyword(spec, 'VELO-LSR')*1000;

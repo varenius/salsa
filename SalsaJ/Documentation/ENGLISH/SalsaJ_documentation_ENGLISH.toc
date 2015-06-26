@@ -1,0 +1,8 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}
+\contentsline {section}{\numberline {2}Analysing SALSA data with SalsaJ}{2}{section.2}
+\contentsline {subsection}{\numberline {2.1}Starting SalsaJ}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Opening a spectrum}{2}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Set the scale}{2}{subsection.2.3}
+\contentsline {section}{\numberline {3}Advanced processing}{4}{section.3}
+\contentsline {subsection}{\numberline {3.1}Spectral baseline subtraction}{4}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Measuring velocities: fitting Gaussians}{4}{subsection.3.2}

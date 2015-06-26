@@ -22,16 +22,13 @@
 \contentsline {subsection}{\numberline {2.4.3}Measurement results}{12}{subsection.2.4.3}
 \contentsline {section}{\numberline {2.5}How to process archived data}{13}{section.2.5}
 \contentsline {subsection}{\numberline {2.5.1}PNG: Images}{13}{subsection.2.5.1}
-\contentsline {subsection}{\numberline {2.5.2}TXT: Textfiles}{14}{subsection.2.5.2}
-\contentsline {subsubsection}{Tutorial: Plotting a spectrum from TXT with LibreOffice}{14}{section*.15}
-\contentsline {subsection}{\numberline {2.5.3}FITS: A common format for astronomical data}{15}{subsection.2.5.3}
-\contentsline {subsubsection}{SalsaJ - Free graphical software}{15}{section*.16}
-\contentsline {subsubsection}{Matlab: The SalsaSpectrum class}{15}{section*.17}
-\contentsline {subsubsection}{Python}{15}{section*.18}
+\contentsline {subsection}{\numberline {2.5.2}FITS: A common format for astronomical data}{14}{subsection.2.5.2}
+\contentsline {subsection}{\numberline {2.5.3}TXT: Textfiles}{15}{subsection.2.5.3}
+\contentsline {subsection}{\numberline {2.5.4}Python}{15}{subsection.2.5.4}
 \contentsline {chapter}{\numberline {3}Technical specifications}{16}{chapter.3}
 \contentsline {section}{\numberline {3.1}Angular resolution and accuracy}{16}{section.3.1}
 \contentsline {section}{\numberline {3.2}Spectral resolution and accuracy}{16}{section.3.2}
-\contentsline {chapter}{Appendices}{18}{chapter*.20}
+\contentsline {chapter}{Appendices}{18}{chapter*.16}
 \contentsline {chapter}{\numberline {A}The celestial sphere and astronomical coordinates}{19}{appendix.A}
 \contentsline {section}{\numberline {A.1}A place on Earth}{19}{section.A.1}
 \contentsline {section}{\numberline {A.2}The celestial sphere}{19}{section.A.2}
