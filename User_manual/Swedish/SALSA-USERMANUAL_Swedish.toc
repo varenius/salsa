@@ -25,6 +25,7 @@
 \contentsline {subsection}{\numberline {2.5.2}FITS: Ett vanligt format f\IeC {\"o}r astronomidata}{14}{subsection.2.5.2}
 \contentsline {subsection}{\numberline {2.5.3}TXT: Textfiler}{15}{subsection.2.5.3}
 \contentsline {subsubsection}{Python}{15}{section*.15}
+\contentsline {subsection}{\numberline {2.5.4}R}{15}{subsection.2.5.4}
 \contentsline {chapter}{\numberline {3}Tekniska specifikationer}{16}{chapter.3}
 \contentsline {section}{\numberline {3.1}Vinkeluppl\IeC {\"o}sning och precision}{16}{section.3.1}
 \contentsline {section}{\numberline {3.2}Frekvensuppl\IeC {\"o}sning och precision}{16}{section.3.2}
