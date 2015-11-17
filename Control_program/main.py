@@ -368,6 +368,11 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             self.inputrightcoord.setReadOnly(True)
             self.inputleftcoord.setText('Cas. A')
             self.inputrightcoord.setText('Cas. A')
+        elif target == 'Stow':
+            self.inputleftcoord.setReadOnly(True)
+            self.inputrightcoord.setReadOnly(True)
+            self.inputleftcoord.setText('Stow')
+            self.inputrightcoord.setText('Stow')
         else:
             # Convert from QString to String to not confuse ephem
             leftcoord = str(self.inputleftcoord.text())
@@ -423,48 +428,6 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.coordlabel_left.setText(leftval)
         self.coordlabel_right.setText(rightval)
 
-    #def get_coords(self,alt_deg,az_deg):
-    #    target = self.coordselector.currentText()
-    #    alt_rad = alt_deg*np.pi/180.0
-    #    az_rad = az_deg*np.pi/180.0
-
-    #    self.telescope.site.date = ephem.now()
-    #    # Get ra, dec using radec_of. This function
-    #    # has input order AZ, ALT, i.e. inverted to most other functions.
-    #    (ra, dec) = self.telescope.site.radec_of(az_rad, alt_rad)
-    #    pos = ephem.FixedBody()
-    #    pos._ra = ra
-    #    pos._dec = dec
-    #    pos._epoch = self.telescope.site.date
-    #    pos.compute(self.telescope.site)
-    #    if (target == 'Horizontal' or target == 'The Sun'):
-    #        # The calculated alt and az calculated by creating ra, dec and then
-    #        # back to alt, az again will be different from actual measured alt,
-    #        # az as noted here:
-    #        # http://stackoverflow.com/questions/11970713/pyephem-conversion-of-alt-az-to-ra-dec-and-back-not-internally-consistent
-    #        # However, when going from e.g. galactic to Alt, az, then should correct the right way.
-    #        # This means that setting the position, also shown in the bottom alt/az window for observation, will be correct,
-    #        # but the reported current pointing might be off due to the above effect.
-    #        leftval = pos.alt
-    #        rightval = pos.az
-    #    elif target == 'Galactic':
-    #        newpos = ephem.Galactic(pos)
-    #        leftval = newpos.lon
-    #        rightval = newpos.lat
-    #    elif target == 'Eq. J2000':
-    #        newpos = ephem.Equatorial(pos, epoch=ephem.J2000)
-    #        leftval = newpos.ra
-    #        rightval = newpos.dec
-    #    elif target == 'Eq. B1950':
-    #        newpos = ephem.Equatorial(pos, epoch=ephem.B1950)
-    #        leftval = newpos.ra
-    #        rightval = newpos.dec
-    #    elif target == 'Ecliptic':
-    #        newpos = ephem.Ecliptic(pos, epoch=ephem.J2000)
-    #        leftval = newpos.lon
-    #        rightval = newpos.lat
-    #    return (str(leftval), str(rightval))
-
     def get_desired_alaz_offset(self):
         # Read specified offset
         # Convert from QString to String to not confuse ephem,then to decimal degrees in case the string had XX:XX:XX.XX format.
@@ -506,16 +469,19 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             #az = (float(rightcoord) %360.0)* np.pi/180.0
             # Save as targetpos, will be minor offset because of radec_of conversion
             # Note reverse order of az, alt in this radec_of-function.
-            (ra, dec) = self.telescope.site.radec_of(az, alt)
-            pos = ephem.FixedBody()
-            pos._ra = ra
-            pos._dec = dec
-            pos._epoch = self.telescope.site.date
-            pos.compute(self.telescope.site)
+            #(ra, dec) = self.telescope.site.radec_of(az, alt)
+            #pos = ephem.FixedBody()
+            #pos._ra = ra
+            #pos._dec = dec
+            #pos._epoch = self.telescope.site.date
+            #pos.compute(self.telescope.site)
             # Do not set position to tracking target in this case, because of radec_of discrepancy.
             # Instead set to given values manually
             alt_deg = float(alt)*180.0/np.pi
             az_deg = float(az)*180.0/np.pi
+        elif target == 'Stow':
+            # Read stow position from file
+            (alt_deg,az_deg)=self.telescope.get_stow_alaz()
         else:
             # If given system is something else, we do not have to use radec_of and we get
             # http://stackoverflow.com/questions/11169523/how-to-compute-alt-az-for-given-galactic-coordinate-glon-glat-with-pyephem
@@ -553,6 +519,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
         if target == 'Horizontal':
             return (fin_alt_deg, fin_az_deg)
+        elif target=='Stow':
+            # Ignore offset
+            return (alt_deg, az_deg)
         else:
             # Check if the desired direction is best reached via simple alt, az
             # or at 180-alt, az+180.
@@ -653,7 +622,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.btn_observe.setEnabled(False)
         msg = "Dear user. The telescope is lost, this may happen when there is a power cut. A reset is needed for SALSA to know where it is pointing. Please press reset and wait until reset is finished."
         self.show_message(msg)
-
+    
     def reset(self):
         # Show a message box
         qmsg = "You have asked for a system reset. This process may take a few minutes if the telescope is far from its starting position so please be patient. Do you really want to reset the telescope?"

@@ -22,6 +22,9 @@ minal=0.0
 # Maximum distance in degrees between target 
 # and pointing for UI color indicators.
 close_enough = 1.0 
+# Define stow position in horizontal coordinates, in degrees
+stowal=90
+stowaz=260
 
 [USRP]
 # The sampler to record data

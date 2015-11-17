@@ -36,6 +36,10 @@ class TelescopeController:
         # Smallest step separation in degrees, i.e. half cog-cog distance.
         self.cogstep_al_deg = 0.125
         self.cogstep_az_deg = 0.125
+        
+        # Read stow position from config file
+        self.stowal_deg = config.getfloat('RIO', 'stowal')
+        self.stowaz_deg = config.getfloat('RIO', 'stowaz')
 
         # Read stepsize and angles from configfile
         self.minaz_deg = config.getfloat('RIO', 'minaz')
@@ -273,6 +277,14 @@ class TelescopeController:
     
     def get_min_alerror_deg(self):
         return self.cogstep_al_deg
+    
+    def stow(self):
+        """ Set target position to stow position read from configfile."""
+        self.set_target_alaz(self.stowal_deg, self.stowaz_deg)
+    
+    def get_stow_alaz(self):
+        """Returns the stow altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
+        return (self.stowal_deg, self.stowaz_deg)
 
     def set_target_alaz(self, al, az):
         """Set the target altitude and azimuth of the telescope. Arguments in degrees."""

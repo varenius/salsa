@@ -48,51 +48,34 @@
          <x>17</x>
          <y>30</y>
          <width>691</width>
-         <height>143</height>
+         <height>151</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="3">
-         <widget class="QPushButton" name="btn_track">
-          <property name="text">
-           <string>Track</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_currentpointing">
-          <property name="text">
-           <string>Calc. target horizontal</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_currentaltaz">
-          <property name="text">
-           <string>Current horizontal</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item row="0" column="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <widget class="QLabel" name="label_cur_alt">
+           <widget class="QLabel" name="coordlabel_right">
             <property name="text">
-             <string>Alt:</string>
+             <string>Latitude</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="cur_alt">
+           <widget class="QLineEdit" name="inputrightcoord">
             <property name="text">
              <string>0</string>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
             </property>
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="2" column="2">
+         <widget class="Line" name="line_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
         </item>
         <item row="4" column="2">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -115,12 +98,121 @@
           </item>
          </layout>
         </item>
-        <item row="4" column="3">
-         <widget class="QPushButton" name="btn_reset">
-          <property name="text">
-           <string>Reset</string>
+        <item row="1" column="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_13">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Az[deg]:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="offset_right">
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="readOnly">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="0">
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_offset">
+          <property name="text">
+           <string>Desired horisontal offset</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <item>
+           <widget class="QLabel" name="label_offset_left">
+            <property name="text">
+             <string>Alt[deg]:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="offset_left">
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="readOnly">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item>
+           <widget class="QLabel" name="label_cur_az_2">
+            <property name="text">
+             <string>Az:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="calc_des_right">
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="btn_track">
+          <property name="text">
+           <string>Track</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_currentaltaz">
+          <property name="text">
+           <string>Current horizontal</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QLabel" name="coordlabel_left">
+            <property name="text">
+             <string>Longitude</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="inputleftcoord">
+            <property name="text">
+             <string>140</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -163,45 +255,42 @@
               <string>Cas. A</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>Stow</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
         </item>
-        <item row="0" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item row="4" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QLabel" name="coordlabel_left">
+           <widget class="QLabel" name="label_cur_alt">
             <property name="text">
-             <string>Longitude</string>
+             <string>Alt:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="inputleftcoord">
-            <property name="text">
-             <string>140</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_7">
-          <item>
-           <widget class="QLabel" name="coordlabel_right">
-            <property name="text">
-             <string>Latitude</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="inputrightcoord">
+           <widget class="QLineEdit" name="cur_alt">
             <property name="text">
              <string>0</string>
             </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_currentpointing">
+          <property name="text">
+           <string>Calc. target horizontal</string>
+          </property>
+         </widget>
         </item>
         <item row="3" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -224,94 +313,10 @@
           </item>
          </layout>
         </item>
-        <item row="3" column="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_10">
-          <item>
-           <widget class="QLabel" name="label_cur_az_2">
-            <property name="text">
-             <string>Az:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="calc_des_right">
-            <property name="text">
-             <string>0</string>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_11">
-          <item>
-           <widget class="QLabel" name="label_offset_left">
-            <property name="text">
-             <string>Alt[deg]:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="offset_left">
-            <property name="text">
-             <string>0</string>
-            </property>
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_offset">
+        <item row="4" column="3">
+         <widget class="QPushButton" name="btn_reset">
           <property name="text">
-           <string>Desired horisontal offset</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_13">
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Az[deg]:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="offset_right">
-            <property name="text">
-             <string>0</string>
-            </property>
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="2" column="0">
-         <widget class="Line" name="line">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="Line" name="line_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="Line" name="line_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <string>Reset</string>
           </property>
          </widget>
         </item>
@@ -435,7 +440,7 @@
            <x>10</x>
            <y>10</y>
            <width>671</width>
-           <height>184</height>
+           <height>192</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
@@ -648,7 +653,7 @@
        <rect>
         <x>600</x>
         <y>0</y>
-        <width>171</width>
+        <width>175</width>
         <height>24</height>
        </rect>
       </property>
@@ -714,7 +719,7 @@
      <x>0</x>
      <y>0</y>
      <width>803</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>
