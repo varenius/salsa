@@ -1,0 +1,191 @@
+'SALSA RIO CONTROL v2015-11-17.VALE
+'Using 4 threads: Movement, 
+'elcheck, azcheck.
+#AUTO
+ c_el= 0;'Current elevation
+ t_el= 0;'Target elevation
+ c_az= 0;'Current azimuth
+ t_az= 0;'Target azimuth 
+ minel = 0;'Value of EL CW endpos
+ maxel = 1438;'Value of EL CCW endpos
+ minaz = 0;'Value of AZ CW endpos
+ maxaz = 2668;'Value of AZ CCW endpos
+ close_az = 8;' Slow-margin in az
+ close_el = 8;' Slow-margin in el
+ eldir = 0;'Cur el-dir.1=up
+ azdir = 0;'Cur az-dir.1=pos=cw
+ CW 2;'unsolicited traffic
+ eloncog = @IN[0]
+ azoncog = @IN[1]
+ knowpos = 0; 'No pos. INIT needed.
+ JP #COUNT
+EN
+#COUNT
+ XQ #CHKEL,1
+ XQ #CHKAZ,2
+ XQ #CHKLIM,3
+EN 
+#INIT
+ CB0;'Stop EL-motor.
+ CB1;'Clear EL-CCW mode if active.
+ CB2;'Stop AZ-motor.
+ CB3;'Clear AZ-CCW mode if active.
+ c_el= 0; ' Current elevation
+ c_az= 0; ' Current azimuth
+ t_el = -9999; ' Go to end pos
+ t_az = -9999; ' Go to end pos
+ SB1;'Run EL-CCW
+ SB0;'Run EL-motor
+ SB3;'Run AZ-CCW 
+ SB2;'Run AZ-motor
+' Assumes MOVE loop not running
+EN
+#MOVE
+ diff_az = @ABS[t_az-c_az]
+ IF diff_az>0; ' Move in AZ 
+  IF t_az>c_az;
+   CB3; 'Do not run AZ-motor CCW
+   azdir = 1;'Set current direction
+  ENDIF
+  IF t_az<c_az;
+   SB3; 'Run AZ-motor CCW
+   azdir = 0; 'Set current direction
+  ENDIF
+  SB2;'Start AZ-motor CW(CCW if SB3)
+  IF diff_az<close_az; 'Move slowly
+   WT 30;'Run motors for short time
+   CB2;'Stop AZ-motor.
+  ENDIF  
+ ENDIF
+ diff_el = @ABS[t_el-c_el]
+ IF diff_el>0; ' Move in EL
+  IF t_el>c_el;
+   CB1;'Do not run EL-motor CCW
+   eldir = 1;'Set current direction
+  ENDIF
+  IF t_el<c_el;
+   SB1;'Set EL-motor to run CCW
+   eldir = 0;'Set current direction
+  ENDIF
+  SB0;'Start EL-motor CW (CCW if SB1)
+  IF diff_el<close_el;'Move slowly
+   WT 30;'Run motors for short time
+   CB0;'Stop EL-motor.
+  ENDIF
+ ENDIF
+ WT 70;'Wait for motors
+ JP #MOVE;
+EN
+#CHKEL
+ elmed = 0
+ nelcount = 0
+ nelmax = 5
+#ELCOUNT
+  elmed = elmed + @IN[0]
+  nelcount = nelcount + 1
+  WT 1
+  JP #ELCOUNT, (nelcount<nelmax)
+  elmed2 = 2*elmed
+  IF (elmed2>nelmax)
+   newelcog = 1
+  ELSE 
+   newelcog = 0
+  ENDIF
+  JP #CHKEL, newelcog=eloncog;
+  eloncog = newelcog;'New cog,count! 
+  IF eldir=1;'Moving CW.Increment.
+   c_el = c_el + 1;
+  ELSE;'Moving CCW.Decrement.
+   c_el = c_el - 1;
+  ENDIF
+  IF (@OUT[4]=1);'EL-flashing
+   CB4
+  ELSE
+   SB4
+  ENDIF
+  'MG "EL:",c_el{F4.0};'FOR DEBUG 
+ JP #CHKEL;
+EN
+#CHKAZ
+ azmed = 0
+ nazcount = 0
+ nazmax = 5
+#AZCOUNT
+  azmed = azmed + @IN[1]
+  nazcount = nazcount + 1
+  WT 1
+  JP #AZCOUNT, (nazcount<nazmax)
+  azmed2 = 2*azmed
+  IF (azmed2>nazmax)
+   newazcog = 1
+  ELSE 
+   newazcog = 0
+  ENDIF
+  JP #CHKAZ, newazcog=azoncog;
+  azoncog = newazcog;'New cog,count! 
+  IF azdir=1;'Moving CW. Increment.
+   c_az = c_az + 1;
+  ELSE;'Moving CCW. Decrement.
+   c_az = c_az - 1;
+  ENDIF
+  IF (@OUT[5]=1);'AZ-flashing
+   CB5
+  ELSE
+   SB5
+  ENDIF
+ 'MG "AZ:",c_az{F4.0};'FOR DEBUG
+ JP #CHKAZ;
+EN
+#CHKLIM;' CHECK IN EL
+IF (@OUT[0])
+ oldel=c_el
+ WT 2000
+ IF (@OUT[0]);'If still moving
+  newel=c_el
+  IF (oldel=newel);' If stuck
+   IF t_el=-9999;' If resetting
+    CB0; ' Stop EL-motor.
+    CB1; ' Clear EL-CCW if active.
+    WT 500; ' wait for motors
+    eloncog = @IN[0]
+    IF eldir=1; ' Was moving CW. 
+     c_el = maxel;
+     t_el = maxel;
+    ELSE; ' Was moving CCW.
+     c_el = minel;
+     t_el = minel;
+    ENDIF
+   ENDIF
+  ENDIF
+ ENDIF
+ENDIF
+IF (@OUT[2]);'CHECK IN AZ
+ oldaz=c_az
+ WT 2000
+ IF (@OUT[2]); 'If still moving
+  newaz=c_az
+  IF (oldaz=newaz);  ' If stuck
+   IF t_az=-9999;' If resetting
+    CB2; ' Stop AZ-motor.
+    CB3; ' Clear AZ-CCW if active.
+    WT 500; ' wait for motors 
+    azoncog = @IN[1]
+    IF azdir=1; ' Was moving CW. 
+     c_az = maxaz;
+     t_az = maxaz;
+    ELSE; ' We were moving CCW.
+     c_az = minaz;
+     t_az = minaz;
+    ENDIF
+   ENDIF
+  ENDIF
+ ENDIF
+ENDIF
+JP #CHKLIM
+EN 
+#STOP
+ CB0;'Stop EL-motor.
+ CB1;'Clear EL-CCW mode if active.
+ CB2;'Stop AZ-motor.
+ CB3;'Clear AZ-CCW mode if active.
+EN
