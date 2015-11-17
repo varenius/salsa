@@ -89,6 +89,9 @@ class TelescopeController:
         if (self.minal_cog == self._get_current_al_cog() and  self.minaz_cog == self._get_current_az_cog() and azmotor == 0 and elmotor ==0):
             # Start MOVE loop
             self._cmd('XQ #MOVE')
+            if self._get_msg()==':':
+                time.sleep(0.5)
+                print 'RIO: Move-loop started after reset.'
             return True
         else:
             return False
