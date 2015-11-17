@@ -278,10 +278,6 @@ class TelescopeController:
     def get_min_alerror_deg(self):
         return self.cogstep_al_deg
     
-    def stow(self):
-        """ Set target position to stow position read from configfile."""
-        self.set_target_alaz(self.stowal_deg, self.stowaz_deg)
-    
     def get_stow_alaz(self):
         """Returns the stow altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
         return (self.stowal_deg, self.stowaz_deg)
