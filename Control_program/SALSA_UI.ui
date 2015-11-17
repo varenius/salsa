@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>566</height>
+    <width>802</width>
+    <height>594</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -440,7 +440,7 @@
            <x>10</x>
            <y>10</y>
            <width>671</width>
-           <height>192</height>
+           <height>181</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
@@ -448,32 +448,6 @@
            <widget class="QLabel" name="label_mode">
             <property name="text">
              <string>Mode</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QCheckBox" name="vlsr_checkbox">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Translate to VLSR frame</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2">
-           <widget class="QCheckBox" name="LNA_checkbox">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>LNA</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -565,16 +539,6 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QCheckBox" name="autoedit_bad_data_checkBox">
-            <property name="text">
-             <string>Remove RFI</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="FrequencyLabel">
             <property name="text">
@@ -586,6 +550,55 @@
            <widget class="QLineEdit" name="FrequencyInput">
             <property name="text">
              <string>1420.4</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QCheckBox" name="vlsr_checkbox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Translate to VLSR frame</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QCheckBox" name="autoedit_bad_data_checkBox">
+            <property name="text">
+             <string>Remove RFI</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QCheckBox" name="LNA_checkbox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>LNA</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="2">
+           <widget class="QCheckBox" name="noise_checkbox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Noise diode</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -718,7 +731,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>803</width>
+     <width>802</width>
      <height>27</height>
     </rect>
    </property>

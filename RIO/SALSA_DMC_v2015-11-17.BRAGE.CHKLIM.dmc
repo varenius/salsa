@@ -34,6 +34,8 @@ EN
  c_az= 0; ' Current azimuth
  t_el = -9999; ' Go to end pos
  t_az = -9999; ' Go to end pos
+ CB8;'Turn off LNA
+ CB9;'Turn off Noise diode 
  SB1;'Run EL-CCW
  SB0;'Run EL-motor
  SB3;'Run AZ-CCW 

@@ -170,6 +170,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.mode_switched.setEnabled(False)
         self.mode_signal.setEnabled(False)
         self.LNA_checkbox.setEnabled(False)
+        self.noise_checkbox.setEnabled(False)
         self.vlsr_checkbox.setEnabled(False)
         self.btn_observe.setEnabled(False)
         self.btn_abort.setEnabled(True)
@@ -184,6 +185,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.mode_switched.setEnabled(True)
         self.mode_signal.setEnabled(True)
         self.LNA_checkbox.setEnabled(True)
+        self.noise_checkbox.setEnabled(True)
         self.vlsr_checkbox.setEnabled(True)
         self.btn_observe.setEnabled(True)
         self.btn_abort.setEnabled(False)
@@ -191,6 +193,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
     def observation_finished(self):
         # Turn off LNA after observation
         self.telescope.set_LNA(False)
+        self.telescope.set_noise_diode(False)
         if not self.aborting:
             # Post-process data
             sigspec = self.sigworker.measurement.spectrum
@@ -258,6 +261,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         # Use LNA if selected
         if self.LNA_checkbox.isChecked():
             self.telescope.set_LNA(True)
+        # Use noise diode if selected
+        if self.noise_checkbox.isChecked():
+            self.telescope.set_noise_diode(True)
         freq = float(self.FrequencyInput.text())*1e6 # Hz
         bw = float(self.BandwidthInput.text())*1e6 # Hz
         int_time = float(self.IntegrationTimeInput.text())
