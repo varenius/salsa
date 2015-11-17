@@ -25,6 +25,7 @@
 \contentsline {subsection}{\numberline {2.5.2}FITS: A common format for astronomical data}{14}{subsection.2.5.2}
 \contentsline {subsection}{\numberline {2.5.3}TXT: Textfiles}{15}{subsection.2.5.3}
 \contentsline {subsection}{\numberline {2.5.4}Python}{15}{subsection.2.5.4}
+\contentsline {subsection}{\numberline {2.5.5}R}{15}{subsection.2.5.5}
 \contentsline {chapter}{\numberline {3}Technical specifications}{16}{chapter.3}
 \contentsline {section}{\numberline {3.1}Angular resolution and accuracy}{16}{section.3.1}
 \contentsline {section}{\numberline {3.2}Spectral resolution and accuracy}{16}{section.3.2}
