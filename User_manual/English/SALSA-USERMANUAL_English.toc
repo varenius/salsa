@@ -15,14 +15,14 @@
 \contentsline {subsection}{\numberline {2.3.2}Troubleshooting}{9}{subsection.2.3.2}
 \contentsline {section}{\numberline {2.4}The telescope control program}{9}{section.2.4}
 \contentsline {subsection}{\numberline {2.4.1}Movement control: To point the telescope}{9}{subsection.2.4.1}
-\contentsline {subsubsection}{Tracking}{10}{section*.9}
-\contentsline {subsubsection}{What is the tracking accuracy?}{11}{section*.11}
+\contentsline {subsubsection}{Tracking}{11}{section*.9}
+\contentsline {subsubsection}{What is the tracking accuracy?}{12}{section*.11}
 \contentsline {subsubsection}{Keep above 15$^\circ $ altitude}{12}{section*.12}
 \contentsline {subsection}{\numberline {2.4.2}Receiver control: To measure a spectrum}{12}{subsection.2.4.2}
 \contentsline {subsection}{\numberline {2.4.3}Measurement results}{12}{subsection.2.4.3}
 \contentsline {section}{\numberline {2.5}How to process archived data}{13}{section.2.5}
-\contentsline {subsection}{\numberline {2.5.1}PNG: Images}{13}{subsection.2.5.1}
-\contentsline {subsection}{\numberline {2.5.2}FITS: A common format for astronomical data}{14}{subsection.2.5.2}
+\contentsline {subsection}{\numberline {2.5.1}PNG: Images}{14}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}FITS: A common format for astronomical data}{15}{subsection.2.5.2}
 \contentsline {subsection}{\numberline {2.5.3}TXT: Textfiles}{15}{subsection.2.5.3}
 \contentsline {subsection}{\numberline {2.5.4}Python}{15}{subsection.2.5.4}
 \contentsline {subsection}{\numberline {2.5.5}R}{15}{subsection.2.5.5}

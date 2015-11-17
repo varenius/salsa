@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  3 AUG 2015 10:54
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  17 NOV 2015 16:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -875,201 +875,201 @@ Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 1.
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 1.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 10.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 10.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 16.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 16.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 25.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 25.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 48.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 48.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 56.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 56.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 56.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 56.
-[7
-
-]
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 65.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 65.
-LaTeX Font Info:    Try loading font information for OMS+lmr on input line 76.
- (/usr/share/texmf/tex/latex/lm/omslmr.fd
-File: omslmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-LaTeX Font Info:    Font shape `OMS/lmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/lmsy/m/n' tried instead on input line 76.
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 94.
-
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 11.
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 99.
+(babel)             in language  on input line 15.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 99.
+(babel)             in language  on input line 15.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 108.
+(babel)             in language  on input line 21.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 108.
+(babel)             in language  on input line 21.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 108.
+(babel)             in language  on input line 30.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 108.
+(babel)             in language  on input line 30.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 53.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 53.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 61.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 61.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 61.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 61.
+ [7
+
+]
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 70.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 70.
+LaTeX Font Info:    Try loading font information for OMS+lmr on input line 81.
+
+(/usr/share/texmf/tex/latex/lm/omslmr.fd
+File: omslmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    Font shape `OMS/lmr/m/n' in size <12> not available
+(Font)              Font shape `OMS/lmsy/m/n' tried instead on input line 81.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 104.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 104.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 113.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 113.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 113.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 113.
  [8]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 108.
+(babel)             in language  on input line 118.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 108.
+(babel)             in language  on input line 118.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 127.
+(babel)             in language  on input line 137.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 127.
+(babel)             in language  on input line 137.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 134.
+(Font)              <10> on input line 144.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 134.
+(Font)              <7> on input line 144.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 134.
+(Font)              <5> on input line 144.
 
 <../figures/Controller_start.png, id=239, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_start.png Graphic file (type png)
 
 <use ../figures/Controller_start.png>
-Package pdftex.def Info: ../figures/Controller_start.png used on input line 138
+Package pdftex.def Info: ../figures/Controller_start.png used on input line 148
 .
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 147.
+(babel)             in language  on input line 157.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 147.
+(babel)             in language  on input line 157.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 174.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 174.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 174.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 174.
  [9]
 <../figures/Controller_move.png, id=250, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_move.png Graphic file (type png)
 
 <use ../figures/Controller_move.png>
-Package pdftex.def Info: ../figures/Controller_move.png used on input line 194.
+Package pdftex.def Info: ../figures/Controller_move.png used on input line 204.
 
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 199.
+(babel)             in language  on input line 209.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 199.
+(babel)             in language  on input line 209.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 199.
+(babel)             in language  on input line 209.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 199.
+(babel)             in language  on input line 209.
  [10 <../figures/Controller_start.png>]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 220.
+(babel)             in language  on input line 221.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 220.
+(babel)             in language  on input line 221.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 220.
+(babel)             in language  on input line 221.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 220.
+(babel)             in language  on input line 221.
 
 [11 <../figures/Controller_move.png>]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 221.
+(babel)             in language  on input line 231.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 221.
+(babel)             in language  on input line 231.
 
 <../figures/Controller_measure.png, id=267, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_measure.png Graphic file (type png)
 
 <use ../figures/Controller_measure.png>
 Package pdftex.def Info: ../figures/Controller_measure.png used on input line 2
-33.
+43.
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 246.
+(babel)             in language  on input line 256.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 246.
+(babel)             in language  on input line 256.
 
 <../figures/Controller_spectra.png, id=269, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_spectra.png Graphic file (type png)
 
 <use ../figures/Controller_spectra.png>
 Package pdftex.def Info: ../figures/Controller_spectra.png used on input line 2
-58.
+68.
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 279.
+(babel)             in language  on input line 288.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 279.
+(babel)             in language  on input line 288.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 288.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 287.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 287.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 288.
  [12]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 288.
+(babel)             in language  on input line 289.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 288.
+(babel)             in language  on input line 289.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 299.
+(babel)             in language  on input line 298.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 299.
+(babel)             in language  on input line 298.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 308.
+(babel)             in language  on input line 307.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 308.
+(babel)             in language  on input line 307.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 308.
+(babel)             in language  on input line 307.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 308.
+(babel)             in language  on input line 307.
  [13 <../figures/Controller_measure.png>]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 323.
+(babel)             in language  on input line 309.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 323.
+(babel)             in language  on input line 309.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 323.
+(babel)             in language  on input line 322.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 323.
+(babel)             in language  on input line 322.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 322.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 322.
  [14 <../figures/Controller_spectra.png>]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 325.
+(babel)             in language  on input line 335.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 325.
+(babel)             in language  on input line 335.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 344.
+(babel)             in language  on input line 354.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 344.
+(babel)             in language  on input line 354.
 ) (./techspec.tex
-Overfull \hbox (77.4968pt too wide) in paragraph at lines 345--1
+Overfull \hbox (77.4968pt too wide) in paragraph at lines 355--1
 \T1/lmr/m/n/12 kan få an-vänd-ning för skript som gjorts av Mi-chael Ol-berg, s
 om du hit-tar på https://github.com/molberg/salsa.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 345--1
+Underfull \hbox (badness 10000) in paragraph at lines 355--1
 
  []
 
@@ -1261,7 +1261,7 @@ usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/pu
 blic/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/sha
 re/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb>
-Output written on SALSA-USERMANUAL_Swedish.pdf (24 pages, 977908 bytes).
+Output written on SALSA-USERMANUAL_Swedish.pdf (24 pages, 978811 bytes).
 PDF statistics:
  587 PDF objects out of 1000 (max. 8388607)
  407 compressed objects within 5 object streams
