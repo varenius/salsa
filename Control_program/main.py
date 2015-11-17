@@ -655,8 +655,12 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.show_message(msg)
 
     def reset(self):
-        self.telescope.reset()
-        self.resettimer.start(1000)
+        # Show a message box
+        qmsg = "You have asked for a system reset. This process may take a few minutes if the telescope is far from its starting position so please be patient. Do you really want to reset the telescope?"
+        result = QtGui.QMessageBox.question(QtGui.QWidget(), 'Confirmation', qmsg, QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+        if result==QtGui.QMessageBox.Yes:
+            self.telescope.reset()
+            self.resettimer.start(1000)
 
     def resettimer_action(self):
         self.inputleftcoord.setReadOnly(True)

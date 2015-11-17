@@ -53,7 +53,7 @@ EN
   ENDIF
   SB2;'Start AZ-motor CW(CCW if SB3)
   IF diff_az<close_az; 'Move slowly
-   WT 30;'Run motors for short time
+   WT 50;'Run motors for short time
    CB2;'Stop AZ-motor.
   ENDIF  
  ENDIF
@@ -69,11 +69,11 @@ EN
   ENDIF
   SB0;'Start EL-motor CW (CCW if SB1)
   IF diff_el<close_el;'Move slowly
-   WT 30;'Run motors for short time
+   WT 50;'Run motors for short time
    CB0;'Stop EL-motor.
   ENDIF
  ENDIF
- WT 70;'Wait for motors
+ WT 50;'Wait for motors
  JP #MOVE;
 EN
 #CHKEL
@@ -139,7 +139,7 @@ EN
 #CHKLIM;' CHECK IN EL
 IF (@OUT[0])
  oldel=c_el
- WT 1000
+ WT 2000
  IF (@OUT[0]);'If still moving
   newel=c_el
   IF (oldel=newel);' If stuck
@@ -161,7 +161,7 @@ IF (@OUT[0])
 ENDIF
 IF (@OUT[2]);'CHECK IN AZ
  oldaz=c_az
- WT 1000
+ WT 2000
  IF (@OUT[2]); 'If still moving
   newaz=c_az
   IF (oldaz=newaz);  ' If stuck
