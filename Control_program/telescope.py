@@ -84,7 +84,7 @@ class TelescopeController:
 
     def isreset(self):
         elmotor = self._get_value_from_telescope('@OUT[0]')
-        azmotor = self._get_value_from_telescope('@OUT[1]')
+        azmotor = self._get_value_from_telescope('@OUT[2]')
         """Check if telescope has reached reset position."""
         if (self.minal_cog == self._get_current_al_cog() and  self.minaz_cog == self._get_current_az_cog() and azmotor == 0 and elmotor ==0):
             # Start MOVE loop

@@ -139,7 +139,7 @@ EN
 #CHKLIM;' CHECK IN EL
 IF (@OUT[0])
  oldel=c_el
- WT 2000
+ WT 1000
  IF (@OUT[0]);'If still moving
   newel=c_el
   IF (oldel=newel);' If stuck
@@ -161,7 +161,7 @@ IF (@OUT[0])
 ENDIF
 IF (@OUT[2]);'CHECK IN AZ
  oldaz=c_az
- WT 2000
+ WT 1000
  IF (@OUT[2]); 'If still moving
   newaz=c_az
   IF (oldaz=newaz);  ' If stuck
