@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SALSA_UI.ui'
 #
-# Created: Tue Nov 17 15:30:43 2015
+# Created: Wed Nov 18 11:41:10 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -285,6 +285,9 @@ class Ui_MainWindow(object):
         self.noise_checkbox.setObjectName(_fromUtf8("noise_checkbox"))
         self.gridLayout_2.addWidget(self.noise_checkbox, 8, 2, 1, 1)
         self.tabWidget_2.addTab(self.receiver_tab_advanced, _fromUtf8(""))
+        self.infolabel = QtGui.QLabel(self.tab)
+        self.infolabel.setGeometry(QtCore.QRect(30, 10, 671, 16))
+        self.infolabel.setObjectName(_fromUtf8("infolabel"))
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
@@ -301,7 +304,7 @@ class Ui_MainWindow(object):
         self.label.setGeometry(QtCore.QRect(20, 20, 231, 16))
         self.label.setObjectName(_fromUtf8("label"))
         self.layoutWidget4 = QtGui.QWidget(self.tab_2)
-        self.layoutWidget4.setGeometry(QtCore.QRect(600, 0, 175, 24))
+        self.layoutWidget4.setGeometry(QtCore.QRect(600, 0, 180, 24))
         self.layoutWidget4.setObjectName(_fromUtf8("layoutWidget4"))
         self.vel_or_freq_group = QtGui.QHBoxLayout(self.layoutWidget4)
         self.vel_or_freq_group.setMargin(0)
@@ -334,7 +337,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_12.setObjectName(_fromUtf8("horizontalLayout_12"))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 802, 27))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 802, 25))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -400,6 +403,7 @@ class Ui_MainWindow(object):
         self.LNA_checkbox.setText(_translate("MainWindow", "LNA", None))
         self.noise_checkbox.setText(_translate("MainWindow", "Noise diode", None))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.receiver_tab_advanced), _translate("MainWindow", "Advanced", None))
+        self.infolabel.setText(_translate("MainWindow", "Please: When finished, choose Desired=Stow and press \"Track\" to put telescope in stow position. ", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Observe", None))
         self.groupBox_spectrum.setTitle(_translate("MainWindow", "Plot of selected spectrum", None))
         self.btn_upload.setText(_translate("MainWindow", "Upload selected to archive", None))

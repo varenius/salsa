@@ -607,6 +607,19 @@
        </widget>
       </widget>
      </widget>
+     <widget class="QLabel" name="infolabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>10</y>
+        <width>671</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Please: When finished, choose Desired=Stow and press &quot;Track&quot; to put telescope in stow position. </string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -666,7 +679,7 @@
        <rect>
         <x>600</x>
         <y>0</y>
-        <width>175</width>
+        <width>180</width>
         <height>24</height>
        </rect>
       </property>
@@ -732,7 +745,7 @@
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
