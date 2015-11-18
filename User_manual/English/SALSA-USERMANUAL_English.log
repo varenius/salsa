@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  3 AUG 2015 10:54
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  17 NOV 2015 16:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -494,18 +494,18 @@ Chapter 2.
 [7
 
 ]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 74.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 80.
  (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 74.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 80.
  [8]
 <../figures/Controller_start.png, id=244, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_start.png Graphic file (type png)
 
 <use ../figures/Controller_start.png>
-Package pdftex.def Info: ../figures/Controller_start.png used on input line 133
+Package pdftex.def Info: ../figures/Controller_start.png used on input line 145
 .
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
  [9]
@@ -513,25 +513,25 @@ Package pdftex.def Info: ../figures/Controller_start.png used on input line 133
 File: ../figures/Controller_move.png Graphic file (type png)
 
 <use ../figures/Controller_move.png>
-Package pdftex.def Info: ../figures/Controller_move.png used on input line 189.
+Package pdftex.def Info: ../figures/Controller_move.png used on input line 201.
 
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
  [10 <../figures/Controller_start.png>]
 [11 <../figures/Controller_move.png>]
-<../figures/Controller_measure.png, id=273, 808.01875pt x 593.21625pt>
+<../figures/Controller_measure.png, id=272, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_measure.png Graphic file (type png)
 
 <use ../figures/Controller_measure.png>
 Package pdftex.def Info: ../figures/Controller_measure.png used on input line 2
-28.
+40.
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
 
-<../figures/Controller_spectra.png, id=275, 808.01875pt x 593.21625pt>
+<../figures/Controller_spectra.png, id=274, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_spectra.png Graphic file (type png)
 
 <use ../figures/Controller_spectra.png>
 Package pdftex.def Info: ../figures/Controller_spectra.png used on input line 2
-54.
+66.
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
  [12] [13 <../figures/Controller_measure.png>] [14 <../figures/Controller_spect
 ra.png>]) (./techspec.tex [15]
@@ -605,7 +605,7 @@ s/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
 msy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.p
 fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></u
 sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on SALSA-USERMANUAL_English.pdf (24 pages, 912147 bytes).
+Output written on SALSA-USERMANUAL_English.pdf (24 pages, 912572 bytes).
 PDF statistics:
  587 PDF objects out of 1000 (max. 8388607)
  406 compressed objects within 5 object streams
