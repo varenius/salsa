@@ -369,6 +369,11 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             self.inputrightcoord.setReadOnly(True)
             self.inputleftcoord.setText('The Sun')
             self.inputrightcoord.setText('The Sun')
+        elif target == 'The Moon':
+            self.inputleftcoord.setReadOnly(True)
+            self.inputrightcoord.setReadOnly(True)
+            self.inputleftcoord.setText('The Moon')
+            self.inputrightcoord.setText('The Moon')
         elif target == 'Cas. A':
             self.inputleftcoord.setReadOnly(True)
             self.inputrightcoord.setReadOnly(True)
@@ -494,6 +499,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             if target == 'The Sun':
                 pos = ephem.Sun()
                 pos.compute(self.telescope.site) # Needed for the sun since depending on time
+            elif target == 'The Moon':
+                pos = ephem.Moon()
+                pos.compute(self.telescope.site) # Needed for the moon since depending on time
             elif target == 'Cas. A':
                 pos = ephem.Equatorial(ephem.hours('23:23:26'), ephem.degrees('58:48:0'), epoch=ephem.J2000)
                 # Coordinate from http://en.wikipedia.org/wiki/Cassiopeia_A

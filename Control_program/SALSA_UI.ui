@@ -252,6 +252,11 @@
             </item>
             <item>
              <property name="text">
+              <string>The Moon</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>Cas. A</string>
              </property>
             </item>

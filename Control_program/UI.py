@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SALSA_UI.ui'
 #
-# Created: Wed Nov 18 11:41:10 2015
+# Created: Mon Nov 23 18:59:26 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -132,6 +132,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addWidget(self.label_newtarget)
         self.coordselector = QtGui.QComboBox(self.layoutWidget)
         self.coordselector.setObjectName(_fromUtf8("coordselector"))
+        self.coordselector.addItem(_fromUtf8(""))
         self.coordselector.addItem(_fromUtf8(""))
         self.coordselector.addItem(_fromUtf8(""))
         self.coordselector.addItem(_fromUtf8(""))
@@ -373,8 +374,9 @@ class Ui_MainWindow(object):
         self.coordselector.setItemText(2, _translate("MainWindow", "Eq. J2000", None))
         self.coordselector.setItemText(3, _translate("MainWindow", "Eq. B1950", None))
         self.coordselector.setItemText(4, _translate("MainWindow", "The Sun", None))
-        self.coordselector.setItemText(5, _translate("MainWindow", "Cas. A", None))
-        self.coordselector.setItemText(6, _translate("MainWindow", "Stow", None))
+        self.coordselector.setItemText(5, _translate("MainWindow", "The Moon", None))
+        self.coordselector.setItemText(6, _translate("MainWindow", "Cas. A", None))
+        self.coordselector.setItemText(7, _translate("MainWindow", "Stow", None))
         self.label_cur_alt.setText(_translate("MainWindow", "Alt:", None))
         self.cur_alt.setText(_translate("MainWindow", "0", None))
         self.label_currentpointing.setText(_translate("MainWindow", "Calc. target horizontal", None))
