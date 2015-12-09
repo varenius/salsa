@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  9 APR 2015 10:53
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  9 DEC 2015 11:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -518,32 +518,32 @@ Package pdftex.def Info: ../figures/SALSA_rotcurve.pdf used on input line 142.
  [11 <../figures/SALSA_rotcurve.pdf>]
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 221.
+(hyperref)                removing `math shift' on input line 222.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 221.
+(hyperref)                removing `math shift' on input line 222.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 221.
+(hyperref)                removing `math shift' on input line 222.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 221.
+(hyperref)                removing `math shift' on input line 222.
 
-[12] <../figures/coordinate.pdf, id=387, 281.05pt x 281.05pt>
+[12] <../figures/coordinate.pdf, id=386, 281.05pt x 281.05pt>
 File: ../figures/coordinate.pdf Graphic file (type pdf)
 
 <use ../figures/coordinate.pdf>
-Package pdftex.def Info: ../figures/coordinate.pdf used on input line 245.
+Package pdftex.def Info: ../figures/coordinate.pdf used on input line 246.
 (pdftex.def)             Requested size: 241.84842pt x 241.84837pt.
  [13 <../figures/coordinate.pdf>]
 <../figures/galaxopenoffice1.pdf, id=422, 342.27875pt x 413.545pt>
 File: ../figures/galaxopenoffice1.pdf Graphic file (type pdf)
 
 <use ../figures/galaxopenoffice1.pdf>
-Package pdftex.def Info: ../figures/galaxopenoffice1.pdf used on input line 296
+Package pdftex.def Info: ../figures/galaxopenoffice1.pdf used on input line 297
 .
 (pdftex.def)             Requested size: 290.22105pt x 350.67564pt.
 ) (./appendix.tex [14 <../figures/galaxopenoffice1.pdf>] [15
@@ -620,7 +620,7 @@ r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on SALSA-HI_English.pdf (22 pages, 2265786 bytes).
+Output written on SALSA-HI_English.pdf (22 pages, 2265939 bytes).
 PDF statistics:
  582 PDF objects out of 1000 (max. 8388607)
  400 compressed objects within 4 object streams

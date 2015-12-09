@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  9 APR 2015 10:50
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  9 DEC 2015 11:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -959,53 +959,53 @@ Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 172.
  [10 <../figures/SALSA_rotcurve.pdf>]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 218.
+(Font)              <14.4> on input line 220.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 218.
+(babel)             in language  on input line 220.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 218.
+(babel)             in language  on input line 220.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 218.
+(hyperref)                removing `math shift' on input line 220.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 218.
+(hyperref)                removing `math shift' on input line 220.
 
 <../figures/coordinate.pdf, id=379, 281.05pt x 281.05pt>
 File: ../figures/coordinate.pdf Graphic file (type pdf)
 
 <use ../figures/coordinate.pdf>
-Package pdftex.def Info: ../figures/coordinate.pdf used on input line 239.
+Package pdftex.def Info: ../figures/coordinate.pdf used on input line 241.
 (pdftex.def)             Requested size: 241.84842pt x 241.84837pt.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 247.
+(babel)             in language  on input line 249.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 247.
+(babel)             in language  on input line 249.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 247.
+(babel)             in language  on input line 249.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 247.
+(babel)             in language  on input line 249.
  [11]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 261.
+(babel)             in language  on input line 263.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 261.
+(babel)             in language  on input line 263.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 280.
+(babel)             in language  on input line 278.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 280.
+(babel)             in language  on input line 278.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 280.
+(babel)             in language  on input line 278.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 280.
+(babel)             in language  on input line 278.
  [12 <../figures/coordinate.pdf>]
 <../figures/galaxopenoffice1.pdf, id=423, 342.27875pt x 413.545pt>
 File: ../figures/galaxopenoffice1.pdf Graphic file (type pdf)
 
 <use ../figures/galaxopenoffice1.pdf>
-Package pdftex.def Info: ../figures/galaxopenoffice1.pdf used on input line 291
+Package pdftex.def Info: ../figures/galaxopenoffice1.pdf used on input line 293
 .
 (pdftex.def)             Requested size: 290.22105pt x 350.67564pt.
 ) (./appendix.tex
@@ -1173,7 +1173,7 @@ c/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/te
 xmf/fonts/type1/public/lm/lmri12.pfb></usr/share/texmf/fonts/type1/public/lm/lm
 sy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fo
 nts/type1/public/lm/lmtt12.pfb>
-Output written on SALSA-HI_Swedish.pdf (20 pages, 2336830 bytes).
+Output written on SALSA-HI_Swedish.pdf (20 pages, 2336984 bytes).
 PDF statistics:
  587 PDF objects out of 1000 (max. 8388607)
  407 compressed objects within 5 object streams
