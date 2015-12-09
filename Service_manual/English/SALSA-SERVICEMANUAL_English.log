@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  23 NOV 2015 18:59
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.30)  9 DEC 2015 14:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -418,21 +418,21 @@ LaTeX Info: Redefining \nameref on input line 23.
 \openout3 = `SALSA-SERVICEMANUAL_English.out'.
 
 
-(./coverpage.tex <../figures/OSO-logo.jpg, id=80, 105.996pt x 86.724pt>
+(./coverpage.tex <../figures/OSO-logo.jpg, id=84, 105.996pt x 86.724pt>
 File: ../figures/OSO-logo.jpg Graphic file (type jpg)
 
 <use ../figures/OSO-logo.jpg>
 Package pdftex.def Info: ../figures/OSO-logo.jpg used on input line 6.
 (pdftex.def)             Requested size: 139.10968pt x 113.81102pt.
 
-<../figures/CHALMERS-logo.pdf, id=81, 202.7575pt x 226.8475pt>
+<../figures/CHALMERS-logo.pdf, id=85, 202.7575pt x 226.8475pt>
 File: ../figures/CHALMERS-logo.pdf Graphic file (type pdf)
 
 <use ../figures/CHALMERS-logo.pdf>
 Package pdftex.def Info: ../figures/CHALMERS-logo.pdf used on input line 8.
 (pdftex.def)             Requested size: 101.725pt x 113.81102pt.
 
-<../figures/SALSA.png, id=82, 338.26375pt x 382.42876pt>
+<../figures/SALSA.png, id=86, 338.26375pt x 382.42876pt>
 File: ../figures/SALSA.png Graphic file (type png)
 
 <use ../figures/SALSA.png>
@@ -792,24 +792,24 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 33.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 33.
 Package rerunfilecheck Info: File `SALSA-SERVICEMANUAL_English.out' has not cha
 nged.
-(rerunfilecheck)             Checksum: A50511182F98FB071F68A4F5E5FF6E38;1380.
+(rerunfilecheck)             Checksum: 4BE928F61676AE9A23850756C5D9C5C4;1439.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 33.
  ) 
 Here is how much of TeX's memory you used:
- 8471 strings out of 493304
- 124213 string characters out of 6139871
+ 8473 strings out of 493304
+ 124237 string characters out of 6139871
  230253 words of memory out of 5000000
- 11754 multiletter control sequences out of 15000+600000
+ 11755 multiletter control sequences out of 15000+600000
  10578 words of font info for 40 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  36i,6n,38p,1041b,373s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on SALSA-SERVICEMANUAL_English.pdf (10 pages, 472658 bytes).
+Output written on SALSA-SERVICEMANUAL_English.pdf (10 pages, 474984 bytes).
 PDF statistics:
- 180 PDF objects out of 1000 (max. 8388607)
- 158 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
- 168 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 185 PDF objects out of 1000 (max. 8388607)
+ 163 compressed objects within 2 object streams
+ 35 named destinations out of 1000 (max. 500000)
+ 176 words of extra memory for PDF output out of 10000 (max. 10000000)
 

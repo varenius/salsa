@@ -13,3 +13,22 @@ comref: \verb! http://www.galil.com/download/comref/com47xxx/index.html#cover.ht
 Weather:
 http://www.oso.chalmers.se/weather/
 Try to keep below 10m/s
+
+\section{Usage report}
+To compile a usage report, go to the Usage Report page on the admin pages in the
+SALSA portal. Then, enter date interval to select. Note that long interval, such as a year,
+may take a few seconds to load. When loaded, open up LibreOffice Calc. 
+With the pointer, mark the table on the webpage and copy it. then
+Paste it in a Libreoffice Calc sheet. 
+You now have a column with time for each booking. Problem is, the booking
+time should be doubled if we have two telescopes for the session. One 
+way of doing this is the following> add a new colum besides the one with times.
+In one cell in this column, insert
+\begin{verbatim}
+=IF(OR(B246="Vale, Brage",B246="Brage, Vale "),A246*2,A246)
+\end{verbatim}
+with 246 being the row numbers, change accordingly.
+Then drag downwards, and it will follow the relative cell paths,
+causing all duplicated bookings to show dopuble hours. Then, sum
+the new time column at the bottom, and you have a total time
+for your date range.

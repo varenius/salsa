@@ -3,6 +3,7 @@
 \contentsline {chapter}{\numberline {1}Basic maintenance}{3}{chapter.1}
 \contentsline {section}{\numberline {1.1}Remote power control}{3}{section.1.1}
 \contentsline {section}{\numberline {1.2}RIO}{3}{section.1.2}
+\contentsline {section}{\numberline {1.3}Usage report}{3}{section.1.3}
 \contentsline {chapter}{\numberline {2}System installation}{4}{chapter.2}
 \contentsline {section}{\numberline {2.1}Software}{4}{section.2.1}
 \contentsline {subsection}{\numberline {2.1.1}Pre-requisites}{4}{subsection.2.1.1}
