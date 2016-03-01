@@ -71,6 +71,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             self.reset_needed()
     
     def init_Ui(self):
+            
+        # Set software gain
+        self.gain.setText(self.config.get('USRP', 'software_gain'))
 
         self.listWidget_spectra.currentItemChanged.connect(self.change_spectra)
 
@@ -268,6 +271,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         bw = float(self.BandwidthInput.text())*1e6 # Hz
         int_time = float(self.IntegrationTimeInput.text())
         nchans = int(self.ChannelsInput.text()) # Number of output channels
+        calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
         self.telescope.site.date = ephem.now()
         # Get ra, dec using radec_of. This function
         # has input order AZ, ALT, i.e. inverted to most other functions.
@@ -278,7 +282,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.sigthread = Thread() # Create thread to run GNURadio in background
         self.sigthread.setTerminationEnabled(True)
         self.sigworker.moveToThread(self.sigthread)
-        self.sigworker.measurement = Measurement(freq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az)
+        self.sigworker.measurement = Measurement(freq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, calfact)
         self.sigthread.started.connect(self.sigworker.work)
         self.sigworker.finished.connect(self.sigthread.quit)
         if self.mode_switched.isChecked():
@@ -295,6 +299,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             bw = float(self.BandwidthInput.text())*1e6 # Hz
             int_time = float(self.IntegrationTimeInput.text())
             nchans = int(self.ChannelsInput.text()) # Number of output channels
+            calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
             # Get ra, dec using radec_of. This function
             # has input order AZ, ALT, i.e. inverted to most other functions.
             # Then, make ephem object to pass to measurement
@@ -304,7 +309,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             self.refthread = Thread() # Create thread to run GNURadio in background
             self.refthread.setTerminationEnabled(True)
             self.refworker.moveToThread(self.refthread)
-            self.refworker.measurement = Measurement(reffreq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az)
+            self.refworker.measurement = Measurement(reffreq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, calfact)
             self.refthread.started.connect(self.refworker.work)
             self.refworker.finished.connect(self.refthread.quit)
             # When obs is finished, process data and plot

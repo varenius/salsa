@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SALSA_UI.ui'
 #
-# Created: Mon Nov 23 18:59:26 2015
+# Created: Tue Mar  1 15:32:53 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -210,7 +210,7 @@ class Ui_MainWindow(object):
         self.receiver_tab_advanced = QtGui.QWidget()
         self.receiver_tab_advanced.setObjectName(_fromUtf8("receiver_tab_advanced"))
         self.layoutWidget2 = QtGui.QWidget(self.receiver_tab_advanced)
-        self.layoutWidget2.setGeometry(QtCore.QRect(10, 10, 671, 181))
+        self.layoutWidget2.setGeometry(QtCore.QRect(10, 10, 671, 185))
         self.layoutWidget2.setObjectName(_fromUtf8("layoutWidget2"))
         self.gridLayout_2 = QtGui.QGridLayout(self.layoutWidget2)
         self.gridLayout_2.setMargin(0)
@@ -272,6 +272,7 @@ class Ui_MainWindow(object):
         self.vlsr_checkbox.setObjectName(_fromUtf8("vlsr_checkbox"))
         self.gridLayout_2.addWidget(self.vlsr_checkbox, 0, 2, 1, 1)
         self.autoedit_bad_data_checkBox = QtGui.QCheckBox(self.layoutWidget2)
+        self.autoedit_bad_data_checkBox.setEnabled(True)
         self.autoedit_bad_data_checkBox.setChecked(True)
         self.autoedit_bad_data_checkBox.setObjectName(_fromUtf8("autoedit_bad_data_checkBox"))
         self.gridLayout_2.addWidget(self.autoedit_bad_data_checkBox, 2, 2, 1, 1)
@@ -285,6 +286,16 @@ class Ui_MainWindow(object):
         self.noise_checkbox.setChecked(False)
         self.noise_checkbox.setObjectName(_fromUtf8("noise_checkbox"))
         self.gridLayout_2.addWidget(self.noise_checkbox, 8, 2, 1, 1)
+        self.horizontalLayout_14 = QtGui.QHBoxLayout()
+        self.horizontalLayout_14.setObjectName(_fromUtf8("horizontalLayout_14"))
+        self.label_gain = QtGui.QLabel(self.layoutWidget2)
+        self.label_gain.setObjectName(_fromUtf8("label_gain"))
+        self.horizontalLayout_14.addWidget(self.label_gain)
+        self.gain = QtGui.QLineEdit(self.layoutWidget2)
+        self.gain.setReadOnly(False)
+        self.gain.setObjectName(_fromUtf8("gain"))
+        self.horizontalLayout_14.addWidget(self.gain)
+        self.gridLayout_2.addLayout(self.horizontalLayout_14, 9, 2, 1, 1)
         self.tabWidget_2.addTab(self.receiver_tab_advanced, _fromUtf8(""))
         self.infolabel = QtGui.QLabel(self.tab)
         self.infolabel.setGeometry(QtCore.QRect(30, 10, 671, 16))
@@ -367,7 +378,7 @@ class Ui_MainWindow(object):
         self.btn_track.setText(_translate("MainWindow", "Track", None))
         self.label_currentaltaz.setText(_translate("MainWindow", "Current horizontal", None))
         self.coordlabel_left.setText(_translate("MainWindow", "Longitude", None))
-        self.inputleftcoord.setText(_translate("MainWindow", "140", None))
+        self.inputleftcoord.setText(_translate("MainWindow", "120", None))
         self.label_newtarget.setText(_translate("MainWindow", "Desired", None))
         self.coordselector.setItemText(0, _translate("MainWindow", "Galactic", None))
         self.coordselector.setItemText(1, _translate("MainWindow", "Horizontal", None))
@@ -404,6 +415,8 @@ class Ui_MainWindow(object):
         self.autoedit_bad_data_checkBox.setText(_translate("MainWindow", "Remove RFI", None))
         self.LNA_checkbox.setText(_translate("MainWindow", "LNA", None))
         self.noise_checkbox.setText(_translate("MainWindow", "Noise diode", None))
+        self.label_gain.setText(_translate("MainWindow", "Gain factor", None))
+        self.gain.setText(_translate("MainWindow", "9000", None))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.receiver_tab_advanced), _translate("MainWindow", "Advanced", None))
         self.infolabel.setText(_translate("MainWindow", "Please: When finished, choose Desired=Stow and press \"Track\" to put telescope in stow position. ", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Observe", None))
