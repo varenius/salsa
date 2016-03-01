@@ -2,7 +2,7 @@
 
 [SITE]
 # Name of telescope, e.g. vale, brage etc.
-name=vale
+name=Vale
 # Location of telescope, DEG:ARCMIN:ARCSEC
 latitude=57:23:36.4
 longitude=11:55:07.5
@@ -30,7 +30,10 @@ stowaz=260
 # The sampler to record data
 host=192.168.10.2
 # USRP gain in dB
-gain=60
+usrp_gain=0
+# Software gain calibration factor (multiplying the measured spectrum)
+software_gain = 9000
+
 # Directory for tempfiles during measurement
 tmpdir=/tmp
 
