@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SALSA_UI.ui'
 #
-# Created: Tue Mar  1 15:32:53 2016
+# Created: Thu Mar  3 16:19:34 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -349,7 +349,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_12.setObjectName(_fromUtf8("horizontalLayout_12"))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 802, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 802, 27))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -408,7 +408,7 @@ class Ui_MainWindow(object):
         self.BandwidthInput.setText(_translate("MainWindow", "2.0", None))
         self.ChannelsLabel.setText(_translate("MainWindow", "Channels [#]", None))
         self.RefFreqLabel.setText(_translate("MainWindow", "Reference freq. [MHz]", None))
-        self.RefFreqInput.setText(_translate("MainWindow", "1425.4", None))
+        self.RefFreqInput.setText(_translate("MainWindow", "1422.4", None))
         self.FrequencyLabel.setText(_translate("MainWindow", "Frequency [MHz]", None))
         self.FrequencyInput.setText(_translate("MainWindow", "1420.4", None))
         self.vlsr_checkbox.setText(_translate("MainWindow", "Translate to VLSR frame", None))
