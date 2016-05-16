@@ -14,7 +14,9 @@ from gnuradio.eng_option import eng_option
 from gnuradio.fft import window
 from gnuradio.filter import firdes
 from optparse import OptionParser
+from gnuradio import filter
 import time
+import threading
 
 class SALSA_Receiver(gr.top_block):
 
@@ -34,28 +36,28 @@ class SALSA_Receiver(gr.top_block):
         
         #Integrate 100 FFTS using IIR block and keep 1 in N
         self.alpha = 0.01
-	self.N = 100
+        self.N = 100
 
         ##################################################
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	device_addr="addr="+config.get('USRP', 'host'),
-        	stream_args=uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+       	    device_addr="addr="+config.get('USRP', 'host'),
+            stream_args=uhd.stream_args(
+                cpu_format="fc32",
+                channels=range(1),
+             ),
         )
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
         self.uhd_usrp_source_0.set_center_freq(c_freq, 0)
         self.uhd_usrp_source_0.set_gain(gain, 0)
         
         self.fft_vxx_0 = fft.fft_vcc(fftsize, True, (window.blackmanharris(fftsize)), True, 1)
-        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fftsize)
+        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, fftsize)
         self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fftsize)
-        self.blocks_signal_sink = blocks.file_sink(gr.sizeof_float*1, outfile, False)
-        self.blocks_file_sink_0.set_unbuffered(False)
-        self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
+        self.signal_sink = blocks.file_sink(gr.sizeof_float*1, outfile, False)
+        self.signal_sink.set_unbuffered(False)
+        self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(fftsize)
         self.single_pole_iir_filter_xx_0 = filter.single_pole_iir_filter_ff(self.alpha, fftsize)
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_float*fftsize, self.N)
 
@@ -64,27 +66,30 @@ class SALSA_Receiver(gr.top_block):
         ##################################################
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_stream_to_vector_0, 0))
         self.connect((self.blocks_stream_to_vector_0, 0), (self.fft_vxx_0, 0))
-        self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
-        self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
+        self.connect((self.fft_vxx_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.single_pole_iir_filter_xx_0, 0))
-	self.connect((self.single_pole_iir_filter_xx_0, 0), (self.blocks_keep_one_in_n_0, 0))
-        self.connect(self.blocks_keep_one_in_n_0, 0, (self.blocks_signal_sink, 0))
+        self.connect((self.single_pole_iir_filter_xx_0, 0), (self.blocks_keep_one_in_n_0, 0))
+        self.connect((self.blocks_keep_one_in_n_0, 0), (self.blocks_vector_to_stream_0, 0))
+        self.connect((self.blocks_vector_to_stream_0, 0), (self.signal_sink, 0))
         
-        #Probe update rate
-	def _probe_var_probe():
-		while True:
-			val = self.probe_signal.level()
-			try:
-				self.set_probe_var(val)
-			except AttributeError:
-				pass
-			time.sleep(10 / (self.samp_rate)) #Update probe variabel every 10/samp_rate seconds
-	_probe_var_thread = threading.Thread(target=_probe_var_probe)
-	_probe_var_thread.daemon = True
-	_probe_var_thread.start()
+		#PROBE SAMPLES (For automatic gain adjustment)
+		#self.probe_signal = blocks.probe_signal_f()
+		#self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
 		
-	#self.blocks_head_0 = blocks.head(gr.sizeof_float*1, int(int_time*samp_rate))
-	#self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_head_0, 0))
+		#self.connect((self.blocks_complex_to_mag_0, 0), (self.probe_signal, 0))    
+		#self.connect((self.uhd_usrp_source_0, 0), (self.blocks_complex_to_mag_0, 0))
+        #Probe update rate
+		#def _probe_var_probe():
+		#	while True:
+		#		val = self.probe_signal.level()
+		#		try:
+		#			self.set_probe_var(val)
+		#		except AttributeError:
+		#			pass
+		#		time.sleep(10 / (self.samp_rate)) #Update probe variabel every 10/samp_rate seconds
+		#_probe_var_thread = threading.Thread(target=_probe_var_probe)
+		#_probe_var_thread.daemon = True
+		#_probe_var_thread.start()
 
 # QT sink close method reimplementation
 

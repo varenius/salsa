@@ -6,14 +6,11 @@ import numpy as np
 import math
 import os
 import time
+from multiprocessing.pool import ThreadPool as Pool
 
 class Measurement:
 
-<<<<<<< HEAD
-    def __init__(self, c_freq, ref_freq, switched, int_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az):
-=======
-    def __init__(self, c_freq, int_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, calfact):
->>>>>>> upstream/master
+    def __init__(self, c_freq, ref_freq, switched, int_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, calfact):
         # Copy everything to make sure immutable operations
         # do not change the original input objects in case
         # we pass references to this constructor.
@@ -62,38 +59,60 @@ class Measurement:
 		if self.switched == True:
 			self.sigCount = 0
 			self.refCount = 0
+			self.int_time *=2
 			self.sig_time = self.int_time/2
 			self.ref_time = self.int_time/2
+			self.signal_time = 0
+			self.reference_time = 0
 			
 			t_end = time.time() + self.int_time
 			while time.time() <= t_end:
 				self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
 				time.sleep(5e-3)
-				self.receiver.signal_file_sink.open("/tmp/ramdisk/sig" + str(self.sigCount))
+				self.receiver.signal_sink.open("/home/Olvhammar/Documents/sig" + str(self.sigCount))
 				t_end2 = time.time() + self.sig_time
+				start = time.time()
+				print "Signal"
 				while time.time() <= t_end2 and time.time() <= t_end:
 					continue
-				self.receiver.signal_file_sink_1.close()
+				self.receiver.signal_sink.close()
+				end = time.time()
+				self.signal_time += (end-start)
 				self.sigCount +=1
 				self.receiver.uhd_usrp_source_0.set_center_freq(self.ref_freq, 0)
 				time.sleep(5e-3)
-				self.receiver.signal_file_sink.open("/tmp/ramdisk/ref" + str(self.refCount))
+				self.receiver.signal_sink.open("/home/Olvhammar/Documents/ref" + str(self.refCount))
 				t_end3 = time.time() + self.ref_time
+				start1 = time.time()
+				print "Reference"
 				while time.time() <= t_end3 and time.time() <= t_end:
 					continue
-				self.receiver.reference_file_sink_1.close()
+				self.receiver.signal_sink.close()
+				end1 = time.time()
+				self.reference_time += (end1-start1)
 				self.refCount +=1
         
 			self.sigList = []
 			self.refList = []
 
 			for i in range(self.sigCount):
-				item = "/tmp/ramdisk/sig" + str(i)
+				item = "/home/Olvhammar/Documents/sig" + str(i)
 				self.sigList.append(item)
 			for i in range(self.refCount):
-				item = "/tmp/ramdisk/ref" + str(i)
+				item = "/home/Olvhammar/Documents/ref" + str(i)
 				self.refList.append(item)
-        
+		
+			if os.path.getsize('/home/Olvhammar/Documents/sig' + str(self.sigCount-1)) == 0:
+				self.sigList.remove('/home/Olvhammar/Documents/sig' + str(self.sigCount-1))
+				self.refList.remove('/home/Olvhammar/Documents/ref' + str(self.refCount-1))				
+			elif os.path.getsize('/home/Olvhammar/Documents/ref' + str(self.refCount-1)) == 0:
+				self.refList.remove('/home/Olvhammar/Documents/ref' + str(self.refCount-1))
+
+			print "Actual Signal time: "
+			print self.signal_time
+			print "Actual Reference time: "
+			print self.reference_time			
+
 			#Stack all the data
 			self.sig_spec = self.stack_all_data(self.sigList)
 			self.ref_spec = self.stack_all_data(self.refList)
@@ -105,22 +124,22 @@ class Measurement:
 			self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
 			self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
 			#Clear temporary files
-			files = glob.glob('/tmp/ramdisk/*')
-			for f in files:
-				if f.endswith(self.index):
-					os.remove(f)
-				else:
-					continue	
+			#files = glob.glob('/home/Olvhammar/Documents/*')
+			#for f in files:
+			#	if f.endswith(self.index):
+			#		os.remove(f)
+			#	else:
+			#		continue	
 		else:
 			self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
 			time.sleep(5e-3)
-			self.receiver.signal_file_sink.open("/tmp/ramdisk/sig")
+			self.receiver.signal_sink.open("/home/Olvhammar/Documents/sig")
 			end = time.time() + self.int_time
 			while time.time() <= end:
 				continue
-			self.receiver.signal_file_sink.close()
+			self.receiver.signal_sink.close()
 			
-			spec = self.stack_measured_FFTs("/tmp/ramdisk/sig")
+			spec = self.stack_measured_FFTs("/home/Olvhammar/Documents/sig")
 			self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
                
     def stack_all_data(self, files):
@@ -146,14 +165,8 @@ class Measurement:
         # integration time and Calibrate intensity
         # from comparison with LAB survey
         # TODO: Proper amplitude calibration! For now just single scale factor.
-<<<<<<< HEAD
-        calfactor = 300 # K/USRP input unit with 60dB gain. 
-        spec = calfactor * spec/(1.0*nspec)
-=======
-        #calfactor = 300 # K/USRP input unit with 60dB gain. 
+        calfactor = 300 # K/USRP input unit with 60dB gain.  
         spec = self.calfactor * spec/(1.0*nspec)
-        self.spectrum = SALSA_spectrum(spec, samp_rate, fftsize, cfreq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
->>>>>>> upstream/master
         # Clean up temporary object and file
         del signal
         os.remove(infile)
