@@ -10,7 +10,7 @@ from multiprocessing.pool import ThreadPool as Pool
 
 class Measurement:
 
-    def __init__(self, c_freq, ref_freq, switched, int_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, calfact):
+    def __init__(self, c_freq, ref_freq, switched, int_time, sig_time, ref_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, calfact):
         # Copy everything to make sure immutable operations
         # do not change the original input objects in case
         # we pass references to this constructor.
@@ -47,8 +47,9 @@ class Measurement:
         self.offset_alt = offset_alt
         self.offset_az = offset_az
         self.switched = switched
+        self.sig_time = sig_time
+        self.ref_time = ref_time
         
-
         # Create receiver object to run GNUradio flowgraph.
         # Using both upper and lower sideband, so bandwidth is equal to 
         # sampling rate, not half.
@@ -60,8 +61,6 @@ class Measurement:
 			self.sigCount = 0
 			self.refCount = 0
 			self.int_time *=2
-			self.sig_time = self.int_time/2
-			self.ref_time = self.int_time/2
 			self.signal_time = 0
 			self.reference_time = 0
 			

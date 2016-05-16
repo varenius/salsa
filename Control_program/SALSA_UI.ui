@@ -356,65 +356,13 @@
         <attribute name="title">
          <string>Basic</string>
         </attribute>
-        <widget class="QWidget" name="layoutWidget">
-         <property name="geometry">
-          <rect>
-           <x>16</x>
-           <y>8</y>
-           <width>486</width>
-           <height>29</height>
-          </rect>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QLabel" name="IntegrationTimeLabel">
-            <property name="text">
-             <string>Target integration time [s]</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="IntegrationTimeInput">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>3600</number>
-            </property>
-            <property name="singleStep">
-             <number>1</number>
-            </property>
-            <property name="value">
-             <number>10</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_observe">
-            <property name="text">
-             <string>Measure</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_abort">
-            <property name="text">
-             <string>Abort measurement</string>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
         <widget class="QLabel" name="progresslabel">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>60</y>
+           <x>20</x>
+           <y>110</y>
            <width>171</width>
-           <height>23</height>
+           <height>31</height>
           </rect>
          </property>
          <property name="text">
@@ -424,14 +372,121 @@
         <widget class="QProgressBar" name="progressBar">
          <property name="geometry">
           <rect>
-           <x>196</x>
-           <y>60</y>
+           <x>200</x>
+           <y>120</y>
            <width>491</width>
-           <height>23</height>
+           <height>20</height>
           </rect>
          </property>
          <property name="value">
           <number>0</number>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btn_abort">
+         <property name="geometry">
+          <rect>
+           <x>460</x>
+           <y>70</y>
+           <width>156</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Abort measurement</string>
+         </property>
+         <property name="default">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btn_observe">
+         <property name="geometry">
+          <rect>
+           <x>270</x>
+           <y>70</y>
+           <width>156</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Measure</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="signal_time_label">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>10</y>
+           <width>101</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Signal time [s]:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="ref_time_label">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>40</y>
+           <width>131</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Reference time [s]:</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="sig_time_spinbox">
+         <property name="geometry">
+          <rect>
+           <x>160</x>
+           <y>10</y>
+           <width>48</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="ref_time_spinBox">
+         <property name="geometry">
+          <rect>
+           <x>160</x>
+           <y>40</y>
+           <width>48</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="loops_spinbox">
+         <property name="geometry">
+          <rect>
+           <x>160</x>
+           <y>70</y>
+           <width>48</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="loops_label">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>70</y>
+           <width>131</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Number of loops:</string>
          </property>
         </widget>
        </widget>
@@ -468,7 +523,7 @@
                 <rect>
                  <x>10</x>
                  <y>0</y>
-                 <width>164</width>
+                 <width>171</width>
                  <height>24</height>
                 </rect>
                </property>
@@ -708,7 +763,7 @@
        <rect>
         <x>600</x>
         <y>0</y>
-        <width>180</width>
+        <width>196</width>
         <height>24</height>
        </rect>
       </property>
@@ -774,7 +829,7 @@
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

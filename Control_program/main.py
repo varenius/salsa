@@ -269,7 +269,10 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         sig_freq = float(self.FrequencyInput.text())*1e6 # Hz
         ref_freq = float(self.RefFreqInput.text())*1e6
         bw = float(self.BandwidthInput.text())*1e6 # Hz
-        int_time = float(self.IntegrationTimeInput.text())
+        sig_time = float(self.sig_time_spinbox.txt()) # [s]
+        ref_time = float(self.ref_time_spinBox.txt()) # [s]
+        loops = int(self.loops_spinbox.txt()) #
+        int_time = (sig_time+ref_time)*loops
         nchans = int(self.ChannelsInput.text()) # Number of output channels
         calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
         self.telescope.site.date = ephem.now()
@@ -284,7 +287,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.sigthread = Thread() # Create thread to run GNURadio in background
         self.sigthread.setTerminationEnabled(True)
         self.sigworker.moveToThread(self.sigthread)
-        self.sigworker.measurement = Measurement(sig_freq, ref_freq, switched, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, calfact)
+        self.sigworker.measurement = Measurement(sig_freq, ref_freq, switched, int_time, sig_time, ref_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, calfact)
 
         self.sigthread.started.connect(self.sigworker.work)
         self.sigworker.finished.connect(self.sigthread.quit)
