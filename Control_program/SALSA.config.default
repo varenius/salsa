@@ -1,0 +1,46 @@
+# Example config file. Modify as needed, e.g. enter name and dbpassword
+
+[SITE]
+# Name of telescope, e.g. vale, brage etc.
+name=Vale
+# Location of telescope, DEG:ARCMIN:ARCSEC
+latitude=57:23:36.4
+longitude=11:55:07.5
+# Elevation is relative to sea level, in meters.
+elevation=2
+
+[RIO]
+# The rotor controller to move telescope.
+# The host is the IP to the RIO controller board.
+host=169.254.212.76
+# Port 23 is standard telnet.
+port=23
+# The minimum azimuth angle in degrees.
+minaz=-120.4 
+# The minimum altitude angle in degrees.
+minal=0.0 
+# Maximum distance in degrees between target 
+# and pointing for UI color indicators.
+close_enough = 1.0 
+# Define stow position in horizontal coordinates, in degrees
+stowal=90
+stowaz=260
+
+[USRP]
+# The sampler to record data
+host=192.168.10.2
+# USRP gain in dB
+usrp_gain=0
+# Software gain calibration factor (multiplying the measured spectrum)
+software_gain = 9000
+
+# Directory for tempfiles during measurement
+tmpdir=/tmp
+
+[ARCHIVE]
+# Credentials to connect to online archive for data upload
+host=localhost
+user=salsa_archiver
+password=PASSWORD
+database=salsa_vale_drupa
+table=salsa_archive

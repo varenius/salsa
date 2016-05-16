@@ -208,7 +208,7 @@
           <item>
            <widget class="QLineEdit" name="inputleftcoord">
             <property name="text">
-             <string>140</string>
+             <string>120</string>
             </property>
            </widget>
           </item>
@@ -445,7 +445,7 @@
            <x>10</x>
            <y>10</y>
            <width>671</width>
-           <height>181</height>
+           <height>185</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
@@ -540,7 +540,7 @@
           <item row="9" column="1">
            <widget class="QLineEdit" name="RefFreqInput">
             <property name="text">
-             <string>1425.4</string>
+             <string>1422.4</string>
             </property>
            </widget>
           </item>
@@ -573,6 +573,9 @@
           </item>
           <item row="2" column="2">
            <widget class="QCheckBox" name="autoedit_bad_data_checkBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>Remove RFI</string>
             </property>
@@ -606,6 +609,27 @@
              <bool>false</bool>
             </property>
            </widget>
+          </item>
+          <item row="9" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QLabel" name="label_gain">
+              <property name="text">
+               <string>Gain factor</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="gain">
+              <property name="text">
+               <string>9000</string>
+              </property>
+              <property name="readOnly">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -750,7 +774,7 @@
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>

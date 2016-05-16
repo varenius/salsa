@@ -47,40 +47,11 @@ class SALSA_spectrum:
         self.offset_az = offset_az
 
     def auto_edit_bad_data(self):
-        #print "Autoflagging known RFI."
+        print "Autoflagging known RFI."
         freq_res = self.bandwidth/self.nchans # Hz
         # List known RFI as center-frequency in MHz, and width in Mhz
-        known_RFI = [[1419.4-0.210, 0.02], 
-                     [1419.4-1.937, 0.015], 
-                     [1419.4-4.4, 0.015], 
-                     [1419.4+3.0, 0.01], 
-                     # remove dip in the center of band
-                     [self.obs_freq*1e-6, 0.02], 
-                     [1416.4-0.8, 0.04],
-                     [1420.4-2, 0.01],
-                     [1425, 0.01],
-                     [1424.4-1.8, 0.01],
-                     [1424.4+0.5845, 0.01],
-                     [1424.4+0.483, 0.005],
-                     [1420.4-1.38, 0.01],
-                     [1420.4-1.042, 0.01],
-                     [1424.4+0.61, 0.03],
-                     [1420.4-0.3965, 0.005],
-                     [1420.4+0.4465, 0.005],
-                     [1420.4+3.405, 0.01],
-                     [1420.4+4.299, 0.02],
-                     [1420.4+4.61, 0.06],
-                     [1420.4+4.67, 0.02],
-                     [1420.4-3.197, 0.04],
-                     [1420.4-2.39, 0.04],
-                     [1420.4-0.395, 0.02],
-                     [1420.4+6.21, 0.04],
-                     [1420.4+4.535, 0.003],
-                     [1420.4-0.38, 0.01],
-                     [1420.4-0.209, 0.005],
-                     [1420.4-0.084, 0.005],
-                     [1420.4-0.523, 0.005],
-                     [1420.4+4.56, 0.02],
+        # This list contains peaks which are not properly picked by by the MWF filter.
+        known_RFI = [[1420.4+4.595, 0.02],
                      ]
         for item in known_RFI:
             RFI_freq = item[0] *1e6 
@@ -102,6 +73,71 @@ class SALSA_spectrum:
             else:
                 #print 'Skipping', item
                 pass
+        # Filter away rest of RFI with median window filter, assuming 4096 channels for 2MHz bandwidth
+        self.data = signal.medfilt(self.data, kernel_size = 7)
+        
+        # In the future, remove receiver end dip. But now switch away instead
+        #print np.shape(self.data)
+        #print np.where(self.data<50)
+        #self.data[0:10]=self.data[10] # Remove receiver dip
+
+    # NOT USED ANYMORE, replaced by median window filter function
+    #def auto_edit_bad_data_OLD(self):
+    #    #print "Autoflagging known RFI."
+    #    freq_res = self.bandwidth/self.nchans # Hz
+    #    # List known RFI as center-frequency in MHz, and width in Mhz
+    #    known_RFI = [[1419.4-0.210, 0.02], 
+    #                 [1419.4-1.937, 0.015], 
+    #                 [1419.4-4.4, 0.015], 
+    #                 [1419.4+3.0, 0.01], 
+    #                 # remove dip in the center of band
+    #                 [self.obs_freq*1e-6, 0.02], 
+    #                 [1416.4-0.8, 0.04],
+    #                 [1420.4-2, 0.01],
+    #                 [1425, 0.01],
+    #                 [1424.4-1.8, 0.01],
+    #                 [1424.4+0.5845, 0.01],
+    #                 [1424.4+0.483, 0.005],
+    #                 [1420.4-1.38, 0.01],
+    #                 [1420.4-1.042, 0.01],
+    #                 [1424.4+0.61, 0.03],
+    #                 [1420.4-0.3965, 0.005],
+    #                 [1420.4+0.4465, 0.005],
+    #                 [1420.4+3.405, 0.01],
+    #                 [1420.4+4.299, 0.02],
+    #                 [1420.4+4.61, 0.06],
+    #                 [1420.4+4.67, 0.02],
+    #                 [1420.4-3.197, 0.04],
+    #                 [1420.4-2.39, 0.04],
+    #                 [1420.4-0.395, 0.02],
+    #                 [1420.4+6.21, 0.04],
+    #                 [1420.4+4.535, 0.003],
+    #                 [1420.4-0.38, 0.01],
+    #                 [1420.4-0.209, 0.005],
+    #                 [1420.4-0.084, 0.005],
+    #                 [1420.4-0.523, 0.005],
+    #                 [1420.4+4.56, 0.02],
+    #                 ]
+    #    for item in known_RFI:
+    #        RFI_freq = item[0] *1e6 
+    #        RFI_width = item[1]*1e6
+    #        ch0_freq = self.obs_freq - 0.5*self.bandwidth
+    #        ind_low = int(np.floor((RFI_freq-0.5*RFI_width - ch0_freq)/freq_res))
+    #        ind_high = int(np.ceil((RFI_freq+0.5*RFI_width - ch0_freq)/freq_res))
+    #        #print ind_low, ind_high
+    #        if ind_low>0 and ind_high<self.nchans:
+    #            #print 'Flagging', item
+    #            margin = min(ind_high-ind_low, ind_low, self.nchans-ind_high)
+    #            RFI_part = self.data[ind_low-margin:ind_high+margin]
+    #            xdata = np.arange(len(RFI_part))
+    #            weights = np.ones_like(RFI_part)
+    #            weights[margin:-margin] = 0.0 # Ignore RFI when fitting
+    #            pf = np.polyfit(xdata, RFI_part, deg=1, w=weights)
+    #            interpdata = np.polyval(pf, xdata)
+    #            self.data[ind_low:ind_high] = interpdata[margin:-margin]
+    #        else:
+    #            #print 'Skipping', item
+    #            pass
 
     def shift_to_vlsr_frame(self):
         # From http://web.mit.edu/8.13/www/nsrt_software/documentation/vlsr.pdf

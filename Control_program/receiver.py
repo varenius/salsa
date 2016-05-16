@@ -27,7 +27,7 @@ class SALSA_Receiver(gr.top_block):
         self.samp_rate = samp_rate
         self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp" ##Change to ramdisk for high BWs
         self.int_time = int_time
-        self.gain = gain = config.getfloat('USRP', 'gain')
+        self.gain = gain = config.getfloat('USRP', 'usrp_gain')
         self.fftsize = fftsize
         self.c_freq = c_freq
         self.probe_var = probe_var = 0
