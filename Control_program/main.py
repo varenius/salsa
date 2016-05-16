@@ -269,7 +269,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         int_time = float(self.IntegrationTimeInput.text())
         nchans = int(self.ChannelsInput.text()) # Number of output channels
         self.telescope.site.date = ephem.now()
-        switched = self.mode_switched.isChecked():
+        switched = self.mode_switched.isChecked()
         # Get ra, dec using radec_of. This function
         # has input order AZ, ALT, i.e. inverted to most other functions.
         # Then, make ephem object to pass to measurement
