@@ -25,11 +25,16 @@ class SALSA_Receiver(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate = samp_rate
-        self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp"
+        self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp" ##Change to ramdisk for high BWs
         self.int_time = int_time
         self.gain = gain = config.getfloat('USRP', 'gain')
         self.fftsize = fftsize
-        self.c_freq = c_freq 
+        self.c_freq = c_freq
+        self.probe_var = probe_var = 0
+        
+        #Integrate 100 FFTS using IIR block and keep 1 in N
+        self.alpha = 0.01
+		self.N = 100
 
         ##################################################
         # Blocks
@@ -44,24 +49,43 @@ class SALSA_Receiver(gr.top_block):
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
         self.uhd_usrp_source_0.set_center_freq(c_freq, 0)
         self.uhd_usrp_source_0.set_gain(gain, 0)
+        
         self.fft_vxx_0 = fft.fft_vcc(fftsize, True, (window.blackmanharris(fftsize)), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fftsize)
         self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fftsize)
-        self.blocks_head_0 = blocks.head(gr.sizeof_float*1, int(int_time*samp_rate))
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_float*1, outfile, False)
+        self.blocks_signal_sink = blocks.file_sink(gr.sizeof_float*1, outfile, False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
+        self.single_pole_iir_filter_xx_0 = filter.single_pole_iir_filter_ff(self.alpha, fftsize)
+        self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_float*fftsize, self.N)
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_stream_to_vector_0, 0))
-        self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
-        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_head_0, 0))
-        self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_stream_to_vector_0, 0), (self.fft_vxx_0, 0))
+        self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
+        self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
+        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.single_pole_iir_filter_xx_0, 0))
+		self.connect((self.single_pole_iir_filter_xx_0, 0), (self.blocks_keep_one_in_n_0, 0))
+        self.connect(self.blocks_keep_one_in_n_0, 0, (self.blocks_signal_sink, 0))
+        
+        #Probe update rate
+		def _probe_var_probe():
+			while True:
+				val = self.probe_signal.level()
+				try:
+					self.set_probe_var(val)
+				except AttributeError:
+					pass
+				time.sleep(10 / (self.samp_rate)) #Update probe variabel every 10/samp_rate seconds
 
+		_probe_var_thread = threading.Thread(target=_probe_var_probe)
+		_probe_var_thread.daemon = True
+		_probe_var_thread.start()
+		
+		#self.blocks_head_0 = blocks.head(gr.sizeof_float*1, int(int_time*samp_rate))
+		#self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_head_0, 0))
 
 # QT sink close method reimplementation
 
@@ -104,6 +128,13 @@ class SALSA_Receiver(gr.top_block):
     def set_c_freq(self, c_freq):
         self.c_freq = c_freq
         self.uhd_usrp_source_0.set_center_freq(self.c_freq, 0)
+        
+    def get_probe_var(self):
+        return self.probe_var
+
+    def set_probe_var(self, probe_var):
+        self.probe_var = probe_var
+
 
 if __name__ == '__main__':
     parser = OptionParser(option_class=eng_option, usage="%prog: [options]")
