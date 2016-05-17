@@ -67,7 +67,7 @@ class Measurement:
 			while time.time() <= t_end:
 				self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
 				time.sleep(10e-3)
-				self.receiver.signal_sink.open("/home/Olvhammar/Documents/sig" + str(self.sigCount))
+				self.receiver.signal_sink.open("/tmp/spectrums/sig" + str(self.sigCount))
 				t_end2 = time.time() + self.sig_time
 				start = time.time()
 				print "Signal"
@@ -79,7 +79,7 @@ class Measurement:
 				self.sigCount +=1
 				self.receiver.uhd_usrp_source_0.set_center_freq(self.ref_freq, 0)
 				time.sleep(10e-3)
-				self.receiver.signal_sink.open("/home/Olvhammar/Documents/ref" + str(self.refCount))
+				self.receiver.signal_sink.open("/tmp/spectrums/ref" + str(self.refCount))
 				t_end3 = time.time() + self.ref_time
 				start1 = time.time()
 				print "Reference"
@@ -94,17 +94,18 @@ class Measurement:
 			self.refList = []
 
 			for i in range(self.sigCount):
-				item = "/home/Olvhammar/Documents/sig" + str(i)
+				item = "/tmp/spectrums/sig" + str(i)
 				self.sigList.append(item)
 			for i in range(self.refCount):
-				item = "/home/Olvhammar/Documents/ref" + str(i)
+				item = "/tmp/spectrums/ref" + str(i)
 				self.refList.append(item)
-		
-			if os.path.getsize('/home/Olvhammar/Documents/sig' + str(self.sigCount-1)) == 0:
-				self.sigList.remove('/home/Olvhammar/Documents/sig' + str(self.sigCount-1))
-				self.refList.remove('/home/Olvhammar/Documents/ref' + str(self.refCount-1))				
-			elif os.path.getsize('/home/Olvhammar/Documents/ref' + str(self.refCount-1)) == 0:
-				self.refList.remove('/home/Olvhammar/Documents/ref' + str(self.refCount-1))
+			
+			#Incase loop starts at end of integration time (empty files might occur)
+			if os.path.getsize('/tmp/spectrums/sig' + str(self.sigCount-1)) == 0:
+				self.sigList.remove('/tmp/spectrums/sig' + str(self.sigCount-1))
+				self.refList.remove('/tmp/spectrums/ref' + str(self.refCount-1))				
+			elif os.path.getsize('/tmp/spectrums/ref' + str(self.refCount-1)) == 0:
+				self.refList.remove('/tmp/spectrums/ref' + str(self.refCount-1))
 
 			print "Actual Signal time: "
 			print self.signal_time
@@ -122,7 +123,7 @@ class Measurement:
 			self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
 			self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
 			#Clear temporary files
-			#files = glob.glob('/home/Olvhammar/Documents/*')
+			#files = glob.glob('/tmp/spectrums/*')
 			#for f in files:
 			#	if f.endswith(self.index):
 			#		os.remove(f)
@@ -130,14 +131,14 @@ class Measurement:
 			#		continue	
 		else:
 			self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
-			time.sleep(5e-3)
-			self.receiver.signal_sink.open("/home/Olvhammar/Documents/sig")
+			time.sleep(10e-3)
+			self.receiver.signal_sink.open("/tmp/spectrums/sig")
 			end = time.time() + self.int_time
 			while time.time() <= end:
 				continue
 			self.receiver.signal_sink.close()
 			
-			spec = self.stack_measured_FFTs("/home/Olvhammar/Documents/sig")
+			spec = self.stack_measured_FFTs("/tmp/spectrums/sig")
 			self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
                
     def stack_all_data(self, files):
@@ -173,3 +174,5 @@ class Measurement:
     def mean(self, spectra):
 		sum_spec = np.sum(spectra, axis=0, dtype = np.float32)
 		return sum_spec/float(len(spectra))
+
+	
