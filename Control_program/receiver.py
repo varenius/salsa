@@ -34,9 +34,9 @@ class SALSA_Receiver(gr.top_block):
         self.c_freq = c_freq
         self.probe_var = probe_var = 0
         
-        #Integrate 100 FFTS using IIR block and keep 1 in N
-        self.alpha = 0.01
-        self.N = 100
+        #Integrate 10 FFTS using IIR block and keep 1 in N, increase for higher bandwidths to lower processing times.
+        self.alpha = 0.1
+        self.N = 10
 
         ##################################################
         # Blocks

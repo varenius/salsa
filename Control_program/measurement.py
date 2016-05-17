@@ -60,14 +60,13 @@ class Measurement:
 		if self.switched == True:
 			self.sigCount = 0
 			self.refCount = 0
-			self.int_time *=2
-			self.signal_time = 0
+			self.signal_time = 0 #Actual signal time
 			self.reference_time = 0
 			
 			t_end = time.time() + self.int_time
 			while time.time() <= t_end:
 				self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
-				time.sleep(5e-3)
+				time.sleep(10e-3)
 				self.receiver.signal_sink.open("/home/Olvhammar/Documents/sig" + str(self.sigCount))
 				t_end2 = time.time() + self.sig_time
 				start = time.time()
@@ -79,7 +78,7 @@ class Measurement:
 				self.signal_time += (end-start)
 				self.sigCount +=1
 				self.receiver.uhd_usrp_source_0.set_center_freq(self.ref_freq, 0)
-				time.sleep(5e-3)
+				time.sleep(10e-3)
 				self.receiver.signal_sink.open("/home/Olvhammar/Documents/ref" + str(self.refCount))
 				t_end3 = time.time() + self.ref_time
 				start1 = time.time()

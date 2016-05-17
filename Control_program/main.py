@@ -151,9 +151,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
     def clear_progressbar(self):
         self.lapsedtime = 0
-        target = int(self.IntegrationTimeInput.text())
-        if self.mode_switched.isChecked():
-            target *=2
+        target = (int(self.sig_time_spinbox.text())+int(self.ref_time_spinBox.text()))*int(self.loops_spinbox.text())
+        #if self.mode_switched.isChecked():
+        #   target *=2
         overhead = int(0.1*target) # Calculate extra time for processing, stacking etc.
         target +=  max(1,overhead) # Add extra time, at least 1 second
         self.expectedtime = target
@@ -167,7 +167,6 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.FrequencyInput.setReadOnly(True)
         self.RefFreqInput.setReadOnly(True)
         self.BandwidthInput.setReadOnly(True)
-        self.IntegrationTimeInput.setReadOnly(True)
         self.ChannelsInput.setReadOnly(True)
         self.autoedit_bad_data_checkBox.setEnabled(False)
         self.mode_switched.setEnabled(False)
@@ -182,7 +181,6 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.FrequencyInput.setReadOnly(False)
         self.RefFreqInput.setReadOnly(False)
         self.BandwidthInput.setReadOnly(False)
-        self.IntegrationTimeInput.setReadOnly(False)
         self.ChannelsInput.setReadOnly(False)
         self.autoedit_bad_data_checkBox.setEnabled(True)
         self.mode_switched.setEnabled(True)
@@ -269,9 +267,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         sig_freq = float(self.FrequencyInput.text())*1e6 # Hz
         ref_freq = float(self.RefFreqInput.text())*1e6
         bw = float(self.BandwidthInput.text())*1e6 # Hz
-        sig_time = float(self.sig_time_spinbox.txt()) # [s]
-        ref_time = float(self.ref_time_spinBox.txt()) # [s]
-        loops = int(self.loops_spinbox.txt()) #
+        sig_time = float(self.sig_time_spinbox.text()) # [s]
+        ref_time = float(self.ref_time_spinBox.text()) # [s]
+        loops = int(self.loops_spinbox.text()) #
         int_time = (sig_time+ref_time)*loops
         nchans = int(self.ChannelsInput.text()) # Number of output channels
         calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
