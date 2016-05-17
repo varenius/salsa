@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>802</width>
-    <height>594</height>
+    <width>808</width>
+    <height>598</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -331,7 +331,7 @@
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>30</x>
         <y>230</y>
         <width>721</width>
         <height>261</height>
@@ -346,7 +346,7 @@
          <x>10</x>
          <y>20</y>
          <width>701</width>
-         <height>231</height>
+         <height>241</height>
         </rect>
        </property>
        <property name="currentIndex">
@@ -447,7 +447,7 @@
           </rect>
          </property>
          <property name="value">
-          <number>5</number>
+          <number>10</number>
          </property>
         </widget>
         <widget class="QSpinBox" name="ref_time_spinBox">
@@ -460,7 +460,7 @@
           </rect>
          </property>
          <property name="value">
-          <number>5</number>
+          <number>10</number>
          </property>
         </widget>
         <widget class="QSpinBox" name="loops_spinbox">
@@ -513,7 +513,7 @@
           </item>
           <item row="8" column="1">
            <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="1">
+            <item row="0" column="0" colspan="2">
              <widget class="QGroupBox" name="groupBox">
               <property name="title">
                <string/>
@@ -677,7 +677,7 @@
             <item>
              <widget class="QLineEdit" name="gain">
               <property name="text">
-               <string>9000</string>
+               <string>930</string>
               </property>
               <property name="readOnly">
                <bool>false</bool>
@@ -828,7 +828,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>802</width>
+     <width>808</width>
      <height>25</height>
     </rect>
    </property>

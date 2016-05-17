@@ -49,6 +49,7 @@ class Measurement:
         self.switched = switched
         self.sig_time = sig_time
         self.ref_time = ref_time
+        self.abort = False
         
         # Create receiver object to run GNUradio flowgraph.
         # Using both upper and lower sideband, so bandwidth is equal to 
@@ -64,14 +65,14 @@ class Measurement:
 			self.reference_time = 0
 			
 			t_end = time.time() + self.int_time
-			while time.time() <= t_end:
+			while time.time() <= t_end and self.abort == False:
 				self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
 				time.sleep(10e-3)
 				self.receiver.signal_sink.open("/tmp/spectrums/sig" + str(self.sigCount))
 				t_end2 = time.time() + self.sig_time
 				start = time.time()
 				print "Signal"
-				while time.time() <= t_end2 and time.time() <= t_end:
+				while time.time() <= t_end2 and time.time() <= t_end and self.abort == False:
 					continue
 				self.receiver.signal_sink.close()
 				end = time.time()
@@ -83,7 +84,7 @@ class Measurement:
 				t_end3 = time.time() + self.ref_time
 				start1 = time.time()
 				print "Reference"
-				while time.time() <= t_end3 and time.time() <= t_end:
+				while time.time() <= t_end3 and time.time() <= t_end and self.abort == False:
 					continue
 				self.receiver.signal_sink.close()
 				end1 = time.time()
@@ -134,7 +135,7 @@ class Measurement:
 			time.sleep(10e-3)
 			self.receiver.signal_sink.open("/tmp/spectrums/sig")
 			end = time.time() + self.int_time
-			while time.time() <= end:
+			while time.time() <= end and self.abort == False:
 				continue
 			self.receiver.signal_sink.close()
 			
