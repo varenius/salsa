@@ -67,7 +67,7 @@ class Measurement:
 			t_end = time.time() + self.int_time
 			while time.time() <= t_end and self.abort == False:
 				self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
-				time.sleep(10e-3)
+				time.sleep(5e-3)
 				self.receiver.signal_sink.open("/tmp/spectrums/sig" + str(self.sigCount))
 				t_end2 = time.time() + self.sig_time
 				start = time.time()
@@ -79,7 +79,7 @@ class Measurement:
 				self.signal_time += (end-start)
 				self.sigCount +=1
 				self.receiver.uhd_usrp_source_0.set_center_freq(self.ref_freq, 0)
-				time.sleep(10e-3)
+				time.sleep(5e-3)
 				self.receiver.signal_sink.open("/tmp/spectrums/ref" + str(self.refCount))
 				t_end3 = time.time() + self.ref_time
 				start1 = time.time()
@@ -134,7 +134,7 @@ class Measurement:
 			self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
 			time.sleep(10e-3)
 			self.receiver.signal_sink.open("/tmp/spectrums/sig")
-			end = time.time() + self.int_time
+			end = time.time() + self.sig_time
 			while time.time() <= end and self.abort == False:
 				continue
 			self.receiver.signal_sink.close()
@@ -175,5 +175,56 @@ class Measurement:
     def mean(self, spectra):
 		sum_spec = np.sum(spectra, axis=0, dtype = np.float32)
 		return sum_spec/float(len(spectra))
+
+#	#Set optimal gain to utilize full dynamic range of ADC
+#	def meas_adjust(self):
+#		histData = []
+#		print "Adjusting gain"
+#		self.config.set('CTRL','state','adjusting')
+#		with open(self.configfil, 'wb') as configfile:
+#			self.config.write(configfile)
+#		self.receiver.start()
+#		timedat = 1 #Read samples for 1 second on current gain
+#		gain = 18 #Gain start value
+#		self.set_gain(gain)
+#		while gain < 31 and gain != -1:
+#			print gain
+#			L = []
+#			L1 = []
+#			L2 = []
+#			end = time.time() + timedat
+#			while time.time() <= end:
+#				time.sleep(10 / (self.samp_rate))
+#				L.append(self.receiver.get_probe_var())
+#			for i in L:
+#				if i > 0.5:
+#					L1.append(i)
+#				else:
+#					L2.append(i)
+#			hundra = len(L)
+#			print (len(L1)/float(hundra))
+#			if (len(L1)/float(hundra)) < 0.05: #As long as the samples above the value 0.5 are under 5% of all collected samples continue to increase gain
+#				gain += 1
+#				self.set_gain(gain)
+#				print self.usrp.get_gain(0)
+#				del L, L1, L2
+#			elif gain == 30:
+#				histData = L
+#				i = -1
+#				break
+#			else:
+#				histData = L
+#				i = -1
+#				del L, L1, L2
+#				break
+#		print "Final gain: "
+#		print self.usrp.get_gain(0)
+#		self.receiver.stop()
+#		self.receiver.wait()
+#		self.config.set('USRP','gain', str(self.usrp.get_gain(0)))
+#		self.config.set('CTRL','state','ready')
+#		with open(self.configfil, 'wb') as configfile:
+#			self.config.write(configfile)
+#		np.save('/home/' + user + '/Documents/sampleDist.npy', histData)
 
 	

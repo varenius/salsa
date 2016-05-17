@@ -152,10 +152,10 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
     def clear_progressbar(self):
         self.lapsedtime = 0
         target = (int(self.sig_time_spinbox.text())+int(self.ref_time_spinBox.text()))*int(self.loops_spinbox.text())
-        #if self.mode_switched.isChecked():
-        #   target *=2
-        overhead = int(0.2*target) # Calculate extra time for processing, stacking etc.
-        target +=  max(1,overhead) # Add extra time, at least 1 second
+        if self.mode_switched.isChecked() == False:
+        	 target /=2
+        overhead = int(0.1*target) # Calculate extra time for processing, stacking etc.
+        target +=  max(2,overhead) # Add extra time, at least 2 second
         self.expectedtime = target
         self.progressBar.setValue(100*self.lapsedtime/self.expectedtime)
 
@@ -245,7 +245,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         print "Aborting measurement."
         self.aborting = True
         if hasattr(self, 'sigthread'):
-			self.sigworker.measurement.abort = True
+            self.sigworker.measurement.abort = True
             self.sigworker.measurement.receiver.stop()
             self.sigthread.quit()
         # TODO: clean up temp data file.
