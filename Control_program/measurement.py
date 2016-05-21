@@ -21,7 +21,7 @@ class Measurement:
         # crashes after creating the file but before
         # managing to remove it or fix permissions.
 
-        # To remove narrow band RFI, use at least 4906 points FFT.
+        # To remove narrow band RFI, use at least 4096 points FFT.
         # But, if more channels requested, use at least twice 
         # the desired channel numbers to allow
         # some smoothing of the spectra to get rid of RFI.
@@ -57,90 +57,108 @@ class Measurement:
         self.receiver = SALSA_Receiver(c_freq, int_time, bandwidth, self.fftsize, self.observer, config)
 
     def measure(self):
-		self.receiver.start()
-		if self.switched == True:
-			self.sigCount = 0
-			self.refCount = 0
-			self.signal_time = 0 #Actual signal time
-			self.reference_time = 0
+       self.receiver.start()
+       if self.switched == True:
+            self.sigCount = 0
+            self.refCount = 0
+            self.signal_time = 0 #Actual signal time
+            self.reference_time = 0
 			
-			t_end = time.time() + self.int_time
-			while time.time() <= t_end and self.abort == False:
-				self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
-				time.sleep(5e-3)
-				self.receiver.signal_sink.open("/tmp/spectrums/sig" + str(self.sigCount))
-				t_end2 = time.time() + self.sig_time
-				start = time.time()
-				print "Signal"
-				while time.time() <= t_end2 and time.time() <= t_end and self.abort == False:
-					continue
-				self.receiver.signal_sink.close()
-				end = time.time()
-				self.signal_time += (end-start)
-				self.sigCount +=1
-				self.receiver.uhd_usrp_source_0.set_center_freq(self.ref_freq, 0)
-				time.sleep(5e-3)
-				self.receiver.signal_sink.open("/tmp/spectrums/ref" + str(self.refCount))
-				t_end3 = time.time() + self.ref_time
-				start1 = time.time()
-				print "Reference"
-				while time.time() <= t_end3 and time.time() <= t_end and self.abort == False:
-					continue
-				self.receiver.signal_sink.close()
-				end1 = time.time()
-				self.reference_time += (end1-start1)
-				self.refCount +=1
+            t_end = time.time() + self.int_time
+            while time.time() <= t_end and self.abort == False:
+                self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
+                time.sleep(10e-3)
+                self.receiver.lock()
+                self.receiver.signal_file_sink_1.open("/tmp/spectrums/sig" + str(self.sigCount))
+                self.receiver.unlock()
+                self.receiver.blks2_selector_0.set_output_index(1)
+                t_end2 = time.time() + self.sig_time
+                start = time.time()
+                print "Signal"
+                while time.time() <= t_end2 and time.time() <= t_end and self.abort == False:
+                      continue
+                self.receiver.blks2_selector_0.set_output_index(0)
+                self.receiver.lock()
+                self.receiver.signal_file_sink_1.close()
+                self.receiver.unlock()
+                end = time.time()
+                self.signal_time += (end-start)
+                self.sigCount +=1
+                self.receiver.uhd_usrp_source_0.set_center_freq(self.ref_freq, 0)
+                time.sleep(10e-3)
+                self.receiver.lock()
+                self.receiver.signal_file_sink_2.open("/tmp/spectrums/ref" + str(self.refCount))
+                self.receiver.unlock()
+                self.receiver.blks2_selector_0.set_output_index(2)
+                t_end3 = time.time() + self.ref_time
+                start1 = time.time()
+                print "Reference"
+                while time.time() <= t_end3 and time.time() <= t_end and self.abort == False:
+                      continue
+                self.receiver.blks2_selector_0.set_output_index(0)
+                self.receiver.lock()
+                self.receiver.signal_file_sink_2.close()
+                self.receiver.unlock()
+                end1 = time.time()
+                self.reference_time += (end1-start1)
+                self.refCount +=1
         
-			self.sigList = []
-			self.refList = []
+            self.sigList = []
+            self.refList = []
 
-			for i in range(self.sigCount):
-				item = "/tmp/spectrums/sig" + str(i)
-				self.sigList.append(item)
-			for i in range(self.refCount):
-				item = "/tmp/spectrums/ref" + str(i)
-				self.refList.append(item)
+            for i in range(self.sigCount):
+                item = "/tmp/spectrums/sig" + str(i)
+                self.sigList.append(item)
+            for i in range(self.refCount):
+                item = "/tmp/spectrums/ref" + str(i)
+                self.refList.append(item)
 			
 			#Incase loop starts at end of integration time (empty files might occur)
-			if os.path.getsize('/tmp/spectrums/sig' + str(self.sigCount-1)) == 0:
-				self.sigList.remove('/tmp/spectrums/sig' + str(self.sigCount-1))
-				self.refList.remove('/tmp/spectrums/ref' + str(self.refCount-1))				
-			elif os.path.getsize('/tmp/spectrums/ref' + str(self.refCount-1)) == 0:
-				self.refList.remove('/tmp/spectrums/ref' + str(self.refCount-1))
+            if os.path.getsize('/tmp/spectrums/sig' + str(self.sigCount-1)) == 0:
+                self.sigList.remove('/tmp/spectrums/sig' + str(self.sigCount-1))
+                self.refList.remove('/tmp/spectrums/ref' + str(self.refCount-1))				
+            elif os.path.getsize('/tmp/spectrums/ref' + str(self.refCount-1)) == 0:
+                self.refList.remove('/tmp/spectrums/ref' + str(self.refCount-1))
 
-			print "Actual Signal time: "
-			print self.signal_time
-			print "Actual Reference time: "
-			print self.reference_time			
+            print "Actual Signal time: "
+            print self.signal_time
+            print "Actual Reference time: "
+            print self.reference_time			
 
 			#Stack all the data
-			self.sig_spec = self.stack_all_data(self.sigList)
-			self.ref_spec = self.stack_all_data(self.refList)
+            self.sig_spec = self.stack_all_data(self.sigList)
+            self.ref_spec = self.stack_all_data(self.refList)
 		
 			#Calculates mean value for all signal and reference data
-			self.SIG_data = self.mean(self.sig_spec)
-			self.REF_data = self.mean(self.ref_spec)
-			if self.abort == False:
-				self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
-				self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
-		else:
-			self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
-			time.sleep(10e-3)
-			self.receiver.signal_sink.open("/tmp/spectrums/sig")
-			end = time.time() + self.sig_time
-			while time.time() <= end and self.abort == False:
-				continue
-			self.receiver.signal_sink.close()
+            self.SIG_data = self.mean(self.sig_spec)
+            self.REF_data = self.mean(self.ref_spec)
+            if self.abort == False:
+                self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+                self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+       else:
+            self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
+            time.sleep(10e-3)
+            self.receiver.lock()
+            self.receiver.signal_file_sink_1.open("/tmp/spectrums/sig")
+            self.receiver.unlock()
+            self.receiver.blks2_selector_0.set_output_index(1)
+            end = time.time() + self.sig_time
+            while time.time() <= end and self.abort == False:
+                 continue
+            self.receiver.blks2_selector_0.set_output_index(0)
+            self.receiver.lock()
+            self.receiver.signal_file_sink_1.close()
+            self.receiver.unlock()
 			
-			spec = self.stack_measured_FFTs("/tmp/spectrums/sig")
-			if self.abort == False:
-				self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+            spec = self.stack_measured_FFTs("/tmp/spectrums/sig")
+            if self.abort == False:
+               self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
                
     def stack_all_data(self, files):
-		pool = Pool(processes=4)
-		spectra = pool.map(self.stack_measured_FFTs, files)
-		pool.terminate()
-		return spectra
+        pool = Pool(processes=4)
+        spectra = pool.map(self.stack_measured_FFTs, files)
+        pool.terminate()
+        return spectra
 
     def stack_measured_FFTs(self,infile):
         fftsize = self.receiver.get_fftsize() 
@@ -159,7 +177,7 @@ class Measurement:
         # integration time and Calibrate intensity
         # from comparison with LAB survey
         # TODO: Proper amplitude calibration! For now just single scale factor.
-        calfactor = 300 # K/USRP input unit with 60dB gain.  
+        # calfactor = 300 # K/USRP input unit with 60dB gain.  
         spec = self.calfactor * spec/(1.0*nspec)
         # Clean up temporary object and file
         del signal

@@ -10,6 +10,7 @@ from gnuradio import eng_notation
 from gnuradio import fft
 from gnuradio import gr
 from gnuradio import uhd
+from grc_gnuradio import blks2 as grc_blks2
 from gnuradio.eng_option import eng_option
 from gnuradio.fft import window
 from gnuradio.filter import firdes
@@ -27,7 +28,7 @@ class SALSA_Receiver(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate = samp_rate
-        self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp" ##Change to ramdisk for high BWs
+        self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp" #Not used
         self.int_time = int_time
         self.gain = gain = config.getfloat('USRP', 'usrp_gain')
         self.fftsize = fftsize
@@ -46,6 +47,8 @@ class SALSA_Receiver(gr.top_block):
             stream_args=uhd.stream_args(
                 cpu_format="fc32",
                 channels=range(1),
+                #recv_frame_size=4096, #Problems with overflow at bw>5 MHz, this might be a solution (depends on ethernet connection capabilities)
+                #recv_buff_size=4096,
              ),
         )
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
@@ -55,12 +58,26 @@ class SALSA_Receiver(gr.top_block):
         self.fft_vxx_0 = fft.fft_vcc(fftsize, True, (window.blackmanharris(fftsize)), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, fftsize)
         self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fftsize)
-        self.signal_sink = blocks.file_sink(gr.sizeof_float*1, outfile, False)
-        self.signal_sink.set_unbuffered(False)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(fftsize)
         self.single_pole_iir_filter_xx_0 = filter.single_pole_iir_filter_ff(self.alpha, fftsize)
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_float*fftsize, self.N)
 
+
+        #Signal and reference file sinks
+        self.signal_file_sink_1 = blocks.file_sink(gr.sizeof_float*1, self.outfile, False)
+        self.signal_file_sink_1.set_unbuffered(False)
+        self.signal_file_sink_2 = blocks.file_sink(gr.sizeof_float*1, self.outfile, False)
+        self.signal_file_sink_2.set_unbuffered(False)
+        self.blocks_null_sink = blocks.null_sink(gr.sizeof_float*1)	
+		#Selector for GPIO switch
+        self.blks2_selector_0 = grc_blks2.selector(
+            item_size=gr.sizeof_float*1,
+            num_inputs=1,
+            num_outputs=2+1, #+1 for the null sink
+            input_index=0,
+            output_index=0,
+        )
+		
         ##################################################
         # Connections
         ##################################################
@@ -70,8 +87,15 @@ class SALSA_Receiver(gr.top_block):
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.single_pole_iir_filter_xx_0, 0))
         self.connect((self.single_pole_iir_filter_xx_0, 0), (self.blocks_keep_one_in_n_0, 0))
         self.connect((self.blocks_keep_one_in_n_0, 0), (self.blocks_vector_to_stream_0, 0))
-        self.connect((self.blocks_vector_to_stream_0, 0), (self.signal_sink, 0))
+        self.connect((self.blocks_vector_to_stream_0, 0), (self.blks2_selector_0, 0))
         
+        #Selector connections
+        self.connect((self.blks2_selector_0, 1), (self.signal_file_sink_1, 0))
+        self.connect((self.blks2_selector_0, 2), (self.signal_file_sink_2, 0))
+		
+		#Null sink connection
+        self.connect((self.blks2_selector_0, 0), (self.blocks_null_sink, 0))
+
 		#PROBE SAMPLES (For automatic gain adjustment)
 		#self.probe_signal = blocks.probe_signal_f()
 		#self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
