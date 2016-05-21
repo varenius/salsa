@@ -138,7 +138,6 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.groupBox_spectrum.setLayout(plotwinlayout)
         self.radioButton_frequency.toggled.connect(self.change_spectra)
         
-
     def change_spectra(self):
         # Plot spectra of currently selected item
         spectrum = self.spectra[str(self.listWidget_spectra.currentItem().text())]
@@ -152,10 +151,10 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
     def clear_progressbar(self):
         self.lapsedtime = 0
         target = (int(self.sig_time_spinbox.text())+int(self.ref_time_spinBox.text()))*int(self.loops_spinbox.text())
-        if self.mode_switched.isChecked() == False:
-        	 target /=2
         overhead = int(0.1*target) # Calculate extra time for processing, stacking etc.
-        target +=  max(2,overhead) # Add extra time, at least 2 second
+        if self.mode_switched.isChecked() == False:
+            target /=2
+        target +=  max(1.5,overhead) # Add extra time, at least 2 second
         self.expectedtime = target
         self.progressBar.setValue(100*self.lapsedtime/self.expectedtime)
 

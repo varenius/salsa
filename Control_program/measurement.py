@@ -120,16 +120,9 @@ class Measurement:
 			#Calculates mean value for all signal and reference data
 			self.SIG_data = self.mean(self.sig_spec)
 			self.REF_data = self.mean(self.ref_spec)
-		
-			self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
-			self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
-			#Clear temporary files
-			#files = glob.glob('/tmp/spectrums/*')
-			#for f in files:
-			#	if f.endswith(self.index):
-			#		os.remove(f)
-			#	else:
-			#		continue	
+			if self.abort == False:
+				self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+				self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
 		else:
 			self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
 			time.sleep(10e-3)
@@ -140,7 +133,8 @@ class Measurement:
 			self.receiver.signal_sink.close()
 			
 			spec = self.stack_measured_FFTs("/tmp/spectrums/sig")
-			self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+			if self.abort == False:
+				self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
                
     def stack_all_data(self, files):
 		pool = Pool(processes=4)

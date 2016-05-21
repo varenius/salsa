@@ -2,7 +2,8 @@
 
 # Form implementation generated from reading ui file 'SALSA_UI.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created: Sat May 21 12:34:52 2016
+#      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -29,7 +30,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.tabWidget = QtGui.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 791, 541))
+        self.tabWidget.setGeometry(QtCore.QRect(10, 0, 791, 541))
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
@@ -40,6 +41,7 @@ class Ui_MainWindow(object):
         self.layoutWidget.setGeometry(QtCore.QRect(17, 30, 691, 151))
         self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
         self.gridLayout = QtGui.QGridLayout(self.layoutWidget)
+        self.gridLayout.setMargin(0)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.horizontalLayout_7 = QtGui.QHBoxLayout()
         self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
@@ -167,7 +169,7 @@ class Ui_MainWindow(object):
         self.btn_reset.setObjectName(_fromUtf8("btn_reset"))
         self.gridLayout.addWidget(self.btn_reset, 4, 3, 1, 1)
         self.groupBox_3 = QtGui.QGroupBox(self.tab)
-        self.groupBox_3.setGeometry(QtCore.QRect(30, 230, 721, 261))
+        self.groupBox_3.setGeometry(QtCore.QRect(30, 230, 721, 271))
         self.groupBox_3.setObjectName(_fromUtf8("groupBox_3"))
         self.tabWidget_2 = QtGui.QTabWidget(self.groupBox_3)
         self.tabWidget_2.setGeometry(QtCore.QRect(10, 20, 701, 241))
@@ -216,6 +218,7 @@ class Ui_MainWindow(object):
         self.layoutWidget1.setGeometry(QtCore.QRect(10, 10, 671, 185))
         self.layoutWidget1.setObjectName(_fromUtf8("layoutWidget1"))
         self.gridLayout_2 = QtGui.QGridLayout(self.layoutWidget1)
+        self.gridLayout_2.setMargin(0)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.label_mode = QtGui.QLabel(self.layoutWidget1)
         self.label_mode.setObjectName(_fromUtf8("label_mode"))
@@ -229,6 +232,7 @@ class Ui_MainWindow(object):
         self.layoutWidget2.setGeometry(QtCore.QRect(10, 0, 171, 24))
         self.layoutWidget2.setObjectName(_fromUtf8("layoutWidget2"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget2)
+        self.horizontalLayout.setMargin(0)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.mode_signal = QtGui.QRadioButton(self.layoutWidget2)
         self.mode_signal.setObjectName(_fromUtf8("mode_signal"))
@@ -320,6 +324,7 @@ class Ui_MainWindow(object):
         self.layoutWidget3.setGeometry(QtCore.QRect(600, 0, 196, 24))
         self.layoutWidget3.setObjectName(_fromUtf8("layoutWidget3"))
         self.vel_or_freq_group = QtGui.QHBoxLayout(self.layoutWidget3)
+        self.vel_or_freq_group.setMargin(0)
         self.vel_or_freq_group.setObjectName(_fromUtf8("vel_or_freq_group"))
         self.radioButton_velocity = QtGui.QRadioButton(self.layoutWidget3)
         self.radioButton_velocity.setChecked(True)
@@ -333,20 +338,23 @@ class Ui_MainWindow(object):
         self.layoutWidget4.setGeometry(QtCore.QRect(0, 0, 2, 2))
         self.layoutWidget4.setObjectName(_fromUtf8("layoutWidget4"))
         self.horizontalLayout_9 = QtGui.QHBoxLayout(self.layoutWidget4)
+        self.horizontalLayout_9.setMargin(0)
         self.horizontalLayout_9.setObjectName(_fromUtf8("horizontalLayout_9"))
         self.layoutWidget5 = QtGui.QWidget(self.centralwidget)
         self.layoutWidget5.setGeometry(QtCore.QRect(0, 0, 2, 2))
         self.layoutWidget5.setObjectName(_fromUtf8("layoutWidget5"))
         self.verticalLayout = QtGui.QVBoxLayout(self.layoutWidget5)
+        self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.layoutWidget6 = QtGui.QWidget(self.centralwidget)
         self.layoutWidget6.setGeometry(QtCore.QRect(0, 0, 2, 2))
         self.layoutWidget6.setObjectName(_fromUtf8("layoutWidget6"))
         self.horizontalLayout_12 = QtGui.QHBoxLayout(self.layoutWidget6)
+        self.horizontalLayout_12.setMargin(0)
         self.horizontalLayout_12.setObjectName(_fromUtf8("horizontalLayout_12"))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 808, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 808, 20))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -355,7 +363,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
-        self.tabWidget_2.setCurrentIndex(0)
+        self.tabWidget_2.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

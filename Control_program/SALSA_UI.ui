@@ -17,7 +17,7 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
       <width>791</width>
       <height>541</height>
@@ -334,7 +334,7 @@
         <x>30</x>
         <y>230</y>
         <width>721</width>
-        <height>261</height>
+        <height>271</height>
        </rect>
       </property>
       <property name="title">
@@ -350,7 +350,7 @@
         </rect>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="receiver_tab_basic">
         <attribute name="title">
@@ -829,7 +829,7 @@
      <x>0</x>
      <y>0</y>
      <width>808</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
