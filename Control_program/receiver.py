@@ -69,7 +69,7 @@ class SALSA_Receiver(gr.top_block):
         self.signal_file_sink_2 = blocks.file_sink(gr.sizeof_float*1, self.outfile, False)
         self.signal_file_sink_2.set_unbuffered(False)
         self.blocks_null_sink = blocks.null_sink(gr.sizeof_float*1)	
-		#Selector for GPIO switch
+		#Selector for switch
         self.blks2_selector_0 = grc_blks2.selector(
             item_size=gr.sizeof_float*1,
             num_inputs=1,

@@ -59,37 +59,37 @@ class Measurement:
     def measure(self):
        self.receiver.start()
        if self.switched == True:
-            self.sigCount = 0
+            self.sigCount = 0 #Counter for signal and reference files
             self.refCount = 0
             self.signal_time = 0 #Actual signal time
             self.reference_time = 0
 			
-            t_end = time.time() + self.int_time
+            t_end = time.time() + self.int_time #Run loop for total observation time
             while time.time() <= t_end and self.abort == False:
-                self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
-                time.sleep(10e-3)
+                self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0) #Switch to signal frequency
+                time.sleep(10e-3) #Sleep in order for LO to lock and GNURadio stream to clear out, can be lowered
                 self.receiver.lock()
-                self.receiver.signal_file_sink_1.open("/tmp/spectrums/sig" + str(self.sigCount))
+                self.receiver.signal_file_sink_1.open("/tmp/spectrums/sig" + str(self.sigCount)) #Switch to signal file sink
                 self.receiver.unlock()
-                self.receiver.blks2_selector_0.set_output_index(1)
+                self.receiver.blks2_selector_0.set_output_index(1) #Switch GNURadio stream to signal file sink (switching just file sinks also works but this functions as extra security)
                 t_end2 = time.time() + self.sig_time
                 start = time.time()
                 print "Signal"
-                while time.time() <= t_end2 and time.time() <= t_end and self.abort == False:
+                while time.time() <= t_end2 and time.time() <= t_end and self.abort == False: #Continue stream to signal file sink for set signal time
                       continue
-                self.receiver.blks2_selector_0.set_output_index(0)
+                self.receiver.blks2_selector_0.set_output_index(0) #Switch to null sink for blanking time
                 self.receiver.lock()
-                self.receiver.signal_file_sink_1.close()
+                self.receiver.signal_file_sink_1.close() #Close current file sink
                 self.receiver.unlock()
                 end = time.time()
                 self.signal_time += (end-start)
                 self.sigCount +=1
-                self.receiver.uhd_usrp_source_0.set_center_freq(self.ref_freq, 0)
+                self.receiver.uhd_usrp_source_0.set_center_freq(self.ref_freq, 0) #Switch to reference frequency
                 time.sleep(10e-3)
                 self.receiver.lock()
-                self.receiver.signal_file_sink_2.open("/tmp/spectrums/ref" + str(self.refCount))
+                self.receiver.signal_file_sink_2.open("/tmp/spectrums/ref" + str(self.refCount)) #Switch to reference file sink
                 self.receiver.unlock()
-                self.receiver.blks2_selector_0.set_output_index(2)
+                self.receiver.blks2_selector_0.set_output_index(2) #Switch GNURadio stream to reference file sink
                 t_end3 = time.time() + self.ref_time
                 start1 = time.time()
                 print "Reference"
@@ -103,11 +103,11 @@ class Measurement:
                 self.reference_time += (end1-start1)
                 self.refCount +=1
         
-            self.sigList = []
+            self.sigList = [] #Init signal file sink list
             self.refList = []
 
             for i in range(self.sigCount):
-                item = "/tmp/spectrums/sig" + str(i)
+                item = "/tmp/spectrums/sig" + str(i) #Append items depending on the amount of files
                 self.sigList.append(item)
             for i in range(self.refCount):
                 item = "/tmp/spectrums/ref" + str(i)
@@ -135,7 +135,7 @@ class Measurement:
             if self.abort == False:
                 self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
                 self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
-       else:
+       else:#Unswitched measurement
             self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
             time.sleep(10e-3)
             self.receiver.lock()
