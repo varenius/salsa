@@ -1,0 +1,2 @@
+Use the SALSA control program to steer the telescope. First towards the Sun. Then run the wideband script once and save the values. Then steer away somewhere else. Run the script again and save the values. 
+The values may now be used to figure out something about the telescope performance as function of frequency.
