@@ -337,4 +337,5 @@ class SALSA_spectrum:
         return totpow
 
     def print_total_power(self):
-        print "SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4))
+        #print "SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4))
+        print "SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}, alt={3}, az={4}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4), self.alt, self.az)
