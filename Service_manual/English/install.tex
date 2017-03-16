@@ -1,0 +1,282 @@
+\chapter{System installation}
+In this chapter we describe how to set up a SALSA system from scratch. Currently only the software part is included, the hardware part will be added later.
+
+\section{Software}
+This log was written by Eskil Varenius 2015-11-16 as he re-installed all
+software on the computer “vale” from scratch. Below follows the polished log,
+where I have tried to improve the clarity of the text for easy reading. All
+commands in the terminal are in bold face. In general things should work as
+described, but there may be one or several reboots of the computer missing to
+read in config files etc. If you get stuck, try a reboot. This manual may also
+be useful for a “client” computer like “brage” which is not running the booking
+system server. In that case, large parts can be omitted, in particular setting
+up mysql and apache servers, and only a mysql client should be needed.
+
+\subsection{Pre-requisites}
+At the start of this, I had one completely clean computer (Dell Optiplex 760)
+and one Live-DVD of Linux Mint 17.2 Mate 64-bit. I also had a backup of the
+directories “/opt” and “/var/www” as well as a SQL-dump of the drupal database.
+
+\subsection{Installing Linux Mint 17}
+First I plugged in the internet cable and inserted the live-DVD. I had to press
+F12 when starting the system to get the boot menu, then wait a minute until I
+was sure that the computer had accepted the DVD, and then press “Boot from dvd”
+option. After some time, the Linux Mint Live environment was up and running,
+and I used the “Install Linux Mint” option on the desktop. I ran the guide with
+default options, since the hard-drive was clean no re-formatting etc. was
+needed. When the install finished the screen was black, probably because I left
+it long enough for the screen-saver timer to start, but no screen save was
+active. I had to press space on the keyboard to wake it up, and it then asked
+me if I wanted to restart or continue with Live DVD. I choose restart and was
+then told to eject install media and close tray. I choose \verb!salsa_admin! as user
+and choose a new password to reflect the year :). The system now booted up all
+fine. First thing I did was to choose not to display the startup dialogue all
+the time. Then I ran a complete update using the graphical software updater.
+Then I rebooted the system. To remove Mint Welcome screen for new users, which
+is only confusing to describe in the instructions for remote login, I ran sudo
+apt-get purge mintwelcome. Finally I installed the editor “vim” which I like to
+use to edit config files etc. by typing sudo aptitude install vim. 
+
+\subsection{Network configuration}
+To make Vale resolve other local computers, as being able to write “ssh brage”
+instead of the “ssh brage.oso.chalmers.se”, manual config was needed. The file
+\verb!/etc/resolvconf/resolv.conf.d/base! was edited to contain the following four
+lines
+\begin{verbatim}
+domain oso.chalmers.se
+search oso.chalmers.se
+nameserver 129.16.1.53
+nameserver 129.16.2.53
+\end{verbatim}
+
+\subsubsection{Setting manual IP}
+The SALSA computers have two network cards: one to the outside world (public),
+and one used for the USRP/RIO units (local). The only important requirement is
+that for the USRP (local) the card has to do 1Gbps (i.e. 100Mbps is not
+enough). For the public network, vale has a dedicated IP-address, so I changed
+to manual IP using the graphical tools: “Control center-> network connections
+-> Wired connection 1 -> IPv4”. For easy reference I also changed the name of
+this connection to “Public internet”, as in connected to the outside world. The
+IP was set to “Manual” and one adress line was added (IP, netmask, gateway) as
+192.16.208.184, 255.255.255.0, 192.16.208.1. I did not specify any DNS. For the
+local card I needed two lines of adresses since the USRP and RIO boxes were
+different: 192.168.10.10, 255.255.255.0, 129.168.10.1 for USRP, and
+169.254.212.10, 255.255.255.0, 169.254.212.1 for RIO.  The USRP also need some
+extra settings, else it will complain and suggest one to run the commands 
+\verb!sysctl -w net.core.rmem_max=50000000! and 
+\verb!sysctl -w net.core.wmem_max=1048576!. But, this only works
+temporarily, I need a permanent fix for all users. From the USRP documentation
+it is said that this could be fixed by editing the file
+“/etc/sysctl.d/uhd-usrp2.conf” to contain
+\begin{verbatim}
+# USRP2 gigabit ethernet transport tuning
+net.core.rmem_max=50000000
+net.core.wmem_max=1048576
+\end{verbatim}
+While doing this, we can also get rid of the USRP warning “Unable to set the
+thread priority.” by adding, at the end of the file
+“/etc/security/limits.conf”, the following lines: 
+\begin{verbatim}
+@salsa_admin    -    rtprio    99
+@salsa_users    -    rtprio    99
+\end{verbatim}
+
+\subsection{Setting up SSH-access}
+To be able to login remotely to Vale via SSH, I installed “open-ssh server”:
+sudo aptitude install open-ssh server and no further configuration was needed. 
+\subsection{Install webserver and mysql database}
+I used apache2 as web server. Install by sudo aptitude install apache2. Then I
+replaced the contents of  /var/www/html (only default “index.html”) with the
+backed up files, i.e. index.html and “salsa”-folder. I made sure of permission
+by running sudo chown -R www-data:www-data salsa/ in the /var/www/html-folder.
+Then I installed a mysql server by sudo aptitude install mysql-server and when
+prompted I choose the root password as the standard admin password. Then
+I installed phpmyadmin to handle mysql administration sudo aptitude install
+phpmyadmin, where I selected apache2 using space key and set the password to
+the admin password. I also installed mysql client, not sure if it was
+needed, as sudo aptitude install mysql-client. Finally, phpmyadmin complained
+that so I solved it by running sudo php5enmod mcrypt and sudo service apache2
+restart.  
+\subsection{Creating MySQL users and tables}
+Now I logged in to vale.oso.chalmers.se/phpmyadmin as root. First I added the
+user \verb!salsa_drupal!, with hostname “localhost” and selected the option “Create
+database with same name and grant all privileges”. Note that the username and
+password chosen here has to be match in the file
+“/var/www/html/salsa/sites/default/settings.php” line 567 for drupal to work,
+and in the crontab bash script for the handling of bookings to work. I now want
+to import the old database structure, but before doing so in phpmyadmin we need
+to allow large files to be imported, since the SQL-dump is around 240Mb. To up
+the limits, we edit the file “/etc/php5/apache2/php.ini” to say
+\begin{verbatim}
+upload_max_filesize = 512M
+memory_limit = 512M
+post_max_size = 512M
+\end{verbatim}
+, and then we restart apache as sudo service apache2 restart. Now the import
+worked fine and the database was imported, along with the \verb!salsa_archive!
+table. I now created the \verb!salsa_archive! user and opened privileges for this user
+only on the archive table, using phpmyadmin “edit privileges”. This was
+done only for localhost access, and nicely returned the message 
+\verb! “GRANT SELECT , INSERT , UPDATE , REFERENCES ON! \newline
+\verb!`salsa_drupal`.`salsa_archive` TO 'salsa_archive'@'localhost';! 
+as confirmation.  
+\subsubsection{Enable access to booking system}
+To be able to read the mysql-database from
+another computer (i.e. not localhost) I need to add another user with name
+\verb!salsa_drupal! but specify “host=brage.oso.chalmers.se” for brage. But, for
+this security layer to be considered, I first have to allow access from
+anything else than the default 127.0.0.1. this is done by editing the file
+“/etc/mysql/my.cnf” (on the server computer vale) and commenting the line
+“bind-adress=127.0.0.1” followed by sudo service mysql restart. NOTE: this was
+also needed for the \verb!salsa_archive! user to be able to send the new fits files.
+
+\subsection{Setting up Apache and Drupal}
+For drupal to work we need to make sure the login credentials are OK in the
+file “settings.php”. I also made sure the settings.php file had proper
+permissions as sudo chown go-rwx settings.php. Just checking the webpage showed
+that I could not access anything except for the front page. Several issues had
+to be sorted out. It seems Drupal needs the “gd” library, so we need to install
+it by sudo aptitude install php5-gd and then sudo service apache2 restart. I
+then found out that drupal needs \verb!mod_rewrite! enabled in apache2, so I did
+sudo a2enmod rewrite and sudo service apache2 restart to enable it. After this
+I needed to modify “/etc/apache2/apache2.conf” to allow overrides, else the
+CleanURL-config in Drupals .htaccess file will not work. So I changed the
+section on /var/www/ in the apache config file to say “AllowOverride All”
+instead of “none”, i.e.  
+\begin{verbatim}
+<Directory /var/www/>
+       Options Indexes FollowSymLinks
+       AllowOverride All
+       Require all granted
+</Directory>
+\end{verbatim}
+For future drupal maintenance, the software “drush” is very useful, so I
+installed it as sudo aptitude install drush. Finally I changed the password of
+the web-admin account.  
+
+\subsection{Install and configure Cendio ThinLinc}
+This is a wonderful remote desktop service which is free for less than 10
+simultaneous users, perfect with SALSA. First I requested the latest version on
+the cendio webpage and got an email where I could download the file
+“tl-4.5.0-server.zip”. This was unzipped and I ran the graphical installer
+“Thinlinc Server installer”. Following instructions, this also runs a setup
+utility afterwards, where I choose password for the web admin tools etc. The
+utility installs a lot of missing dependencies, the only thing I skip is to
+configure printers.  ThinLinc can restrict user access in terms of groups. It
+is easy to modify the group membership of users via the cronjob script, so I
+created a group where I place the current user(s) who can login to the computer
+using the ThinLinc webaccess as \verb!sudo addgroup salsa_weblogin!. This is
+then read by ThinLinc after modifying the file
+\begin{verbatim}
+/opt/thinlinc/etc/conf.d/vsmserver.hconf
+\end{verbatim}
+where I set
+\verb!allowed_groups=salsa_weblogin!.  Now I want to tailor the software to
+SALSA. First is to remove the welcome windows by setting
+\verb!show_intro=false! in 
+\begin{verbatim}
+/opt/thinlinc/etc/conf.d/profiles.hconf
+\end{verbatim}
+I also replaced “Cendio thinlinc” with “SALSA Vale” in short welcome lines.
+Then I want to make the login-page that users see a bit more SALSA-like. This
+page is reached at “vale.oso.chalmers.se:300”. First I edit the welcome page by
+editing the file
+\begin{verbatim}
+/opt/thinlinc/share/tlwebaccess/templates/main.tmpl
+\end{verbatim}
+with custom replaced html. It should be possible to use the templates in a
+better way, rather than replacing , but this works. I also also added logo.png
+to the folder
+\begin{verbatim}
+/opt/thinlinc/share/tlwebaccess/www/images
+\end{verbatim}
+to show SALSA logo on the login page. Now ThinLinc was ready for use!
+
+\subsection{Setting up the cronjob}
+The SALSA booking system works by crontab running a bash-script every minute to
+check for new bookings. This script needs some software, e.g. “members” which
+was installed as sudo aptitude install members. From the backup directory (or
+from github repo with appropriate modifications) I then copied the crontab
+files to /opt/salsa.  I also copied the “skel”-files which will be used by the
+cron-script to place desktop shortcuts to the control program. For this, an
+icon was also included in the /opt/salsa directory. I also needed to add the
+group \verb!salsa_users! by running \verb!sudo addgroup salsa_users!.  The crontab could
+now be ran, and was started by using sudo crontab -e, and adding the line:
+\begin{verbatim}
+*/1 * * * * /opt/salsa/crontab/update_salsa_access_from_drupal.sh
+\end{verbatim}
+at the bottom of the file.
+
+
+
+\subsection{Installing the SALSA control software}
+The SALSA control software can be obtained from Eskil Varenius’ github:
+\begin{verbatim}
+git clone https://github.com/varenius/salsa.git salsa.git
+\end{verbatim}
+The files in the folder \verb!/Control_program! was now copied to
+/opt/salsa/controller. The default config file was renamed to SALSA.config and
+then edited with computer/telescope specific settings. To make SALSA easily
+accessible by all users, the global configuration file “/etc/profile” was
+edited to append the PATH command 
+\begin{verbatim}
+export PATH=$PATH:/opt/salsa/controller/
+\end{verbatim}
+
+To make the SALSA python software run, the following was needed
+sudo aptitude install python-tk python-scipy python-astropy python-mysqldb python-dev python-matplotlib python-pip
+Then, using pip (installed above) the following two python modules were installed
+sudo pip install pyephem;
+sudo pip install tendo;
+
+Finally we need gnuradio and uhd-drivers to connect to the USRP. No drivers or
+files are needed for the RIO because we are using telnet for that. To get
+GNUradio and USRP things: sudo aptitude install gnuradio libuhd-dev libuhd003
+uhd-host
+
+Make sure that the SALSA item in the /opt/salsa/controller is a symbolic link.
+Sometimes, when copying, it may be replaced with an actual python file. This
+will work, but then when updating the software it will not be updated and
+problems may arise. To create the symbolic link to main.py, use sudo ln -s
+main.py SALSA.
+
+The SALSA program can now be started using SALSA in a terminal (after logging
+out and in again), or via /opt/salsa/controller/main.py.
+
+Done!
+
+\subsection{Backup}
+We want SALSA to be backed up. Currently this is done via root-access using a
+public ssh key which I got from Glenn Persson in Onsala. By default, root-login
+was enabled “without-password” in ssh-config so no changes needed apart from
+adding the public key to \verb!/root/.ssh/authorized_keys!. Note that the folder .ssh
+and files had to be created. Permissions were set using \verb!chmod 700 .ssh! and
+\verb!chmod 600 .ssh/authorized_keys!. Backed up folders (as of 2015-11-17) are
+\begin{verbatim}
+/home/salsa_admin/ 
+/opt/salsa/ 
+/opt/thinlinc/ 
+/var/lib/mysql/
+/var/www/
+\end{verbatim}
+
+\subsection{Setting up GalilTools for RIO development}
+To develop new features it is useful to communicate directly with the RIO using
+the software GalilTools available from Galil. Downloaded from
+\begin{verbatim}
+http://www.galil.com/download/software/galiltools/linux/
+\end{verbatim} 
+I used the file
+\verb!galiltools_1.6.4_amd64.deb! from the folder Ubundu 14.04.  and installed
+with \verb!sudo dpkg -i galiltools_1.6.4_amd64.deb! and then i could start the
+software using only “galiltools” in a terminal.
+
+\subsection{Qt-designer for graphical UI development}
+I use the graphical designer software called qt4-designer to construct the
+SALSA GUI. It is installed by typing sudo aptitude install qt4-designer.
+Then, the SALSA user interface is edited by typing \verb!designer SALSA_UI.ui!.
+Once saved, the designer file needs to be converted to python code. This
+is done using the pyuic tool, which first has to be installed through
+\verb! sudo aptitude install pyqt4-dev-tools!. Then, one may run
+\verb! pyuic4 SALSA_UI.ui > UI.py! to update the UI.py file. Possible hooks
+for buttons etc. are implemented manually in main.py.
