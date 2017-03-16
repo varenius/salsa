@@ -21,3 +21,12 @@
 \contentsline {subsection}{\numberline {2.1.11}Backup}{9}{subsection.2.1.11}
 \contentsline {subsection}{\numberline {2.1.12}Setting up GalilTools for RIO development}{9}{subsection.2.1.12}
 \contentsline {subsection}{\numberline {2.1.13}Qt-designer for graphical UI development}{9}{subsection.2.1.13}
+\contentsline {section}{\numberline {2.2}Obtain HTTPS certificates}{9}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Create and install certificates}{9}{subsection.2.2.1}
+\contentsline {subsubsection}{Set correct file permissions}{10}{section*.7}
+\contentsline {subsection}{\numberline {2.2.2}configure ThinLinc}{10}{subsection.2.2.2}
+\contentsline {subsubsection}{Edit Thinlinc config files}{10}{section*.8}
+\contentsline {subsubsection}{Restart ThinLinc}{10}{section*.9}
+\contentsline {subsection}{\numberline {2.2.3}Restart Apache}{10}{subsection.2.2.3}
+\contentsline {subsection}{\numberline {2.2.4}Add crontab entry to update certificates}{11}{subsection.2.2.4}
+\contentsline {subsection}{\numberline {2.2.5}Troubleshooting}{11}{subsection.2.2.5}

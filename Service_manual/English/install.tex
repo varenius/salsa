@@ -1,5 +1,7 @@
 \chapter{System installation}
-In this chapter we describe how to set up a SALSA system from scratch. Currently only the software part is included, the hardware part will be added later.
+In this chapter we describe how to set up a SALSA system from scratch.
+Currently only the software part is included, the hardware part will be added
+later.
 
 \section{Software}
 This log was written by Eskil Varenius 2015-11-16 as he re-installed all
@@ -280,3 +282,90 @@ is done using the pyuic tool, which first has to be installed through
 \verb! sudo aptitude install pyqt4-dev-tools!. Then, one may run
 \verb! pyuic4 SALSA_UI.ui > UI.py! to update the UI.py file. Possible hooks
 for buttons etc. are implemented manually in main.py.
+
+\section{Obtain HTTPS certificates}
+This section describeds How to install HTTPS certificates for SALSA. This
+is needed to avoid warnings when connecting through the ThinLinc HTML5 
+browser client. The following commands are a mix of brage/vale commands.
+Make sure to change the compute name accordingly, e.g. to either brage
+or vale in all such references.
+
+\subsection{Create and install certificates}
+We follow the instructions at https://letsencrypt.org/, i.e. us the certbot 
+script.
+\begin{verbatim}
+sudo mkdir /opt/certbot
+cd /opt/certbot
+sudo wget https://dl.eff.org/certbot-auto
+sudo chmod a+x certbot-auto
+sudo ./certbot-auto
+\end{verbatim}
+Answer yes to install packages. Add email salsa.onsala@gmail.com. Choose not to
+share email adress. Agree to terms of service.  Enter domain
+“brage.oso.chalmers.se” or “vale.oso.chalmers.se” Finally, when prompted,
+choose alternative 1: Easy - Allow both HTTP and HTTPS access to these sites.
+
+\subsubsection{Set correct file permissions}
+For some reason, certificate file permissions are set to 644
+instead of 600 by the certbot script. ThinLinc requires 600 to run, so 
+we change:
+\begin{verbatim}
+sudo chmod -R 600 /etc/letsencrypt/archive/brage.oso.chalmers.se/
+\end{verbatim}
+
+\subsection{configure ThinLinc}
+
+\subsubsection{Edit Thinlinc config files}
+To use cert files, edit
+\verb!/opt/thinlinc/etc/conf.d/webaccess.hconf!
+to say 
+\begin{verbatim}
+cert=/etc/letsencrypt/live/vale.oso.chalmers.se/fullchain.pem
+certkey=/etc/letsencrypt/live/vale.oso.chalmers.se/privkey.pem
+\end{verbatim}
+
+To make sure hostname is correct (else thin linc will redirect
+to use IP adress, for which cert is not valid),
+edit the file \verb!/opt/thinlinc/etc/conf.d/vsmagent.hconf!
+to say 
+\begin{verbatim}
+master_hostname=brage.oso.chalmers.se
+agent_hostname=brage.oso.chalmers.se
+\end{verbatim}
+
+\subsubsection{Restart ThinLinc}
+ThinLinc needs to be restarted to read new configuration files.
+\begin{verbatim}
+sudo service vsmserver restart
+sudo service vsmagent restart
+sudo service tlwebadm restart
+sudo service tlwebaccess restart
+\end{verbatim}
+NOTE: If the above do not solve the issue, try rebooting to make sure all is
+restarted.
+
+\subsection{Restart Apache}
+Apache needs to be restarted to red new config:
+\begin{verbatim}
+sudo service apache2 restart
+\end{verbatim}
+
+\subsection{Add crontab entry to update certificates}
+Certificates from Lets Encrypt are valid for 90 days. To automatically
+update the certificates, we add a cronjob by running
+\verb!sudo crontab -e! and adding
+\begin{verbatim}
+# Update httos-certificates at 02:23 every night
+23 2 * * * /opt/certbot/certbot-auto renew --quiet --no-self-upgrade
+24 2 * * * chmod -R 600 /etc/letsencrypt/archive/vale.oso.chalmers.se/
+\end{verbatim}
+Second line needed because else thinlinc client won’t start, as cert-files have read permissions.
+
+\subsection{Troubleshooting}
+If you need to remove all Let's encrypt files, e.g. to start over,
+run 
+\begin{verbatim}
+rm -rf /etc/letsencrypt /var/log/letsencrypt 
+/var/lib/letsencrypt ${XDG_DATA_HOME:-~/.local/share}/letsencrypt
+\end{verbatim}
+

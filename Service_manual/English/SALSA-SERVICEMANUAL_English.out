@@ -18,3 +18,9 @@
 \BOOKMARK [2][-]{subsection.2.1.11}{Backup}{section.2.1}% 18
 \BOOKMARK [2][-]{subsection.2.1.12}{Setting up GalilTools for RIO development}{section.2.1}% 19
 \BOOKMARK [2][-]{subsection.2.1.13}{Qt-designer for graphical UI development}{section.2.1}% 20
+\BOOKMARK [1][-]{section.2.2}{Obtain HTTPS certificates}{chapter.2}% 21
+\BOOKMARK [2][-]{subsection.2.2.1}{Create and install certificates}{section.2.2}% 22
+\BOOKMARK [2][-]{subsection.2.2.2}{configure ThinLinc}{section.2.2}% 23
+\BOOKMARK [2][-]{subsection.2.2.3}{Restart Apache}{section.2.2}% 24
+\BOOKMARK [2][-]{subsection.2.2.4}{Add crontab entry to update certificates}{section.2.2}% 25
+\BOOKMARK [2][-]{subsection.2.2.5}{Troubleshooting}{section.2.2}% 26
