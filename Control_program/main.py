@@ -63,6 +63,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.telescope = TelescopeController(self.config) 
         self.setupUi(self)
         self.init_Ui()
+        plt.ioff()
 
         # Check if telescope knows where it is (position can be lost e.g. during powercut).
         if self.telescope.get_pos_ok():
@@ -85,7 +86,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         # Define and run UiTimer
         self.uitimer = QtCore.QTimer()
         self.uitimer.timeout.connect(self.update_Ui)
-        self.uitimer.start(1000) #ms
+        self.uitimer.start(500) #ms
 
         # Create timer used to toggle (and update) tracking
         # Do not start this, started by user on Track button.
@@ -137,8 +138,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         plotwinlayout.addWidget(self.toolbar)
         self.groupBox_spectrum.setLayout(plotwinlayout)
         self.radioButton_frequency.toggled.connect(self.change_spectra)
-        
-
+       
     def change_spectra(self):
         # Plot spectra of currently selected item
         spectrum = self.spectra[str(self.listWidget_spectra.currentItem().text())]
@@ -151,11 +151,15 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
     def clear_progressbar(self):
         self.lapsedtime = 0
-        target = int(self.IntegrationTimeInput.text())
-        if self.mode_switched.isChecked():
-            target *=2
+        if self.cycle_checkbox.isChecked():
+            sig_time = int(self.sig_time_spinbox.text()) # [s]
+            ref_time = int(self.ref_time_spinBox.text()) # [s]
+            loops = int(self.loops_spinbox.text())
+            target = int((sig_time+ref_time)*loops) 
+        else:
+            target = int(self.int_time_spinbox.text())
         overhead = int(0.1*target) # Calculate extra time for processing, stacking etc.
-        target +=  max(1,overhead) # Add extra time, at least 1 second
+        target +=  max(1.5,overhead) #Add extra time, at least 2 second
         self.expectedtime = target
         self.progressBar.setValue(100*self.lapsedtime/self.expectedtime)
 
@@ -167,24 +171,26 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.FrequencyInput.setReadOnly(True)
         self.RefFreqInput.setReadOnly(True)
         self.BandwidthInput.setReadOnly(True)
-        self.IntegrationTimeInput.setReadOnly(True)
         self.ChannelsInput.setReadOnly(True)
         self.autoedit_bad_data_checkBox.setEnabled(False)
         self.mode_switched.setEnabled(False)
         self.mode_signal.setEnabled(False)
         self.LNA_checkbox.setEnabled(False)
         self.noise_checkbox.setEnabled(False)
+        self.cycle_checkbox.setEnabled(False)
         self.vlsr_checkbox.setEnabled(False)
         self.btn_observe.setEnabled(False)
         self.btn_abort.setEnabled(True)
+        self.sig_time_spinbox.setEnabled(False)
+        self.ref_time_spinBox.setEnabled(False)
     
     def enable_receiver_controls(self):
         self.FrequencyInput.setReadOnly(False)
         self.RefFreqInput.setReadOnly(False)
         self.BandwidthInput.setReadOnly(False)
-        self.IntegrationTimeInput.setReadOnly(False)
         self.ChannelsInput.setReadOnly(False)
         self.autoedit_bad_data_checkBox.setEnabled(True)
+        self.cycle_checkbox.setEnabled(True)
         self.mode_switched.setEnabled(True)
         self.mode_signal.setEnabled(True)
         self.LNA_checkbox.setEnabled(True)
@@ -192,6 +198,8 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.vlsr_checkbox.setEnabled(True)
         self.btn_observe.setEnabled(True)
         self.btn_abort.setEnabled(False)
+        self.sig_time_spinbox.setEnabled(True)
+        self.ref_time_spinBox.setEnabled(True)
 
     def observation_finished(self):
         # Turn off LNA after observation
@@ -199,17 +207,17 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.telescope.set_noise_diode(False)
         if not self.aborting:
             # Post-process data
-            sigspec = self.sigworker.measurement.spectrum
+            sigspec = self.sigworker.measurement.signal_spec
             if self.autoedit_bad_data_checkBox.isChecked():
                 print "Removing RFI from signal..."
                 sigspec.auto_edit_bad_data()
             if self.mode_switched.isChecked():
-                refspec = self.refworker.measurement.spectrum
+                refspec = self.sigworker.measurement.reference_spec
                 if self.autoedit_bad_data_checkBox.isChecked():
                     print "Removing RFI from reference..."
                     refspec.auto_edit_bad_data()
                 print "Removing reference from signal..."
-                sigspec.data -=refspec.data
+                sigspec.data -= refspec.data
             # Average to desired number of channels
             nchans = self.sigworker.measurement.noutchans
             sigspec.decimate_channels(nchans)
@@ -226,6 +234,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.progresstimer.stop()
         self.clear_progressbar()
         self.enable_receiver_controls()
+        self.abort_obs() #Make sure receiver and current thread is stopped
 
     def send_to_webarchive(self):
         date = str(self.listWidget_spectra.currentItem().text())
@@ -247,11 +256,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         print "Aborting measurement."
         self.aborting = True
         if hasattr(self, 'sigthread'):
+            self.sigworker.measurement.abort = True
             self.sigworker.measurement.receiver.stop()
             self.sigthread.quit()
-        if hasattr(self, 'refthread'):
-            self.refworker.measurement.receiver.stop()
-            self.refthread.quit()
         # TODO: clean up temp data file.
         self.enable_receiver_controls()
     
@@ -261,63 +268,65 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.btn_observe.setEnabled(False)
         self.clear_progressbar()
         self.progresstimer.start(1000) # ms
+        
         # Use LNA if selected
         if self.LNA_checkbox.isChecked():
             self.telescope.set_LNA(True)
         # Use noise diode if selected
         if self.noise_checkbox.isChecked():
             self.telescope.set_noise_diode(True)
-        freq = float(self.FrequencyInput.text())*1e6 # Hz
+            
+        sig_freq = float(self.FrequencyInput.text())*1e6 # Hz
+        ref_freq = float(self.RefFreqInput.text())*1e6
         bw = float(self.BandwidthInput.text())*1e6 # Hz
-        int_time = float(self.IntegrationTimeInput.text())
+
+        if self.cycle_checkbox.isChecked():
+            sig_time = float(self.sig_time_spinbox.text()) # [s]
+            ref_time = float(self.ref_time_spinBox.text()) # [s]
+            loops = int(self.loops_spinbox.text()) #
+            int_time = (sig_time+ref_time)*loops
+        else:
+            if self.mode_switched.isChecked():
+                sig_time = float(self.int_time_spinbox.text())/2
+                ref_time = float(self.int_time_spinbox.text())/2
+                loops = 1;
+                while sig_time > 20:
+                     sig_time = sig_time/2
+                     ref_time = ref_time/2
+                     loops = loops + 1
+                int_time = (sig_time+ref_time)*loops
+            else:
+                sig_time = float(self.int_time_spinbox.text())
+                ref_time = 0
+                loops = 1
+                int_time = sig_time
+
+        if self.mode_switched.isChecked():
+            print "Signal cycle time: "
+            print sig_time
+            print "Reference cycle time: "
+            print ref_time
+
         nchans = int(self.ChannelsInput.text()) # Number of output channels
         calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
         self.telescope.site.date = ephem.now()
+        switched = self.mode_switched.isChecked()
         # Get ra, dec using radec_of. This function
         # has input order AZ, ALT, i.e. inverted to most other functions.
         # Then, make ephem object to pass to measurement
         (calt_deg, caz_deg) = self.telescope.get_current_alaz()
         (coff_alt, coff_az) = self.get_desired_alaz_offset()
+        
         self.sigworker = Worker()
         self.sigthread = Thread() # Create thread to run GNURadio in background
         self.sigthread.setTerminationEnabled(True)
         self.sigworker.moveToThread(self.sigthread)
-        self.sigworker.measurement = Measurement(freq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, calfact)
+        self.sigworker.measurement = Measurement(sig_freq, ref_freq, switched, int_time, sig_time, ref_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, calfact)
+
         self.sigthread.started.connect(self.sigworker.work)
         self.sigworker.finished.connect(self.sigthread.quit)
-        if self.mode_switched.isChecked():
-            self.sigworker.finished.connect(self.observe_ref)
-        else:
-            self.sigworker.finished.connect(self.observation_finished)
+        self.sigworker.finished.connect(self.observation_finished)
         self.sigthread.start()
-    
-    def observe_ref(self):
-        if not hasattr(self, 'aborting'):
-            self.aborting = False
-        if not self.aborting:
-            reffreq = float(self.RefFreqInput.text())*1e6 # Hz
-            bw = float(self.BandwidthInput.text())*1e6 # Hz
-            int_time = float(self.IntegrationTimeInput.text())
-            nchans = int(self.ChannelsInput.text()) # Number of output channels
-            calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
-            # Get ra, dec using radec_of. This function
-            # has input order AZ, ALT, i.e. inverted to most other functions.
-            # Then, make ephem object to pass to measurement
-            (calt_deg, caz_deg) = self.telescope.get_current_alaz()
-            (coff_alt, coff_az) = self.get_desired_alaz_offset()
-            self.refworker = Worker()
-            self.refthread = Thread() # Create thread to run GNURadio in background
-            self.refthread.setTerminationEnabled(True)
-            self.refworker.moveToThread(self.refthread)
-            self.refworker.measurement = Measurement(reffreq, int_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, calfact)
-            self.refthread.started.connect(self.refworker.work)
-            self.refworker.finished.connect(self.refthread.quit)
-            # When obs is finished, process data and plot
-            self.refthread.finished.connect(self.observation_finished)
-            # Start ref when target is finished
-            self.refthread.start()
-        else:
-            self.observation_finished()
         
     def plot(self, spectpl):
         plt.clf()
@@ -366,6 +375,29 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.update_desired_altaz()
         self.update_current_altaz()
         self.update_coord_labels()
+        if self.mode_switched.isChecked():
+            self.cycle_checkbox.setEnabled(True)
+            self.sig_time_spinbox.setEnabled(True)
+            self.ref_time_spinBox.setEnabled(True)
+            self.loops_spinbox.setEnabled(True)
+            self.int_time_spinbox.setEnabled(True)
+        if not self.mode_switched.isChecked():
+            self.cycle_checkbox.setEnabled(False)
+            self.sig_time_spinbox.setEnabled(False)
+            self.ref_time_spinBox.setEnabled(False)
+            self.loops_spinbox.setEnabled(False)
+            self.int_time_spinbox.setEnabled(True)
+            self.cycle_checkbox.setChecked(False)
+        if self.cycle_checkbox.isChecked():
+            self.sig_time_spinbox.setEnabled(True)
+            self.ref_time_spinBox.setEnabled(True)
+            self.loops_spinbox.setEnabled(True)
+            self.int_time_spinbox.setEnabled(False)
+        if not self.cycle_checkbox.isChecked():
+            self.sig_time_spinbox.setEnabled(False)
+            self.ref_time_spinBox.setEnabled(False)
+            self.loops_spinbox.setEnabled(False)
+            self.int_time_spinbox.setEnabled(True)
 
     def update_desired_target(self):
         target = self.coordselector.currentText()

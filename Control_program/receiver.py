@@ -10,11 +10,14 @@ from gnuradio import eng_notation
 from gnuradio import fft
 from gnuradio import gr
 from gnuradio import uhd
+from grc_gnuradio import blks2 as grc_blks2
 from gnuradio.eng_option import eng_option
 from gnuradio.fft import window
 from gnuradio.filter import firdes
 from optparse import OptionParser
+from gnuradio import filter
 import time
+import threading
 
 class SALSA_Receiver(gr.top_block):
 
@@ -25,43 +28,73 @@ class SALSA_Receiver(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate = samp_rate
-        self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp"
+        self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp" #Only used for sink init
         self.int_time = int_time
         self.gain = gain = config.getfloat('USRP', 'usrp_gain')
         self.fftsize = fftsize
-        self.c_freq = c_freq 
+        self.c_freq = c_freq
+        self.probe_var = probe_var = 0
+        
+        #Integrate 10 FFTS using IIR block and keep 1 in N, increase for higher bandwidths to lower processing times.
+        self.alpha = 0.1
+        self.N = 10
 
         ##################################################
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	device_addr="addr="+config.get('USRP', 'host'),
-        	stream_args=uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+       	    device_addr="addr="+config.get('USRP', 'host'),
+            stream_args=uhd.stream_args(
+                cpu_format="fc32",
+                channels=range(1),
+                #recv_frame_size=4096, #Problems with overflow at bw>5 MHz, this might be a solution (depends on ethernet connection capabilities)
+                #recv_buff_size=4096,
+             ),
         )
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
         self.uhd_usrp_source_0.set_center_freq(c_freq, 0)
         self.uhd_usrp_source_0.set_gain(gain, 0)
+        
         self.fft_vxx_0 = fft.fft_vcc(fftsize, True, (window.blackmanharris(fftsize)), True, 1)
-        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fftsize)
+        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, fftsize)
         self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fftsize)
-        self.blocks_head_0 = blocks.head(gr.sizeof_float*1, int(int_time*samp_rate))
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_float*1, outfile, False)
-        self.blocks_file_sink_0.set_unbuffered(False)
-        self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
+        self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(fftsize)
+        self.single_pole_iir_filter_xx_0 = filter.single_pole_iir_filter_ff(self.alpha, fftsize)
+        self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_float*fftsize, self.N)
 
+
+        #Signal and reference file sinks
+        self.signal_file_sink_1 = blocks.file_sink(gr.sizeof_float*1, self.outfile, False)
+        self.signal_file_sink_1.set_unbuffered(False)
+        self.signal_file_sink_2 = blocks.file_sink(gr.sizeof_float*1, self.outfile, False)
+        self.signal_file_sink_2.set_unbuffered(False)
+        self.blocks_null_sink = blocks.null_sink(gr.sizeof_float*1)	
+		#Selector for switch
+        self.blks2_selector_0 = grc_blks2.selector(
+            item_size=gr.sizeof_float*1,
+            num_inputs=1,
+            num_outputs=2+1, #+1 for the null sink
+            input_index=0,
+            output_index=0,
+        )
+		
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_stream_to_vector_0, 0))
-        self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
-        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_head_0, 0))
-        self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_stream_to_vector_0, 0), (self.fft_vxx_0, 0))
-
+        self.connect((self.fft_vxx_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
+        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.single_pole_iir_filter_xx_0, 0))
+        self.connect((self.single_pole_iir_filter_xx_0, 0), (self.blocks_keep_one_in_n_0, 0))
+        self.connect((self.blocks_keep_one_in_n_0, 0), (self.blocks_vector_to_stream_0, 0))
+        self.connect((self.blocks_vector_to_stream_0, 0), (self.blks2_selector_0, 0))
+        
+        #Selector connections
+        self.connect((self.blks2_selector_0, 1), (self.signal_file_sink_1, 0))
+        self.connect((self.blks2_selector_0, 2), (self.signal_file_sink_2, 0))
+		
+		#Null sink connection
+        self.connect((self.blks2_selector_0, 0), (self.blocks_null_sink, 0))
 
 # QT sink close method reimplementation
 
@@ -104,6 +137,13 @@ class SALSA_Receiver(gr.top_block):
     def set_c_freq(self, c_freq):
         self.c_freq = c_freq
         self.uhd_usrp_source_0.set_center_freq(self.c_freq, 0)
+        
+    def get_probe_var(self):
+        return self.probe_var
+
+    def set_probe_var(self, probe_var):
+        self.probe_var = probe_var
+
 
 if __name__ == '__main__':
     parser = OptionParser(option_class=eng_option, usage="%prog: [options]")
