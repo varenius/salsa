@@ -24,7 +24,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, telescope):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(835, 640)
         self.centralwidget = QtGui.QWidget(MainWindow)
@@ -382,13 +382,13 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
         MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        self.retranslateUi(MainWindow, telescope)
         self.tabWidget.setCurrentIndex(0)
         self.tabWidget_2.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "SALSA Controller", None))
+    def retranslateUi(self, MainWindow, telescope):
+        MainWindow.setWindowTitle(_translate("MainWindow", "SALSA Controller: " + telescope, None))
         self.groupBox_tc.setTitle(_translate("MainWindow", "Telescope movement control", None))
         self.coordlabel_right.setText(_translate("MainWindow", "Latitude", None))
         self.inputrightcoord.setText(_translate("MainWindow", "0", None))
