@@ -28,7 +28,7 @@ class SALSA_Receiver(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate = samp_rate
-        self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp" #Not used
+        self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp" #Only used for sink init
         self.int_time = int_time
         self.gain = gain = config.getfloat('USRP', 'usrp_gain')
         self.fftsize = fftsize
@@ -95,25 +95,6 @@ class SALSA_Receiver(gr.top_block):
 		
 		#Null sink connection
         self.connect((self.blks2_selector_0, 0), (self.blocks_null_sink, 0))
-
-		#PROBE SAMPLES (For automatic gain adjustment)
-		#self.probe_signal = blocks.probe_signal_f()
-		#self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
-		
-		#self.connect((self.blocks_complex_to_mag_0, 0), (self.probe_signal, 0))    
-		#self.connect((self.uhd_usrp_source_0, 0), (self.blocks_complex_to_mag_0, 0))
-        #Probe update rate
-		#def _probe_var_probe():
-		#	while True:
-		#		val = self.probe_signal.level()
-		#		try:
-		#			self.set_probe_var(val)
-		#		except AttributeError:
-		#			pass
-		#		time.sleep(10 / (self.samp_rate)) #Update probe variabel every 10/samp_rate seconds
-		#_probe_var_thread = threading.Thread(target=_probe_var_probe)
-		#_probe_var_thread.daemon = True
-		#_probe_var_thread.start()
 
 # QT sink close method reimplementation
 
