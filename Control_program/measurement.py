@@ -50,6 +50,8 @@ class Measurement:
         self.sig_time = sig_time
         self.ref_time = ref_time
         self.abort = False
+
+        self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username
         
         # Create receiver object to run GNUradio flowgraph.
         # Using both upper and lower sideband, so bandwidth is equal to 
@@ -69,7 +71,7 @@ class Measurement:
                 self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0) #Switch to signal frequency
                 time.sleep(10e-3) #Sleep in order for LO to lock and GNURadio stream to clear out, can be lowered
                 self.receiver.lock()
-                self.receiver.signal_file_sink_1.open("/tmp/spectrums/sig" + str(self.sigCount)) #Switch to signal file sink
+                self.receiver.signal_file_sink_1.open(self.outfile + "_sig" + str(self.sigCount)) #Switch to signal file sink
                 self.receiver.unlock()
                 self.receiver.blks2_selector_0.set_output_index(1) #Switch GNURadio stream to signal file sink (switching just file sinks also works but this functions as extra security)
                 t_end2 = time.time() + self.sig_time
@@ -87,7 +89,7 @@ class Measurement:
                 self.receiver.uhd_usrp_source_0.set_center_freq(self.ref_freq, 0) #Switch to reference frequency
                 time.sleep(10e-3)
                 self.receiver.lock()
-                self.receiver.signal_file_sink_2.open("/tmp/spectrums/ref" + str(self.refCount)) #Switch to reference file sink
+                self.receiver.signal_file_sink_2.open(self.outfile + "_ref" + str(self.refCount)) #Switch to reference file sink
                 self.receiver.unlock()
                 self.receiver.blks2_selector_0.set_output_index(2) #Switch GNURadio stream to reference file sink
                 t_end3 = time.time() + self.ref_time
@@ -107,18 +109,18 @@ class Measurement:
             self.refList = []
 
             for i in range(self.sigCount):
-                item = "/tmp/spectrums/sig" + str(i) #Append items depending on the amount of files
+                item = self.outfile + "_sig" + str(i) #Append items depending on the amount of files
                 self.sigList.append(item)
             for i in range(self.refCount):
-                item = "/tmp/spectrums/ref" + str(i)
+                item = self.outfile + "_ref" + str(i)
                 self.refList.append(item)
 			
 			#Incase loop starts at end of integration time (empty files might occur)
-            if os.path.getsize('/tmp/spectrums/sig' + str(self.sigCount-1)) == 0:
-                self.sigList.remove('/tmp/spectrums/sig' + str(self.sigCount-1))
-                self.refList.remove('/tmp/spectrums/ref' + str(self.refCount-1))				
-            elif os.path.getsize('/tmp/spectrums/ref' + str(self.refCount-1)) == 0:
-                self.refList.remove('/tmp/spectrums/ref' + str(self.refCount-1))
+            if os.path.getsize(self.outfile + "_sig" + str(self.sigCount-1)) == 0:
+                self.sigList.remove(self.outfile + "_sig" + str(self.sigCount-1))
+                self.refList.remove(self.outfile + "_ref" + str(self.refCount-1))				
+            elif os.path.getsize(self.outfile + "_ref" + str(self.refCount-1)) == 0:
+                self.refList.remove(self.outfile + "_ref" + str(self.refCount-1))
 
             print "Actual Signal time: "
             print self.signal_time
@@ -139,7 +141,7 @@ class Measurement:
             self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
             time.sleep(10e-3)
             self.receiver.lock()
-            self.receiver.signal_file_sink_1.open("/tmp/spectrums/sig")
+            self.receiver.signal_file_sink_1.open(self.outfile + "_sig")
             self.receiver.unlock()
             self.receiver.blks2_selector_0.set_output_index(1)
             end = time.time() + self.sig_time
@@ -150,7 +152,7 @@ class Measurement:
             self.receiver.signal_file_sink_1.close()
             self.receiver.unlock()
 			
-            spec = self.stack_measured_FFTs("/tmp/spectrums/sig")
+            spec = self.stack_measured_FFTs(self.outfile + "_sig")
             if self.abort == False:
                self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
                
@@ -188,55 +190,3 @@ class Measurement:
 		sum_spec = np.sum(spectra, axis=0, dtype = np.float32)
 		return sum_spec/float(len(spectra))
 
-#	#Set optimal gain to utilize full dynamic range of ADC
-#	def meas_adjust(self):
-#		histData = []
-#		print "Adjusting gain"
-#		self.config.set('CTRL','state','adjusting')
-#		with open(self.configfil, 'wb') as configfile:
-#			self.config.write(configfile)
-#		self.receiver.start()
-#		timedat = 1 #Read samples for 1 second on current gain
-#		gain = 18 #Gain start value
-#		self.set_gain(gain)
-#		while gain < 31 and gain != -1:
-#			print gain
-#			L = []
-#			L1 = []
-#			L2 = []
-#			end = time.time() + timedat
-#			while time.time() <= end:
-#				time.sleep(10 / (self.samp_rate))
-#				L.append(self.receiver.get_probe_var())
-#			for i in L:
-#				if i > 0.5:
-#					L1.append(i)
-#				else:
-#					L2.append(i)
-#			hundra = len(L)
-#			print (len(L1)/float(hundra))
-#			if (len(L1)/float(hundra)) < 0.05: #As long as the samples above the value 0.5 are under 5% of all collected samples continue to increase gain
-#				gain += 1
-#				self.set_gain(gain)
-#				print self.usrp.get_gain(0)
-#				del L, L1, L2
-#			elif gain == 30:
-#				histData = L
-#				i = -1
-#				break
-#			else:
-#				histData = L
-#				i = -1
-#				del L, L1, L2
-#				break
-#		print "Final gain: "
-#		print self.usrp.get_gain(0)
-#		self.receiver.stop()
-#		self.receiver.wait()
-#		self.config.set('USRP','gain', str(self.usrp.get_gain(0)))
-#		self.config.set('CTRL','state','ready')
-#		with open(self.configfil, 'wb') as configfile:
-#			self.config.write(configfile)
-#		np.save('/home/' + user + '/Documents/sampleDist.npy', histData)
-
-	
