@@ -60,8 +60,8 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.config = ConfigParser.ConfigParser()
         self.config.read(configfile)
         # Initialise telescope and UI
-        self.telescope = TelescopeController(self.config) 
-        self.setupUi(self)
+        self.telescope = TelescopeController(self.config)
+        self.setupUi(self, self.telescope.site.name)
         self.init_Ui()
         plt.ioff()
 
