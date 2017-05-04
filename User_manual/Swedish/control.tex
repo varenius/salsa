@@ -246,12 +246,14 @@ till höger i nedre delen av programfönstret, se Fig. \ref{fig:controlmeasure}.
 \label{fig:controlmeasure}
 \end{figure}
 
-{\bf Obs.:} Teleskopet kommer att mäta under dubbelt så lång tid som du 
-anger i rutan \emph{Target integration time}. Detta eftersom teleskopet, förutom att
-mäta på ditt mål (signalen du vill ha) också behöver mäta på sig självt (hur
-mottagaren stör signalen). Detta innebär att om du väljer \emph{Target
-integration time} på 20 sekunder, så kommer det att ta ungefär 40 sekunder för
-din mätning att bli klar. 
+{\bf Obs.:} Teleskopet kommer, utan att du behöver göra något, att dela den tid
+som du anger i rutan \emph{Integration time} i två delar. Detta eftersom
+teleskopet, förutom att mäta på ditt mål (signalen du vill ha), också behöver
+mäta på sig självt (hur mottagaren stör signalen). Teleskopet gör detta genom
+att byta mätfrekvens bort från väte när det mäter på sig självt. Avancerade
+möjligheter att styra denna switchning finns under fliken \emph{Advanced}, men
+rör inte dessa värden utan att du vet vad du gör. För vanliga användare så
+behöver du endast välja integrationstid under \emph{Basic}. 
 
 \subsection{Mätresultat}
 \label{sect:inspect}

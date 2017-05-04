@@ -231,8 +231,8 @@ measurment you need to decide for how long you want to measure. A longer time
 means a clearer signal. The measurement time is called \emph{integration time}
 and you find it in the box marked \emph{Receiver control} in the middle of the
 control program window.  One usually obtains a good spectrum of galactic
-hydrogen after 20 seconds.  After entering the integration time, click on {\tt
-Measure}. You will now se ee a progress bar increasing from left to right at
+hydrogen after about 20 seconds.  After entering the integration time, click on {\tt
+Measure}. You will now see a progress bar increasing from left to right at
 the bottom part of the program, see Fig.
 \ref{fig:controlmeasure}.
 \begin{figure}[ht]
@@ -243,12 +243,15 @@ the bottom part of the program, see Fig.
 \label{fig:controlmeasure}
 \end{figure}
 
-{\bf Note:} The telescope will measure for twice the specified integration
-time.  This is because in addition to measure on the target (the signal you
-want), the telescope also needs to measure itself (how the receiver disturbs
-the signal from space). This means that if you select a \emph{Target
-integration time} of 20 seconds, it will take approximately 40 seconds for the
-measurement to complete.  
+{\bf Note:} The telescope will, without any need for user interaction, divide
+the specified integration time in two blocks. This is because in addition to
+measure on the target (the signal you want), the telescope also needs to
+measure itself (how the receiver disturbs the signal from space). The telescope
+does this by shifting the measurement frequency away from hydrogen when it is measuring
+itself. Finer control
+of this \emph{switching} procedure can be found under the tab \emph{Advanced},
+but don't change these values unless you know what you are doing. For normal users,
+you only need to choose the total integration time in the \emph{Basic} tab.
 
 \subsection{Measurement results}
 \label{sect:inspect}

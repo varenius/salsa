@@ -15,14 +15,14 @@
 \contentsline {subsection}{\numberline {2.3.2}Fels\IeC {\"o}kning}{9}{subsection.2.3.2}
 \contentsline {section}{\numberline {2.4}Kontrollprogrammet f\IeC {\"o}r SALSA}{9}{section.2.4}
 \contentsline {subsection}{\numberline {2.4.1}Movement control: Att peka \IeC {\r a}t r\IeC {\"a}tt h\IeC {\r a}ll}{9}{subsection.2.4.1}
-\contentsline {subsubsection}{Tracking}{10}{section*.9}
-\contentsline {subsubsection}{Hur noggrannt \IeC {\"a}r SALSA?}{11}{section*.11}
+\contentsline {subsubsection}{Tracking}{11}{section*.9}
+\contentsline {subsubsection}{Hur noggrannt \IeC {\"a}r SALSA?}{12}{section*.11}
 \contentsline {subsubsection}{M\IeC {\"a}t endast ovanf\IeC {\"o}r 15$^\circ $ altitud}{12}{section*.12}
 \contentsline {subsection}{\numberline {2.4.2}Receiver control: Att g\IeC {\"o}ra en m\IeC {\"a}tning}{12}{subsection.2.4.2}
 \contentsline {subsection}{\numberline {2.4.3}M\IeC {\"a}tresultat}{12}{subsection.2.4.3}
 \contentsline {section}{\numberline {2.5}Att analysera data fr\IeC {\r a}n webarkivet}{13}{section.2.5}
-\contentsline {subsection}{\numberline {2.5.1}PNG: Bilder}{13}{subsection.2.5.1}
-\contentsline {subsection}{\numberline {2.5.2}FITS: Ett vanligt format f\IeC {\"o}r astronomidata}{14}{subsection.2.5.2}
+\contentsline {subsection}{\numberline {2.5.1}PNG: Bilder}{14}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}FITS: Ett vanligt format f\IeC {\"o}r astronomidata}{15}{subsection.2.5.2}
 \contentsline {subsection}{\numberline {2.5.3}TXT: Textfiler}{15}{subsection.2.5.3}
 \contentsline {subsubsection}{Python}{15}{section*.15}
 \contentsline {subsection}{\numberline {2.5.4}R}{15}{subsection.2.5.4}

@@ -8,8 +8,8 @@ try:
     alfile = sys.argv[1]
     azfile = sys.argv[2]
 except IndexError:
-    print 'Usage: python plotbeam.py alfile azfile'
-    print 'Will then use offsets and power values in both files to fit and plot beam.'
+    print('Usage: python plotbeam.py alfile azfile')
+    print('Will then use offsets and power values in both files to fit and plot beam.')
     sys.exit()
 # The offset values in Az given to the telescope. Note that 
 # This does not necesarily mean that the telescope was pointing in this 
@@ -37,11 +37,11 @@ if os.path.exists(azfile):
     lines = [line.strip() for line in open(azfile)]
     for line in lines:
         ldata = line.split()
-        print ldata
+        #print ldata
         loff = float(ldata[4].split('=')[1])
         lamp = float(ldata[9])
         azdata.append([loff, lamp])
-        print azdata[-1]
+        #print azdata[-1]
     azdata = np.array(azdata)
     azoffset = azdata[:,0] # offset
     azamp = azdata[:,1] # Measured total power
@@ -65,7 +65,7 @@ if doal:
     fsigma = fres[2]
     fmu = fres[1]
     fbeam = 2.355*fsigma # FWHM
-    print 'Fitted FWHM=' + str(round(fbeam,1)) + 'deg.' + ', AL offset = ' + str(round(fmu,6))
+    print('Fitted FWHM=' + str(round(fbeam,1)) + 'deg.' + ', AL offset = ' + str(round(fmu,6)))
     plt.figure()
     plt.plot(aloffset, alamp, '*')
     plt.plot(fitx, ffit)
@@ -86,7 +86,7 @@ if doaz:
     fsigma = fres[2]
     fmu = fres[1]
     fbeam = 2.355*fsigma # FWHM
-    print 'Fitted FWHM=' + str(round(fbeam,1)) + 'deg.' + ', AZ offset = ' + str(round(fmu,6))
+    print('Fitted FWHM=' + str(round(fbeam,1)) + 'deg.' + ', AZ offset = ' + str(round(fmu,6)))
     plt.figure()
     plt.plot(azoffset, azamp, '*')
     plt.plot(fitx, ffit)
