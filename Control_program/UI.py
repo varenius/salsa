@@ -424,7 +424,7 @@ class Ui_MainWindow(object):
         self.progresslabel.setText(_translate("MainWindow", "Measurement progress:", None))
         self.btn_observe.setText(_translate("MainWindow", "Measure", None))
         self.btn_abort.setText(_translate("MainWindow", "Abort measurement", None))
-        self.FrequencyLabel_2.setText(_translate("MainWindow", "Integration time:", None))
+        self.FrequencyLabel_2.setText(_translate("MainWindow", "Integration time [s]:", None))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.receiver_tab_basic), _translate("MainWindow", "Basic", None))
         self.label_mode.setText(_translate("MainWindow", "Mode", None))
         self.mode_signal.setText(_translate("MainWindow", "Signal", None))

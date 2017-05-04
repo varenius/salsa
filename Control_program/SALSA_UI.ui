@@ -419,7 +419,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="FrequencyLabel_2">
             <property name="text">
-             <string>Integration time:</string>
+             <string>Integration time [s]:</string>
             </property>
            </widget>
           </item>
