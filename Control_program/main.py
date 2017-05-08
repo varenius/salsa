@@ -61,9 +61,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.config.read(configfile)
         # Initialise telescope and UI
         self.telescope = TelescopeController(self.config)
-        self.setupUi(self, self.telescope.site.name)
+        self.setupUi(self)
         self.init_Ui()
-        plt.ioff()
+        self.setWindowTitle("SALSA Controller: " + self.telescope.site.name)
 
         # Check if telescope knows where it is (position can be lost e.g. during powercut).
         if self.telescope.get_pos_ok():
@@ -233,8 +233,13 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.aborting = False
         self.progresstimer.stop()
         self.clear_progressbar()
+        #Make sure receiver and current thread is stopped
+        if hasattr(self, 'sigthread'):
+            self.sigworker.measurement.abort = True
+            self.sigworker.measurement.receiver.stop()
+            self.sigthread.quit()
+        # TODO: clean up temp data file.
         self.enable_receiver_controls()
-        self.abort_obs() #Make sure receiver and current thread is stopped
 
     def send_to_webarchive(self):
         date = str(self.listWidget_spectra.currentItem().text())
