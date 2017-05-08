@@ -1,9 +1,9 @@
-salsa
-=====
+# SALSA project
+----------------------------------------------------------------------------------------
 
-Code developed for the 2.3m radio telescopes SALSA in Onsala, Sweden.
+## Code developed for the 2.3m radio telescopes SALSA in Onsala, Sweden.
 
-The telescope can be described as four parts:
+### The telescope can be described as four parts:
 - The RIO, which is a controller board running code (see the DMC folder),
   to control the rotors, i.e. move the telescope.
 - The USRP, which is a digital sampler used to record data.
