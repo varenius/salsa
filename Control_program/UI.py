@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SALSA_UI.ui'
 #
-# Created: Mon Apr 10 12:32:07 2017
+# Created: Mon May  8 09:58:42 2017
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -24,7 +24,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow, telescope):
+    def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(835, 640)
         self.centralwidget = QtGui.QWidget(MainWindow)
@@ -196,6 +196,7 @@ class Ui_MainWindow(object):
         self.gridLayout_5.setMargin(0)
         self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
         self.int_time_spinbox = QtGui.QSpinBox(self.layoutWidget2)
+        self.int_time_spinbox.setMaximum(100000000)
         self.int_time_spinbox.setProperty("value", 10)
         self.int_time_spinbox.setObjectName(_fromUtf8("int_time_spinbox"))
         self.gridLayout_5.addWidget(self.int_time_spinbox, 0, 1, 1, 1)
@@ -318,7 +319,7 @@ class Ui_MainWindow(object):
         self.loops_label_3.setObjectName(_fromUtf8("loops_label_3"))
         self.gridLayout_4.addWidget(self.loops_label_3, 2, 4, 1, 1)
         self.loops_spinbox = QtGui.QSpinBox(self.receiver_tab_advanced)
-        self.loops_spinbox.setMaximum(10000)
+        self.loops_spinbox.setMaximum(1000000)
         self.loops_spinbox.setProperty("value", 1)
         self.loops_spinbox.setObjectName(_fromUtf8("loops_spinbox"))
         self.gridLayout_4.addWidget(self.loops_spinbox, 2, 5, 1, 1)
@@ -382,13 +383,13 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
         MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow, telescope)
+        self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         self.tabWidget_2.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow, telescope):
-        MainWindow.setWindowTitle(_translate("MainWindow", "SALSA Controller: " + telescope, None))
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(_translate("MainWindow", "SALSA Controller", None))
         self.groupBox_tc.setTitle(_translate("MainWindow", "Telescope movement control", None))
         self.coordlabel_right.setText(_translate("MainWindow", "Latitude", None))
         self.inputrightcoord.setText(_translate("MainWindow", "0", None))

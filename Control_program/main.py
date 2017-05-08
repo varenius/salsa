@@ -61,9 +61,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.config.read(configfile)
         # Initialise telescope and UI
         self.telescope = TelescopeController(self.config)
-        self.setupUi(self, self.telescope.site.name)
+        self.setupUi(self)
         self.init_Ui()
-        plt.ioff()
+        self.setWindowTitle("SALSA Controller: " + self.telescope.site.name)
 
         # Check if telescope knows where it is (position can be lost e.g. during powercut).
         if self.telescope.get_pos_ok():
