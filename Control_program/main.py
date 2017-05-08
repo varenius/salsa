@@ -233,8 +233,13 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.aborting = False
         self.progresstimer.stop()
         self.clear_progressbar()
+        #Make sure receiver and current thread is stopped
+        if hasattr(self, 'sigthread'):
+            self.sigworker.measurement.abort = True
+            self.sigworker.measurement.receiver.stop()
+            self.sigthread.quit()
+        # TODO: clean up temp data file.
         self.enable_receiver_controls()
-        self.abort_obs() #Make sure receiver and current thread is stopped
 
     def send_to_webarchive(self):
         date = str(self.listWidget_spectra.currentItem().text())
