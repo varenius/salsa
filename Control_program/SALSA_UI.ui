@@ -387,7 +387,7 @@
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>481</width>
+           <width>501</width>
            <height>41</height>
           </rect>
          </property>
@@ -422,7 +422,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="FrequencyLabel_2">
             <property name="text">
-             <string>Integration time:</string>
+             <string>Integration time [s]:</string>
             </property>
            </widget>
           </item>

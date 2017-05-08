@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SALSA_UI.ui'
 #
-# Created: Mon May  8 09:58:42 2017
+# Created: Mon May  8 11:03:27 2017
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -190,7 +190,7 @@ class Ui_MainWindow(object):
         self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.horizontalLayout_15.addWidget(self.progressBar)
         self.layoutWidget2 = QtGui.QWidget(self.receiver_tab_basic)
-        self.layoutWidget2.setGeometry(QtCore.QRect(10, 10, 481, 41))
+        self.layoutWidget2.setGeometry(QtCore.QRect(10, 10, 501, 41))
         self.layoutWidget2.setObjectName(_fromUtf8("layoutWidget2"))
         self.gridLayout_5 = QtGui.QGridLayout(self.layoutWidget2)
         self.gridLayout_5.setMargin(0)
@@ -425,7 +425,7 @@ class Ui_MainWindow(object):
         self.progresslabel.setText(_translate("MainWindow", "Measurement progress:", None))
         self.btn_observe.setText(_translate("MainWindow", "Measure", None))
         self.btn_abort.setText(_translate("MainWindow", "Abort measurement", None))
-        self.FrequencyLabel_2.setText(_translate("MainWindow", "Integration time:", None))
+        self.FrequencyLabel_2.setText(_translate("MainWindow", "Integration time [s]:", None))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.receiver_tab_basic), _translate("MainWindow", "Basic", None))
         self.label_mode.setText(_translate("MainWindow", "Mode", None))
         self.mode_signal.setText(_translate("MainWindow", "Signal", None))
