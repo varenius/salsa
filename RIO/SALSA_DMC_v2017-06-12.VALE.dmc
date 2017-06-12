@@ -73,9 +73,9 @@ EN
   SB0;'Start EL-motor CW (CCW if SB1)
   IF diff_el<close_el;'Move slowly
    MG "SLOWEL->",t_el{F4.0};
-   WT 35;'Run motors for short time
+   WT 25;'Run motors for short time
    CB0;'Stop EL-motor.
-   WT 65;'Wait for movement
+   WT 75;'Wait for movement
   ENDIF
  ENDIF
  WT 70;'Wait for motors
