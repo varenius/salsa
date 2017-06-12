@@ -86,11 +86,18 @@ class TelescopeController:
             time.sleep(0.5)
             print 'RIO: Moving telescope to end position. Please wait...'
 
-    def isreset(self):
+    def is_moving(self):
+        """Returns true if telescope motors are on, false if motors are off."""
         elmotor = self._get_value_from_telescope('@OUT[0]')
         azmotor = self._get_value_from_telescope('@OUT[2]')
+        if (azmotor == 0 and elmotor ==0):
+            return False
+        else:
+            return True
+
+    def isreset(self):
         """Check if telescope has reached reset position."""
-        if (self.minal_cog == self._get_current_al_cog() and  self.minaz_cog == self._get_current_az_cog() and azmotor == 0 and elmotor ==0):
+        if (self.minal_cog == self._get_current_al_cog() and  self.minaz_cog == self._get_current_az_cog() and (not self.is_moving())):
             # Start MOVE loop
             self._cmd('XQ #MOVE')
             if self._get_msg()==':':
@@ -231,8 +238,17 @@ class TelescopeController:
 
     def stop(self):
         """Stops any movement of the telescope by setting target to current. """
-        self._set_target_az_cog(self._get_current_az_cog())
-        self._set_target_al_cog(self._get_current_al_cog())
+        if self.is_moving():
+            azdiff = self._get_target_az_cog()-self._get_current_az_cog()
+            aldiff = self._get_target_al_cog()-self._get_current_al_cog()
+            slowaz = self._get_value_from_telescope("close_az") # Max cogdistance for slow, pulsed motor movement
+            slowal = self._get_value_from_telescope("close_el") # Max cogdistance for slow, pulsed motor movement
+            newaz = min(abs(azdiff),slowaz)*np.sign(azdiff)
+            newal = min(abs(aldiff),slowal)*np.sign(aldiff)
+            self._set_target_az_cog(newaz)
+            self._set_target_al_cog(newal)
+        else:
+            pass # Already stopped
 
     def can_reach(self, al, az):
         """Check if telescope can reach this position. Assuming input in degrees.
@@ -307,6 +323,16 @@ class TelescopeController:
         tal, taz = self.get_target_alaz()
         dist = self._get_angular_distance(cal, caz, tal, taz)
         if dist< self.close_enough_distance:
+            return True
+        else:
+            return False
+    
+    def is_close_to_target_beam(self):
+        """Returns true if telescope is close enough to observe, else False."""
+        cal, caz = self.get_current_alaz()
+        tal, taz = self.get_target_alaz()
+        dist = self._get_angular_distance(cal, caz, tal, taz)
+        if dist<0.00001: #No or small error allowed for beam measurement!
             return True
         else:
             return False
