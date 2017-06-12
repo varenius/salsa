@@ -88,12 +88,12 @@ class TelescopeController:
 
     def is_moving(self):
         """Returns true if telescope motors are on, false if motors are off."""
-        elmotor = self._get_value_from_telescope('@OUT[0]')
-        azmotor = self._get_value_from_telescope('@OUT[2]')
-        if (azmotor == 0 and elmotor ==0):
-            return False
-        else:
+        azdiff = abs(self._get_target_az_cog()-self._get_current_az_cog())
+        aldiff = abs(self._get_target_al_cog()-self._get_current_al_cog())
+        if (azdiff>0 or aldiff > 0):
             return True
+        else:
+            return False
 
     def isreset(self):
         """Check if telescope has reached reset position."""
@@ -243,8 +243,8 @@ class TelescopeController:
             aldiff = self._get_target_al_cog()-self._get_current_al_cog()
             slowaz = self._get_value_from_telescope("close_az") # Max cogdistance for slow, pulsed motor movement
             slowal = self._get_value_from_telescope("close_el") # Max cogdistance for slow, pulsed motor movement
-            newaz = min(abs(azdiff),slowaz)*np.sign(azdiff)
-            newal = min(abs(aldiff),slowal)*np.sign(aldiff)
+            newaz = self._get_current_az_cog()+min(abs(azdiff),slowaz)*np.sign(azdiff)
+            newal = self._get_current_al_cog()+min(abs(aldiff),slowal)*np.sign(aldiff)
             self._set_target_az_cog(newaz)
             self._set_target_al_cog(newal)
         else:

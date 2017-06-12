@@ -404,6 +404,13 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             self.loops_spinbox.setEnabled(False)
             self.int_time_spinbox.setEnabled(True)
 
+        if ((not self.telescope.is_moving()) and (not self.trackingtimer.isActive())):
+            self.btn_track.setEnabled(True)
+            self.btn_reset.setEnabled(True)
+            self.btn_track.setText('Track')
+            style = "QWidget {}"
+            self.btn_track.setStyleSheet(style)
+
     def update_desired_target(self):
         target = self.coordselector.currentText()
         if target == 'The Sun':
@@ -636,12 +643,12 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.offset_left.setReadOnly(False)
         self.offset_right.setReadOnly(False)
         self.trackingtimer.stop()
-        self.btn_track.setEnabled(True)
-        self.btn_reset.setEnabled(True)
+        #Tracking button text is handeled by the update_UI-function to check that the telescope is still before offering new track position
         self.coordselector.setEnabled(True)
-        self.btn_track.setText('Track')
-        style = "QWidget {}"
+        self.btn_track.setText('Stopping...')
+        style = "QWidget { background-color:orange;}"
         self.btn_track.setStyleSheet(style)
+        self.btn_track.setEnabled(False)
 
     def start_tracking(self):
         try:
