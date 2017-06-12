@@ -86,7 +86,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         # Define and run UiTimer
         self.uitimer = QtCore.QTimer()
         self.uitimer.timeout.connect(self.update_Ui)
-        self.uitimer.start(500) #ms
+        self.uitimer.start(250) #ms
 
         # Create timer used to toggle (and update) tracking
         # Do not start this, started by user on Track button.
