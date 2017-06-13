@@ -54,7 +54,7 @@ EN
   ENDIF
   SB2;'Start AZ-motor CW(CCW if SB3)
   IF diff_az<close_az; 'Move slowly
-   MG "SLOWAZ->",t_az{F4.0};
+   'MG "SLOWAZ->",t_az{F4.0};'DEBUG
    WT 25;'Run motors for short time
    CB2;'Stop AZ-motor.
    WT 75;'Wait for movement
@@ -72,7 +72,7 @@ EN
   ENDIF
   SB0;'Start EL-motor CW (CCW if SB1)
   IF diff_el<close_el;'Move slowly
-   MG "SLOWEL->",t_el{F4.0};
+   'MG "SLOWEL->",t_el{F4.0};'DEBUG
    WT 25;'Run motors for short time
    CB0;'Stop EL-motor.
    WT 75;'Wait for movement
@@ -108,7 +108,7 @@ EN
   ELSE
    SB4
   ENDIF
-  MG "EL:",c_el{F4.0};'FOR DEBUG 
+  'MG "EL:",c_el{F4.0};'DEBUG 
  JP #CHKEL;
 EN
 #CHKAZ
@@ -138,7 +138,7 @@ EN
   ELSE
    SB5
   ENDIF
- MG "AZ:",c_az{F4.0};'FOR DEBUG
+ 'MG "AZ:",c_az{F4.0};'DEBUG
  JP #CHKAZ;
 EN
 #ELLIM;' CHECK IN EL
@@ -148,7 +148,7 @@ IF (@OUT[0]);'MOTOR?
  IF (@OUT[0]);'If still moving
   newel=c_el
   IF (oldel=newel);' If stuck
-    MG "ELLIMIT";
+    'MG "ELLIMIT"; 'DEBUG
     CB0; ' Stop EL-motor.
     CB1; ' Clear EL-CCW if active.
     WT 500; ' wait for motors
@@ -172,7 +172,7 @@ IF (@OUT[2]);'Motor?
  IF (@OUT[2]); 'If still moving
   newaz=c_az
   IF (oldaz=newaz);  ' If stuck
-    MG "AZLIMIT"; 'DEBUG
+    'MG "AZLIMIT"; 'DEBUG
      CB2; 'Stop AZ-motor.
      CB3; 'Clear AZ-CCW if active.
      WT 500; 'Wait for motors
