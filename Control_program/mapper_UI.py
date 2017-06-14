@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SALSA_mapper_UI.ui'
 #
-# Created: Tue Jun 13 17:31:16 2017
+# Created: Wed Jun 14 15:55:50 2017
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -118,7 +118,7 @@ class Ui_MainWindow(object):
         self.nsteps_left.setMinimum(1)
         self.nsteps_left.setMaximum(3600)
         self.nsteps_left.setSingleStep(1)
-        self.nsteps_left.setProperty("value", 5)
+        self.nsteps_left.setProperty("value", 9)
         self.nsteps_left.setObjectName(_fromUtf8("nsteps_left"))
         self.horizontalLayout_16.addWidget(self.nsteps_left)
         self.gridLayout.addLayout(self.horizontalLayout_16, 2, 1, 1, 1)
@@ -128,7 +128,7 @@ class Ui_MainWindow(object):
         self.nsteps_right.setMinimum(1)
         self.nsteps_right.setMaximum(3600)
         self.nsteps_right.setSingleStep(1)
-        self.nsteps_right.setProperty("value", 5)
+        self.nsteps_right.setProperty("value", 9)
         self.nsteps_right.setObjectName(_fromUtf8("nsteps_right"))
         self.horizontalLayout_15.addWidget(self.nsteps_right)
         self.gridLayout.addLayout(self.horizontalLayout_15, 2, 2, 1, 1)
@@ -358,9 +358,9 @@ class Ui_MainWindow(object):
         self.label = QtGui.QLabel(self.tab_2)
         self.label.setGeometry(QtCore.QRect(20, 20, 231, 16))
         self.label.setObjectName(_fromUtf8("label"))
-        self.btn_upload = QtGui.QPushButton(self.tab_2)
-        self.btn_upload.setGeometry(QtCore.QRect(20, 400, 211, 41))
-        self.btn_upload.setObjectName(_fromUtf8("btn_upload"))
+        self.btn_fit = QtGui.QPushButton(self.tab_2)
+        self.btn_fit.setGeometry(QtCore.QRect(20, 400, 211, 41))
+        self.btn_fit.setObjectName(_fromUtf8("btn_fit"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.layoutWidget1 = QtGui.QWidget(self.centralwidget)
         self.layoutWidget1.setGeometry(QtCore.QRect(0, 0, 2, 2))
@@ -405,9 +405,9 @@ class Ui_MainWindow(object):
         self.coordlabel_right.setText(_translate("MainWindow", "Latitude [deg]", None))
         self.inputrightcoord.setText(_translate("MainWindow", "0", None))
         self.label_offset_left.setText(_translate("MainWindow", "[deg]:", None))
-        self.offset_left.setText(_translate("MainWindow", "1", None))
+        self.offset_left.setText(_translate("MainWindow", "1.5", None))
         self.label_offset_right.setText(_translate("MainWindow", "[deg]:", None))
-        self.offset_right.setText(_translate("MainWindow", "1", None))
+        self.offset_right.setText(_translate("MainWindow", "1.5", None))
         self.label_newtarget_2.setText(_translate("MainWindow", "with", None))
         self.coordselector_steps.setItemText(0, _translate("MainWindow", "Horizontal", None))
         self.coordselector_steps.setItemText(1, _translate("MainWindow", "Galactic", None))
@@ -458,6 +458,6 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Observe", None))
         self.groupBox_plot.setTitle(_translate("MainWindow", "Total power plot", None))
         self.label.setText(_translate("MainWindow", "List of measurements [date-UT]", None))
-        self.btn_upload.setText(_translate("MainWindow", "Fit and plot Gaussian", None))
+        self.btn_fit.setText(_translate("MainWindow", "Fit and plot Gaussian", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Measurements", None))
 

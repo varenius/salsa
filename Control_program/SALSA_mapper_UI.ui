@@ -145,7 +145,7 @@
           <item>
            <widget class="QLineEdit" name="offset_left">
             <property name="text">
-             <string>1</string>
+             <string>1.5</string>
             </property>
             <property name="readOnly">
              <bool>false</bool>
@@ -166,7 +166,7 @@
           <item>
            <widget class="QLineEdit" name="offset_right">
             <property name="text">
-             <string>1</string>
+             <string>1.5</string>
             </property>
             <property name="readOnly">
              <bool>false</bool>
@@ -231,7 +231,7 @@
              <number>1</number>
             </property>
             <property name="value">
-             <number>5</number>
+             <number>9</number>
             </property>
            </widget>
           </item>
@@ -251,7 +251,7 @@
              <number>1</number>
             </property>
             <property name="value">
-             <number>5</number>
+             <number>9</number>
             </property>
            </widget>
           </item>
@@ -266,10 +266,6 @@
         </item>
        </layout>
       </widget>
-      <zorder>layoutWidget</zorder>
-      <zorder>groupBox_3</zorder>
-      <zorder>tabWidget_3</zorder>
-      <zorder>tabWidget_3</zorder>
      </widget>
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
@@ -808,7 +804,7 @@
        <string>List of measurements [date-UT]</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btn_upload">
+     <widget class="QPushButton" name="btn_fit">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -861,7 +857,4 @@
  </widget>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="buttonGroup"/>
- </buttongroups>
 </ui>

@@ -11,6 +11,7 @@ from mapper_UI import Ui_MainWindow
 import numpy as np
 import getpass # To find current username
 import ConfigParser
+from scipy.optimize import curve_fit
 
 # Make sure only one instance is running of this program
 from tendo import singleton
@@ -107,6 +108,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
         # Initialise buttons and tracking status.
         self.btn_reset.clicked.connect(self.reset)
+        self.btn_fit.clicked.connect(self.fit_gauss)
 
         # Make sure Ui is updated when changing target
         self.coordselector.currentIndexChanged.connect(self.update_Ui)
@@ -278,9 +280,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             
             # Assume offset values are given in Horizontal system
             self.leftpos = alt_deg + offsets_left
-            self.rightpos = alt_deg + offsets_right
-            self.leftpos = alt_deg + offsets_left
-            self.rightpos = alt_deg + offsets_right
+            self.rightpos = az_deg + offsets_right
             return (self.leftpos[self.leftiter], self.rightpos[self.rightiter])
 
         elif target == 'Stow':
@@ -288,7 +288,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             (alt_deg,az_deg)=self.telescope.get_stow_alaz()
             # Assume offset values are given in Horizontal system
             self.leftpos = alt_deg + offsets_left
-            self.rightpos = alt_deg + offsets_right
+            self.rightpos = az_deg + offsets_right
             return (self.leftpos[self.leftiter], self.rightpos[self.rightiter])
 
         else:
@@ -374,7 +374,6 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             #        return (flip_alt_deg, flip_az_deg)
             #    else:
             #        return (fin_alt_deg, fin_az_deg)
-
     
     def measure_grid(self):
         self.disable_movement_controls()
@@ -471,6 +470,38 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.sigworker.finished.connect(self.sigthread.quit)
         self.sigworker.finished.connect(self.gridpoint_finished)
         self.sigthread.start()
+
+    def grid_is_finished(self):
+        ri = self.rightiter
+        li = self.leftiter
+        nr = len(self.rightpos)
+        nl = len(self.leftpos)
+        # If only one dim in "left", or if both nl and nr are 1
+        if nl==1:
+            if ri==nr-1:
+                return True
+            else:
+                return False
+        # If only one dim in "right" (and we know we have more than 1 in left)
+        elif nr==1:
+            if li==nl-1:
+                return True
+            else:
+                return False
+        else:
+            # We have nl>1 and nr>l. Now check if even or odd number of "rows", i.e. nl.
+            if nl % 2 == 0:
+            # If nl is even we will end in bottom left corner, since we go leftrow by leftrow in direction +, -, +, -...
+                if (ri == 0) and (li == nl-1):
+                    return True
+                else:
+                    return False
+            else:
+                # nl is odd, and we will end in bottom right corner...
+                if (ri == nr-1) and (li == nl-1):
+                    return True
+                else:
+                    return False
        
     def gridpoint_finished(self):
         print('...recording finished.')
@@ -497,7 +528,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             # Store spectrum in current map dictionary
             self.current_map['L'+str(self.leftiter)+'R'+str(self.rightiter)] = sigspec
 
-        if (self.rightiter == len(self.rightpos)-1) and (self.leftiter == len(self.leftpos)-1):
+        if self.grid_is_finished():
             # We have reached the end of the grid! Terminate grid measurement
             # Turn off LNA after observation
             self.telescope.set_LNA(False)
@@ -595,21 +626,99 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         print 'data', data
         plt.clf()
         ax = self.figure.add_subplot(111)
-        extent = [min(leftrel), max(leftrel), min(rightrel), max(rightrel)]
-        ax.imshow(data, origin = 'lower', interpolation = 'none', extent = extent)
-        #ax.imshow(data, origin = 'lower', interpolation = 'none')
-        ax.set_xlabel('Relative offset [deg]')
-        ax.set_ylabel('Relative offset [deg]')
-        #try:
-        #    ax.imshow(measurement['gauss'], origin = 'lower', interpolation = 'none')
-        ax.minorticks_on()
-        ax.tick_params('both', length=6, width=0.5, which='minor')
-        ax.set_title('Total power map towards XX ')
-        #ax.autoscale_view('tight')
-        ax.grid(True, color='k', linestyle='-', linewidth=0.5)
+        extent = [min(rightrel), max(rightrel), min(leftrel), max(leftrel)]
+        if nleft>1 and nright>1:
+            ax.imshow(data, origin = 'lower', interpolation = 'none', extent = extent)
+            ax.set_xlabel('Relative offset [deg]')
+            ax.set_ylabel('Relative offset [deg]')
+        if nleft>1 and nright==1:
+            ax.plot(leftrel, data.flatten(),'*')
+            ax.plot(leftrel, data.flatten(),'-')
+            ax.set_xlabel('Relative offset left [deg]')
+            ax.set_ylabel('Arbitrary amplitude')
+        if nleft==1 and nright>1:
+            ax.plot(rightrel, data.flatten(),'*')
+            ax.plot(rightrel, data.flatten(),'-')
+            ax.set_xlabel('Relative offset right [deg]')
+            ax.set_ylabel('Arbitrary amplitude')
+        ax.set_title('Total power towards left={0} right={1}'.format(round(leftmid,1),round(rightmid,1)))
+        ax.autoscale_view('tight')
         # refresh canvas
         self.canvas.draw()
 
+    # Define model function to be used to fit measured beam data:
+    def oneD_Gaussian(self, x, *p):
+        A, mu, sigma, offset = p
+        return offset + A*np.exp(-(x-mu)**2/(2.*sigma**2))
+        
+    # Define 2D Gaussian according to http://stackoverflow.com/questions/21566379/fitting-a-2d-gaussian-function-using-scipy-optimize-curve-fit-valueerror-and-m/21566831#21566831
+    def twoD_Gaussian(self, (x, y), amplitude, xo, yo, sigma_x, sigma_y, theta, offset):
+        xo = float(xo)
+        yo = float(yo)    
+        a = (np.cos(theta)**2)/(2*sigma_x**2) + (np.sin(theta)**2)/(2*sigma_y**2)
+        b = -(np.sin(2*theta))/(4*sigma_x**2) + (np.sin(2*theta))/(4*sigma_y**2)
+        c = (np.sin(theta)**2)/(2*sigma_x**2) + (np.cos(theta)**2)/(2*sigma_y**2)
+        g = offset + amplitude*np.exp( - (a*((x-xo)**2) + 2*b*(x-xo)*(y-yo) 
+                            + c*((y-yo)**2)))
+        return g.ravel()
+
+    def fit_gauss(self):
+        map2plot = self.maps[str(self.listWidget_measurements.currentItem().text())]
+        leftpos = map2plot['leftpos']
+        rightpos = map2plot['rightpos']
+        nleft = len(leftpos)
+        nright = len(rightpos)
+        data = np.zeros((nleft,nright))
+        for i in range(nleft):
+            for j in range(nright):
+                num = map2plot['L'+str(i)+'R'+str(j)].get_total_power()
+                data[i,j] = num
+        leftmid = np.mean(leftpos)
+        rightmid = np.mean(rightpos)
+        leftrel = leftpos - leftmid
+        rightrel = rightpos - rightmid
+        ax = plt.gca()
+        extent = [min(rightrel), max(rightrel), min(leftrel), max(leftrel)]
+        if nleft>1 and nright>1:
+            # Two-D Gauss
+            #ax.imshow(data, origin = 'lower', interpolation = 'none', extent = extent)
+            p0 = [500, 0.0, 0.0, 5.0, 5.0, 0.0, 100] #amplitude, xo, yo, sigma_x, sigma_y, theta, offset):
+            rm, lm = np.meshgrid(rightrel, leftrel)
+            popt, pcov = curve_fit(self.twoD_Gaussian, (rm, lm), np.ravel(data), p0=p0)
+            fx0 = popt[1]
+            fy0 = popt[2]
+            fsigma_x = popt[3]
+            fsigma_y = popt[4]
+            print('Towards {0}, {1}: Fitted Gaussian roff={2}deg, loff={3}, FWHM1={4}deg, FWHM2={5}deg.'.format(round(leftmid,1), round(rightmid,1), fx0, fy0, fsigma_x*2.355, fsigma_y*2.355)) 
+            npt = 100
+            xv = np.linspace(np.min(rightrel), np.max(rightrel), npt)
+            yv = np.linspace(np.min(leftrel), np.max(leftrel), npt)
+            xi, yi = np.meshgrid(xv, yv)
+            model = self.twoD_Gaussian((xi, yi), *popt)
+            plt.contour(xi, yi, model.reshape(npt, npt), 8, colors='k')
+        else:
+            if nleft>1 and nright==1:
+                xvals = leftrel
+                yvals = data.flatten()
+            if nleft==1 and nright>1:
+                xvals = rightrel
+                yvals = data.flatten()
+            # p0 is the initial guess for the fitting coefficients (A, mu,sigma, offset)
+            p0 = [max(yvals), np.mean(xvals), 5.0, 100]
+            popt, pcov = curve_fit(self.oneD_Gaussian, xvals, yvals, p0=p0)
+            #Make nice grid for fitted data
+            fitx = np.linspace(min(xvals), max(xvals), 500)
+            # Get the fitted curve
+            fity = self.oneD_Gaussian(fitx, *popt)
+            fsigma = popt[2]
+            fmu = popt[1]
+            fbeam = 2.355*fsigma # FWHM
+            plt.plot(fitx, fity,'--', color = 'blue')
+            print('Towards {0}, {1}: Fitted Gaussian mean={2}deg and FWHM={3}deg.'.format(round(leftmid,1), round(rightmid,1), fmu, fbeam)) 
+
+        # refresh canvas
+        self.canvas.draw()
+        
     def clear_plot(self):
         self.figure.clf()
 
