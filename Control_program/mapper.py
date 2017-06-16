@@ -18,8 +18,8 @@ from tendo import singleton
 me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
 ##### SET CONFIG FILE #######
-#configfile = os.path.dirname(__file__) + '/SALSA.config'
-configfile = './SALSA.config'
+configfile = os.path.dirname(__file__) + '/SALSA.config'
+#configfile = './SALSA.config'
 #############################
 
 # Customize NavigatinoToolBarcalsss
@@ -704,7 +704,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
                 xvals = rightrel
                 yvals = data.flatten()
             # p0 is the initial guess for the fitting coefficients (A, mu,sigma, offset)
-            p0 = [max(yvals), np.mean(xvals), 5.0, 100]
+            p0 = [max(yvals), xvals[np.where(yvals==max(yvals))], 5.0, min(yvals)]
             popt, pcov = curve_fit(self.oneD_Gaussian, xvals, yvals, p0=p0)
             #Make nice grid for fitted data
             fitx = np.linspace(min(xvals), max(xvals), 500)
