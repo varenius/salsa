@@ -118,7 +118,6 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
         # Measurement control
         self.btn_observe.clicked.connect(self.measure_grid)
-        self.btn_observe.clicked.connect(self.disable_receiver_controls)
         self.btn_abort.clicked.connect(self.abort_obs)
         self.btn_abort.setEnabled(False)
 
@@ -196,7 +195,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.nsteps_left.setReadOnly(False)
         self.nsteps_right.setReadOnly(False)
         self.coordselector.setEnabled(True)
-        self.coordselector_steps.setEnabled(True)
+        #self.coordselector_steps.setEnabled(True) # TODO: Implement non-horizontal coordinates
 
     def clear_progressbar(self):
         self.progressBar.setValue(0)
@@ -228,6 +227,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 	
 	# Calculate offset values in desired unit
         offsetsys = self.coordselector_steps.currentText()
+        # ASSUME HORIZONTAL FOR NOW
         # Read specified offset grid
         # Convert from QString to String to not confuse ephem,then to decimal degrees in case the string had XX:XX:XX.XX format.
         try:
@@ -278,18 +278,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             alt_deg = float(alt)*180.0/np.pi
             az_deg = float(az)*180.0/np.pi
             
-            # Assume offset values are given in Horizontal system
-            self.leftpos = alt_deg + offsets_left
-            self.rightpos = az_deg + offsets_right
-            return (self.leftpos[self.leftiter], self.rightpos[self.rightiter])
-
         elif target == 'Stow':
             # Read stow position from file
             (alt_deg,az_deg)=self.telescope.get_stow_alaz()
-            # Assume offset values are given in Horizontal system
-            self.leftpos = alt_deg + offsets_left
-            self.rightpos = az_deg + offsets_right
-            return (self.leftpos[self.leftiter], self.rightpos[self.rightiter])
 
         else:
             # If given system is something else, we do not have to use radec_of and we get
@@ -324,56 +315,69 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             az = fixedbody.az
             alt_deg = float(alt)*180.0/np.pi
             az_deg = float(az)*180.0/np.pi
-        
-            # Assume offset values are given in Horizontal system
-            leftpos = alt_deg + offsets_left
-            rightpos = az_deg + offsets_right
-            self.leftpos = leftpos
-            self.rightpos = rightpos
-            return (self.leftpos[self.leftiter], self.rightpos[self.rightiter])
 
-            #flipleft = [180-lp for lp in leftpos]
-            #flipright = [(rp+180)%360 for rp in rightpos]
-            # 
-            ## Check if directions are reachable
-            #can_reach_all = True
-            #can_flipreach_all = True
-            #for i in range(len(leftpos)):
-            #    for j in range(len(rightpos)):
-            #        # Check if the desired direction is best reached via simple alt, az
-            #        # or at 180-alt, az+180.
-            #        reach = self.telescope.can_reach(leftpos[i], rightpos[j]) 
-            #        flipreach = self.telescope.can_reach(flipleft, flipright) 
-            #        if not reach:
-            #            can_reach_all = False
-            #        if not flipreach:
-            #            can_flipreach_all = False
+        # If horizontal offset, and if az-scale checkbox selected,
+        # then scale current az offset value with cos(alt)
+        if self.scale_az_offset.isChecked() and offsetsys == 'Horizontal':
+            offsets_right *= (1.0/np.cos((alt_deg+offsets_left[self.leftiter])*(np.pi/180.0)))
 
-            ## If flip direction cannot be reached, return original one.
-            ## (even if this one may not be reached)
-            #if not can_flipreach_all:
-            #    self.leftpos = leftpos
-            #    self.rightpos = rightpos
-            #    return (self.leftpos[self.leftiter], self.rightpos[self.rightiter])
+        #TODO: Implement non-horizontal offset
+        checklpos = alt_deg + offsets_left
+        checkrpos = az_deg + offsets_right
 
-            ## But, if flip direction can be reached, but not original one,
-            ## then we have to go to flipdirection to point to this position
-            ## E.g. in mecanically forbidden azimuth range
-            #elif flipreach and (not finreach):
-            #    self.leftpos = flipleft
-            #    self.rightpos = flipright
-            #    return (self.leftpos[self.leftiter], self.rightpos[self.rightiter])
-            ## If both directions are valid, which is the most common case,
-            ## then we find the closest one (in azimuth driving, not in angular distance)
-            ## to the current pointing
-            #elif flipreach and finreach: 
-            #    (calt_deg, caz_deg) = self.telescope.get_current_alaz()
-            #    flipd = self.telescope.get_azimuth_distance(caz_deg, flip_az_deg)
-            #    find = self.telescope.get_azimuth_distance(caz_deg, fin_az_deg)
-            #    if flipd<find:
-            #        return (flip_alt_deg, flip_az_deg)
-            #    else:
-            #        return (fin_alt_deg, fin_az_deg)
+        if self.allow_flip.isChecked():
+            flipleft = [180-lp for lp in checklpos]
+            flipright = [(rp+180)%360 for rp in checkrpos]
+             
+            # Check if directions are reachable
+            can_reach_all = True
+            can_flipreach_all = True
+            for i in range(len(checklpos)):
+                for j in range(len(checkrpos)):
+                    # Check if the desired direction is best reached via simple alt, az
+                    # or at 180-alt, az+180.
+                    reach = self.telescope.can_reach(checklpos[i], checkrpos[j]) 
+                    flipreach = self.telescope.can_reach(flipleft[i], flipright[j])
+                    if not reach:
+                        can_reach_all = False
+                    if not flipreach:
+                        can_flipreach_all = False
+
+            # If flip direction cannot be reached, return original one.
+            # (even if this one may not be reached)
+            if not can_flipreach_all:
+                leftpos = checklpos
+                rightpos = checkrpos
+
+            # But, if flip direction can be reached, but not original one,
+            # then we have to go to flipdirection to point to this position
+            # E.g. in mecanically forbidden azimuth range
+            elif can_flipreach_all and (not can_reach_all):
+                leftpos = flipleft
+                rightpos = flipright
+            # If both directions are valid, which is the most common case,
+            # then we find the closest one (in azimuth driving, not in angular distance)
+            # to the current pointing
+            elif can_flipreach_all and can_reach_all: 
+                (calt_deg, caz_deg) = self.telescope.get_current_alaz()
+                flipd = self.telescope.get_azimuth_distance(caz_deg, flipright[self.rightiter])
+                noflipd = self.telescope.get_azimuth_distance(caz_deg, checkrpos[self.rightiter])
+                if flipd<noflipd:
+                    # Flip is closer, so do it
+                    leftpos = flipleft
+                    rightpos = flipright
+                else:
+                    # No flip is closer, so don't flip
+                    leftpos = checklpos
+                    rightpos = checkrpos
+        else:
+            leftpos = checklpos
+            rightpos = checkrpos
+        # Update coordinates
+        self.leftpos = leftpos
+        self.rightpos = rightpos
+        return (self.leftpos[self.leftiter], self.rightpos[self.rightiter])
+
     
     def measure_grid(self):
         self.disable_movement_controls()
@@ -538,7 +542,16 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             self.aborting = False
             self.enable_receiver_controls()
             self.current_map['leftpos'] = self.leftpos
-            self.current_map['rightpos'] = self.rightpos
+            #self.current_map['rightpos'] = self.rightpos
+            # If horizontal offset, and if az-scale checkbox selected,
+            # then scale back coordinates for plotting purposes with cos(alt)
+	    # Calculate offset values in desired unit
+            offsetsys = self.coordselector_steps.currentText()
+            if self.scale_az_offset.isChecked() and offsetsys == 'Horizontal':
+                rightpos_scale = np.array(self.rightpos) * (np.cos(self.leftpos[self.leftiter]*np.pi/180.0))
+                self.current_map['rightpos'] = rightpos_scale
+            else:
+                self.current_map['rightpos'] = self.rightpos
             date = str(sigspec.site.date.datetime().replace(microsecond=0))
             self.current_map['date'] = date
             self.maps[date] = self.current_map
@@ -554,7 +567,15 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
                 self.sigworker.measurement.receiver.stop()
                 self.sigthread.quit()
 	    print('Grid finished!')
-            self.stop()
+            if self.loop_grid_checkbox.isChecked() and (not self.aborting):
+                self.clear_progressbar()
+                self.leftiter = 0
+                self.rightiter = 0
+                self.current_map = {}
+                self.measure_grid()
+            else:
+                self.stop()
+
         else:
             # Check if we have finished all observations in this "left-row"
             # If so, go to next row
@@ -621,12 +642,13 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         rightmid = np.mean(rightpos)
         leftrel = leftpos - leftmid
         rightrel = rightpos - rightmid
+
         print 'leftrel', leftrel
         print 'rightrel',rightrel
         print 'data', data
         plt.clf()
         ax = self.figure.add_subplot(111)
-        extent = [min(rightrel), max(rightrel), min(leftrel), max(leftrel)]
+        extent = [rightrel[0], rightrel[-1], leftrel[0], leftrel[-1]]
         if nleft>1 and nright>1:
             ax.imshow(data, origin = 'lower', interpolation = 'none', extent = extent)
             ax.set_xlabel('Relative offset [deg]')
@@ -678,13 +700,12 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         leftrel = leftpos - leftmid
         rightrel = rightpos - rightmid
         ax = plt.gca()
-        extent = [min(rightrel), max(rightrel), min(leftrel), max(leftrel)]
         if nleft>1 and nright>1:
             # Two-D Gauss
-            #ax.imshow(data, origin = 'lower', interpolation = 'none', extent = extent)
             p0 = [500, 0.0, 0.0, 5.0, 5.0, 0.0, 100] #amplitude, xo, yo, sigma_x, sigma_y, theta, offset):
             rm, lm = np.meshgrid(rightrel, leftrel)
             popt, pcov = curve_fit(self.twoD_Gaussian, (rm, lm), np.ravel(data), p0=p0)
+            print popt
             fx0 = popt[1]
             fy0 = popt[2]
             fsigma_x = popt[3]
@@ -704,7 +725,10 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
                 xvals = rightrel
                 yvals = data.flatten()
             # p0 is the initial guess for the fitting coefficients (A, mu,sigma, offset)
-            p0 = [max(yvals), xvals[np.where(yvals==max(yvals))], 5.0, min(yvals)]
+            wmean = np.average(xvals, weights = yvals)
+            wvar = np.average((xvals-wmean)**2, weights =yvals)
+            wstd = np.sqrt(wvar)
+            p0 = [max(yvals), wmean, wstd, min(yvals)]
             popt, pcov = curve_fit(self.oneD_Gaussian, xvals, yvals, p0=p0)
             #Make nice grid for fitted data
             fitx = np.linspace(min(xvals), max(xvals), 500)
@@ -751,8 +775,8 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             self.int_time_spinbox.setEnabled(True)
 
         t = float(self.int_time_spinbox.text())*len(self.leftpos)*len(self.rightpos)
-        s = float(5)*len(self.leftpos)*len(self.rightpos)
-        ts = 'INFO: Your grid implies {0}min recording plus slewing (estimated to {1}min assuming 5 sec/point).'.format(round(t/60.0,1), round(s/60.0,1))
+        s = float(10)*len(self.leftpos)*len(self.rightpos)
+        ts = 'INFO: Your grid implies {0}min recording plus slewing (estimated to {1}min assuming 10 sec/point).'.format(round(t/60.0,1), round(s/60.0,1))
         self.infolabel.setText(ts)
         if ((not self.telescope.is_moving()) and (not self.trackingtimer.isActive()) and (not self.recording)):
             self.btn_reset.setEnabled(True)

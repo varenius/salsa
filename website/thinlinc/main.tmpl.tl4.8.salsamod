@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+## If we want to use an onLoad javascript in a page, we want to define it in 
+## the template for that page. But it will still need to be inserted here. 
+## Because of this, we need to force body.page to be rendered before main. 
+## We do this by referring to it with MaxLen set to 0.
+
+#filter MaxLen
+${body.page, maxlen=0}
+#end filter
+#set $js = $get_javascript()
+
+<head>
+    <!--<title>ThinLinc</title>-->
+    <title>SALSA login at $hostname</title>
+
+    <meta charset="utf-8">
+
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+                Remove this if you use the .htaccess -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <!-- Apple iOS Safari settings -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <link rel="icon" sizes="16x16" type="image/png" href="/app/images/icons/tlclient_16.png">
+    <link rel="icon" sizes="24x24" type="image/png" href="/app/images/icons/tlclient_24.png">
+    <link rel="icon" sizes="32x32" type="image/png" href="/app/images/icons/tlclient_32.png">
+    <link rel="icon" sizes="48x48" type="image/png" href="/app/images/icons/tlclient_48.png">
+    <link rel="icon" sizes="60x60" type="image/png" href="/app/images/icons/tlclient_60.png">
+    <link rel="icon" sizes="64x64" type="image/png" href="/app/images/icons/tlclient_64.png">
+    <link rel="icon" sizes="72x72" type="image/png" href="/app/images/icons/tlclient_72.png">
+    <link rel="icon" sizes="76x76" type="image/png" href="/app/images/icons/tlclient_76.png">
+    <link rel="icon" sizes="96x96" type="image/png" href="/app/images/icons/tlclient_96.png">
+    <link rel="icon" sizes="120x120" type="image/png" href="/app/images/icons/tlclient_120.png">
+    <link rel="icon" sizes="144x144" type="image/png" href="/app/images/icons/tlclient_144.png">
+    <link rel="icon" sizes="152x152" type="image/png" href="/app/images/icons/tlclient_152.png">
+    <link rel="icon" sizes="192x192" type="image/png" href="/app/images/icons/tlclient_192.png">
+    <link rel="icon" sizes="any" type="image/svg+xml" href="/app/images/icons/tlclient.svg">
+    <!-- Repeated last so that legacy handling will pick this -->
+    <link rel="icon" sizes="16x16" type="image/png" href="/app/images/icons/tlclient_16.png">
+
+    <link rel="apple-touch-icon" sizes="60x60" type="image/png" href="/app/images/icons/tlclient_60.png">
+    <link rel="apple-touch-icon" sizes="76x76" type="image/png" href="/app/images/icons/tlclient_76.png">
+    <link rel="apple-touch-icon" sizes="120x120" type="image/png" href="/app/images/icons/tlclient_120.png">
+    <link rel="apple-touch-icon" sizes="152x152" type="image/png" href="/app/images/icons/tlclient_152.png">
+
+    <!-- Stylesheets -->
+  <link rel="stylesheet" href="/styles/main_style.css" type="text/css"
+        media="screen" />
+  <link rel="stylesheet" href="/styles/menu_style.css" type="text/css"
+  media="screen" />
+
+#for s in $js['scripts']
+  <script type="text/javascript" ><!--
+$s
+//-->
+  </script>
+#end for
+</head>
+
+#if $js.has_key('onload')
+<body onLoad="${js['onload']}()">
+#else
+<body>
+#end if
+
+<div id="body">
+  <!--<img src="/images/tlbadge_48.svg" alt="Cendio ThinLinc">-->
+  <img src="/images/logo.png" alt="SALSA $hostname">
+  
+$body
+    <strong>NOTE: </strong>For logging on to the telescope control, you need your "telescope password". To view/change this, go to <a href="http://vale.oso.chalmers.se/salsa/user">My account.</a> </br>For more details on connecting to SALSA, see the <a href="http://vale.oso.chalmers.se/salsa/support">user's manual</a>.</li>
+
+</div>
+
+<div id="footer">
+  Version $tl_version (build $tl_buildnum) on $hostname
+  <p>Copyright &copy; <a href="http://www.cendio.com/">Cendio AB</a> 2017</p>
+</div>
+</body>
+
+</html>
