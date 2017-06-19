@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>752</width>
+    <width>773</width>
     <height>576</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>731</width>
+      <width>761</width>
       <height>541</height>
      </rect>
     </property>
@@ -778,7 +778,7 @@
           </widget>
          </item>
          <item row="2" column="3">
-          <widget class="QSpinBox" name="ref_time_spinBox">
+          <widget class="QSpinBox" name="ref_time_spinbox">
            <property name="singleStep">
             <number>1</number>
            </property>

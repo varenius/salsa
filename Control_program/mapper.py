@@ -36,7 +36,11 @@ class Worker(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     def work(self):
-        self.measurement.measure()
+        try:
+            self.measurement.measure()
+        except ValueError as e: 
+            print e.message
+            print('Got ValueError in measurement. This happens sometimes when aborting a measurement. If you just aborted a measurement, you can ignore this error.')
         self.finished.emit()
 
 # Implement custom Thread class, according to:
@@ -159,7 +163,8 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.btn_observe.setEnabled(False)
         self.btn_abort.setEnabled(True)
         self.sig_time_spinbox.setEnabled(False)
-        self.ref_time_spinBox.setEnabled(False)
+        self.ref_time_spinbox.setEnabled(False)
+        self.int_time_spinbox.setEnabled(False)
     
     def enable_receiver_controls(self):
         self.FrequencyInput.setReadOnly(False)
@@ -174,7 +179,8 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.noise_checkbox.setEnabled(True)
         self.vlsr_checkbox.setEnabled(True)
         self.sig_time_spinbox.setEnabled(True)
-        self.ref_time_spinBox.setEnabled(True)
+        self.ref_time_spinbox.setEnabled(True)
+        self.int_time_spinbox.setEnabled(True)
     
     def disable_movement_controls(self):
         self.inputleftcoord.setReadOnly(True)
@@ -186,6 +192,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.btn_reset.setEnabled(False)
         self.coordselector.setEnabled(False)
         self.coordselector_steps.setEnabled(False)
+        self.scale_az_offset.setEnabled(False)
     
     def enable_movement_controls(self):
         self.inputleftcoord.setReadOnly(False)
@@ -195,6 +202,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.nsteps_left.setReadOnly(False)
         self.nsteps_right.setReadOnly(False)
         self.coordselector.setEnabled(True)
+        self.scale_az_offset.setEnabled(True)
         #self.coordselector_steps.setEnabled(True) # TODO: Implement non-horizontal coordinates
 
     def clear_progressbar(self):
@@ -439,7 +447,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         switched = self.mode_switched.isChecked()
         if self.cycle_checkbox.isChecked():
             sig_time = float(self.sig_time_spinbox.text()) # [s]
-            ref_time = float(self.ref_time_spinBox.text()) # [s]
+            ref_time = float(self.ref_time_spinbox.text()) # [s]
             loops = int(self.loops_spinbox.text()) #
             int_time = (sig_time+ref_time)*loops
         else:
@@ -753,24 +761,24 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         if self.mode_switched.isChecked():
             self.cycle_checkbox.setEnabled(True)
             self.sig_time_spinbox.setEnabled(True)
-            self.ref_time_spinBox.setEnabled(True)
+            self.ref_time_spinbox.setEnabled(True)
             self.loops_spinbox.setEnabled(True)
             self.int_time_spinbox.setEnabled(True)
         if not self.mode_switched.isChecked():
             self.cycle_checkbox.setEnabled(False)
             self.sig_time_spinbox.setEnabled(False)
-            self.ref_time_spinBox.setEnabled(False)
+            self.ref_time_spinbox.setEnabled(False)
             self.loops_spinbox.setEnabled(False)
             self.int_time_spinbox.setEnabled(True)
             self.cycle_checkbox.setChecked(False)
         if self.cycle_checkbox.isChecked():
             self.sig_time_spinbox.setEnabled(True)
-            self.ref_time_spinBox.setEnabled(True)
+            self.ref_time_spinbox.setEnabled(True)
             self.loops_spinbox.setEnabled(True)
             self.int_time_spinbox.setEnabled(False)
         if not self.cycle_checkbox.isChecked():
             self.sig_time_spinbox.setEnabled(False)
-            self.ref_time_spinBox.setEnabled(False)
+            self.ref_time_spinbox.setEnabled(False)
             self.loops_spinbox.setEnabled(False)
             self.int_time_spinbox.setEnabled(True)
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SALSA_mapper_UI.ui'
 #
-# Created: Mon Jun 19 10:14:38 2017
+# Created: Mon Jun 19 16:40:24 2017
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,11 +26,11 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(752, 576)
+        MainWindow.resize(773, 576)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.tabWidget = QtGui.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 731, 541))
+        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 761, 541))
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
@@ -347,11 +347,11 @@ class Ui_MainWindow(object):
         self.ref_time_label_5 = QtGui.QLabel(self.receiver_tab_advanced_4)
         self.ref_time_label_5.setObjectName(_fromUtf8("ref_time_label_5"))
         self.gridLayout_14.addWidget(self.ref_time_label_5, 2, 2, 1, 1)
-        self.ref_time_spinBox = QtGui.QSpinBox(self.receiver_tab_advanced_4)
-        self.ref_time_spinBox.setSingleStep(1)
-        self.ref_time_spinBox.setProperty("value", 10)
-        self.ref_time_spinBox.setObjectName(_fromUtf8("ref_time_spinBox"))
-        self.gridLayout_14.addWidget(self.ref_time_spinBox, 2, 3, 1, 1)
+        self.ref_time_spinbox = QtGui.QSpinBox(self.receiver_tab_advanced_4)
+        self.ref_time_spinbox.setSingleStep(1)
+        self.ref_time_spinbox.setProperty("value", 10)
+        self.ref_time_spinbox.setObjectName(_fromUtf8("ref_time_spinbox"))
+        self.gridLayout_14.addWidget(self.ref_time_spinbox, 2, 3, 1, 1)
         self.loops_label_5 = QtGui.QLabel(self.receiver_tab_advanced_4)
         self.loops_label_5.setObjectName(_fromUtf8("loops_label_5"))
         self.gridLayout_14.addWidget(self.loops_label_5, 2, 4, 1, 1)
