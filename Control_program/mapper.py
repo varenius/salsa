@@ -78,7 +78,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
         # Check if telescope knows where it is (position can be lost e.g. during powercut).
         if self.telescope.get_pos_ok():
-            print "Welcome to SALSA. Telescope says it is ready to observe."
+            msg = "Welcome to SALSA. If this is your first measurement for today, please reset the telscope to make sure that it tracks the sky correctly. A small position error can accumulate if using the telescope for multiple hours, but this is fixed if you press the reset button and wait until the telescope is reset."
+            print (msg)
+            self.show_message(msg)
         else:
             self.reset_needed()
     
