@@ -295,13 +295,16 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         else:
             if self.mode_switched.isChecked():
                 sig_time = float(self.int_time_spinbox.text())/2
+                #print 'sig_time', sig_time 
                 ref_time = float(self.int_time_spinbox.text())/2
                 loops = 1;
                 while sig_time > 20:
-                     sig_time = sig_time/2
-                     ref_time = ref_time/2
-                     loops = loops + 1
+                     sig_time = sig_time/2.0
+                     ref_time = ref_time/2.0
+                     loops = loops*2
+                     #print sig_time, loops
                 int_time = (sig_time+ref_time)*loops
+                #print 'int_time', int_time
             else:
                 sig_time = float(self.int_time_spinbox.text())
                 ref_time = 0
@@ -309,10 +312,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
                 int_time = sig_time
 
         if self.mode_switched.isChecked():
-            print "Signal cycle time: "
-            print sig_time
-            print "Reference cycle time: "
-            print ref_time
+            print "Signal cycle time per loop: ", sig_time
+            print "Reference cycle time per loop: ", ref_time
+            print "Loops: ", loops
 
         nchans = int(self.ChannelsInput.text()) # Number of output channels
         calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
