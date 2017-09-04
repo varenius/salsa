@@ -24,3 +24,6 @@
 \BOOKMARK [2][-]{subsection.2.2.3}{Restart Apache}{section.2.2}% 24
 \BOOKMARK [2][-]{subsection.2.2.4}{Add crontab entry to update certificates}{section.2.2}% 25
 \BOOKMARK [2][-]{subsection.2.2.5}{Troubleshooting}{section.2.2}% 26
+\BOOKMARK [1][-]{section.2.3}{Hardware}{chapter.2}% 27
+\BOOKMARK [2][-]{subsection.2.3.1}{RIO}{section.2.3}% 28
+\BOOKMARK [2][-]{subsection.2.3.2}{USRP}{section.2.3}% 29

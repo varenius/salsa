@@ -333,7 +333,7 @@ class SALSA_spectrum:
         # Calculate total power (sum of values in spectra divided by number of channels)
         # Use only inner 75% to avoid band edge effects
         nchans = self.nchans
-        totpow = np.sum(self.data[0.25*nchans:0.75*nchans]) / (0.5*nchans)
+        totpow = np.sum(self.data[int(0.25*nchans):int(0.75*nchans)]) / (0.5*nchans)
         return totpow
 
     def print_total_power(self):

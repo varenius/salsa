@@ -60,28 +60,11 @@ to manual IP using the graphical tools: “Control center-> network connections
 -> Wired connection 1 -> IPv4”. For easy reference I also changed the name of
 this connection to “Public internet”, as in connected to the outside world. The
 IP was set to “Manual” and one adress line was added (IP, netmask, gateway) as
-192.16.208.184, 255.255.255.0, 192.16.208.1. I did not specify any DNS. For the
-local card I needed two lines of adresses since the USRP and RIO boxes were
-different: 192.168.10.10, 255.255.255.0, 129.168.10.1 for USRP, and
-169.254.212.10, 255.255.255.0, 169.254.212.1 for RIO.  The USRP also need some
-extra settings, else it will complain and suggest one to run the commands 
-\verb!sysctl -w net.core.rmem_max=50000000! and 
-\verb!sysctl -w net.core.wmem_max=1048576!. But, this only works
-temporarily, I need a permanent fix for all users. From the USRP documentation
-it is said that this could be fixed by editing the file
-“/etc/sysctl.d/uhd-usrp2.conf” to contain
-\begin{verbatim}
-# USRP2 gigabit ethernet transport tuning
-net.core.rmem_max=50000000
-net.core.wmem_max=1048576
-\end{verbatim}
-While doing this, we can also get rid of the USRP warning “Unable to set the
-thread priority.” by adding, at the end of the file
-“/etc/security/limits.conf”, the following lines: 
-\begin{verbatim}
-@salsa_admin    -    rtprio    99
-@salsa_users    -    rtprio    99
-\end{verbatim}
+129.16.208.184, 255.255.255.0, 129.16.208.1. (Brage has 129.16.208.20). I did
+not specify any DNS. For the local card I needed two lines of adresses since
+the USRP and RIO boxes were different: 192.168.10.10, 255.255.255.0,
+192.168.10.1 for USRP, and 169.254.212.10, 255.255.255.0, 169.254.212.1 for
+RIO.  
 
 \subsection{Setting up SSH-access}
 To be able to login remotely to Vale via SSH, I installed “open-ssh server”:
@@ -231,10 +214,6 @@ Then, using pip (installed above) the following two python modules were installe
 sudo pip install pyephem;
 sudo pip install tendo;
 
-Finally we need gnuradio and uhd-drivers to connect to the USRP. No drivers or
-files are needed for the RIO because we are using telnet for that. To get
-GNUradio and USRP things: sudo aptitude install gnuradio libuhd-dev libuhd003
-uhd-host
 
 Make sure that the SALSA item in the /opt/salsa/controller is a symbolic link.
 Sometimes, when copying, it may be replaced with an actual python file. This
@@ -369,3 +348,47 @@ rm -rf /etc/letsencrypt /var/log/letsencrypt
 /var/lib/letsencrypt ${XDG_DATA_HOME:-~/.local/share}/letsencrypt
 \end{verbatim}
 
+\section{Hardware}
+\subsection{RIO}
+No drivers or files are needed for the RIO because we are using telnet for
+that. We can however install the \emph{GalilTools} software to communicate
+with the RIO for e.g. troubleshooting.
+
+\subsection{USRP}
+For the USRP to work we first need drivers. These can be installed by
+To get GNUradio and USRP things: 
+\begin{verbatim}
+sudo aptitude install gnuradio libuhd-dev libuhd003 uhd-host
+\end{verbatim}
+
+The USRP also need some extra settings, else it will complain and suggest one
+to run the commands 
+\verb!sysctl -w net.core.rmem_max=50000000! and 
+\verb!sysctl -w net.core.wmem_max=1048576!. But, this only works
+temporarily, I need a permanent fix for all users. From the USRP documentation
+it is said that this could be fixed by editing the file
+“/etc/sysctl.d/uhd-usrp2.conf” to contain
+\begin{verbatim}
+# USRP2 gigabit ethernet transport tuning
+net.core.rmem_max=50000000
+net.core.wmem_max=1048576
+\end{verbatim}
+While doing this, we can also get rid of the USRP warning “Unable to set the
+thread priority.” by adding, at the end of the file
+“/etc/security/limits.conf”, the following lines: 
+\begin{verbatim}
+@salsa_admin    -    rtprio    99
+@salsa_users    -    rtprio    99
+\end{verbatim}
+
+\subsubsection{USRP N200 firmware update}
+If the USrp comlains that FIRMWARE FPGA is too old, e.g. with \emph{Please update the firmware and FPGA images for your device}, then update the firmware. This can be done in two steps. First, run
+\begin{verbatim}
+/usr/lib/uhd/utils/uhd_images_downloader.py
+\end{verbatim}
+and then run 
+\begin{verbatim}
+uhd_image_loader --args="type=usrp2,addr=192.168.10.2,reset"
+\end{verbatim}
+where the IP is the IP of the USRP which needs to be updated. Instructions
+taken from \verb!https://files.ettus.com/manual/page_usrp2.html!
