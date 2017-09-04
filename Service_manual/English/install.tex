@@ -111,9 +111,10 @@ another computer (i.e. not localhost) I need to add another user with name
 \verb!salsa_drupal! but specify “host=brage.oso.chalmers.se” for brage. But, for
 this security layer to be considered, I first have to allow access from
 anything else than the default 127.0.0.1. this is done by editing the file
-“/etc/mysql/my.cnf” (on the server computer vale) and commenting the line
-“bind-adress=127.0.0.1” followed by sudo service mysql restart. NOTE: this was
-also needed for the \verb!salsa_archive! user to be able to send the new fits files.
+“/etc/mysql/mysql.conf.d/mysqld.cnf” (on the server computer vale) and
+commenting the line “bind-adress=127.0.0.1” followed by sudo service mysql
+restart. NOTE: this was also needed for the \verb!salsa_archive! user to be
+able to send the new fits files.
 
 \subsection{Setting up Apache and Drupal}
 For drupal to work we need to make sure the login credentials are OK in the
