@@ -5,12 +5,12 @@
 $id = htmlspecialchars($_GET["id"]);
 $kind = htmlspecialchars($_GET["kind"]);
 // Connect to database. This should be made safe
-mysql_connect("localhost","salsa_archive","PASSWORD"); 
-mysql_select_db("salsa_drupal"); 
+$con = mysqli_connect("localhost","salsa_archive","PASSWORD"); 
+mysqli_select_db($con, "salsa_drupal"); 
 // Get data
 $query = "SELECT " . $kind . " FROM salsa_archive where id=$id"; 
-$result = mysql_query($query) or die (mysql_error()); 
-$arr = mysql_fetch_array($result); 
+$result = mysqli_query($con, $query) or die (mysqli_error()); 
+$arr = mysqli_fetch_array($result); 
 $data = $arr[0];
 // Send data to browser
 if ($kind=='file_fits')
