@@ -39,6 +39,46 @@ is only confusing to describe in the instructions for remote login, I ran sudo
 apt-get purge mintwelcome. Finally I installed the editor “vim” which I like to
 use to edit config files etc. by typing sudo aptitude install vim. 
 
+\subsubsection{Disable Shutdown/Hibrenate etc. buttons for normal users.}
+The GUI enables guest users to shut down the computer. This may confuse
+users, it has happened that the computer has been turned off repeatedly
+when users thought they were just logging out. To disable these graphical
+buttons in MATE window manager on Linux Mint 18.2, do this:
+
+To remove all, but apparently not Hibrenate, follow 
+\newline
+https://askubuntu.com/questions/93542/how-to-disable-shutdown-reboot-suspend-hibernate
+and create
+\newline
+/etc/polkit-1/localauthority/50-local.d/restrict-login-powermgmt.pkla
+with content
+\begin{verbatim}
+[Disable lightdm PowerMgmt]
+Identity=unix-user:*
+Action=org.freedesktop.login1.reboot;
+org.freedesktop.login1.reboot-multiple-sessions;
+org.freedesktop.login1.power-off;
+org.freedesktop.login1.power-off-multiple-sessions;
+org.freedesktop.login1.suspend;
+org.freedesktop.login1.suspend-multiple-sessions;
+org.freedesktop.login1.hibernate;
+org.freedesktop.login1.hibernate-multiple-sessions
+ResultAny=no
+ResultInactive=no
+ResultActive=no
+\end{verbatim}
+(perhaps without linebreaks between the action items, they were
+introduced whn typing this in LaTex)
+TO ALSO REMOVE HIBRENATE, run (as sudo):
+\begin{verbatim}
+mv -v /etc/polkit-1/localauthority/50-local.d/com.ubuntu.enable-hibernate.pkla /
+\end{verbatim}
+to move that particular enable-hibrenate override to / and thereby disable.
+Now the buttons are gone. Ideally, the Quit button, which is now empty, should
+be removed but I could not figure out how. But user can not turn off the
+computer now via the GUI. Also the auto-shutdown countdown after pressing quit
+does not kill the computer, it logs the user out. So its fine.
+
 \subsection{Network configuration}
 To make Vale resolve other local computers, as being able to write “ssh brage”
 instead of the “ssh brage.oso.chalmers.se”, manual config was needed. The file
