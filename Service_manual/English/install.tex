@@ -393,3 +393,20 @@ uhd_image_loader --args="type=usrp2,addr=192.168.10.2,reset"
 \end{verbatim}
 where the IP is the IP of the USRP which needs to be updated. Instructions
 taken from \verb!https://files.ettus.com/manual/page_usrp2.html!
+
+\section{User accounts}
+It is convenient to disable the guest-user (without password) which is offered
+by Linux Mint as default. It is also convenient to hide the list of
+users on the start login screen. To do these things, edit the file
+\begin{verbatim}
+/etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+\end{verbatim}
+and add the two lines:
+\begin{verbatim}
+allow-guest=false
+greeter-hide-users=true
+\end{verbatim}
+and then reboot the computer.
+Note that it is possible to add a guest account WITH a password by adding a
+normal user to the OS. However, this user should NOT be in the SALSA users
+group, since its password should not be handled by the cronjob.
