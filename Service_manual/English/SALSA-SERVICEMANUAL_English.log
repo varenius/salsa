@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.9.4)  7 SEP 2017 15:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.9.4)  7 SEP 2017 15:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -424,21 +424,21 @@ LaTeX Info: Redefining \nameref on input line 23.
 \openout3 = `SALSA-SERVICEMANUAL_English.out'.
 
 
-(./coverpage.tex <../figures/OSO-logo.jpg, id=120, 105.996pt x 86.724pt>
+(./coverpage.tex <../figures/OSO-logo.jpg, id=124, 105.996pt x 86.724pt>
 File: ../figures/OSO-logo.jpg Graphic file (type jpg)
 
 <use ../figures/OSO-logo.jpg>
 Package pdftex.def Info: ../figures/OSO-logo.jpg used on input line 6.
 (pdftex.def)             Requested size: 139.10968pt x 113.81102pt.
 
-<../figures/CHALMERS-logo.pdf, id=121, 202.7575pt x 226.8475pt>
+<../figures/CHALMERS-logo.pdf, id=125, 202.7575pt x 226.8475pt>
 File: ../figures/CHALMERS-logo.pdf Graphic file (type pdf)
 
 <use ../figures/CHALMERS-logo.pdf>
 Package pdftex.def Info: ../figures/CHALMERS-logo.pdf used on input line 8.
 (pdftex.def)             Requested size: 101.725pt x 113.81102pt.
 
-<../figures/SALSA.png, id=122, 338.26375pt x 382.42876pt>
+<../figures/SALSA.png, id=126, 338.26375pt x 382.42876pt>
 File: ../figures/SALSA.png Graphic file (type png)
 
 <use ../figures/SALSA.png>
@@ -474,9 +474,9 @@ l.1 \chapter
 ]
 Chapter 1.
 
-Overfull \hbox (150.61165pt too wide) in paragraph at lines 10--12
+Overfull \hbox (113.56163pt too wide) in paragraph at lines 10--12
 \OT1/cmr/m/n/12 RIO 47200 from Galil com-ref: [] \OT1/cmtt/m/n/12 http://www.ga
-lil.com/download/comref/com47xxx/index.html#cover.html+RIO \verb 
+lil.com/download/comref/com47xxx/index.html#cover.html+RIO 
  []
 
 ) (./install.tex [3
@@ -726,7 +726,7 @@ Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no  in font cmr12!
 
-Overfull \hbox (22.76689pt too wide) in paragraph at lines 205--209
+Overfull \hbox (22.76689pt too wide) in paragraph at lines 206--210
 \OT1/cmr/m/n/12 the login-page that users see a bit more SALSA-like. This page 
 is reached at vale.oso.chalmers.se:300.
  []
@@ -760,7 +760,7 @@ Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no  in font cmr12!
 
-Overfull \hbox (32.54816pt too wide) in paragraph at lines 270--276
+Overfull \hbox (32.54816pt too wide) in paragraph at lines 271--277
 \OT1/cmr/m/n/12 in ssh-config so no changes needed apart from adding the pub-li
 c key to []\OT1/cmtt/m/n/12 /root/.ssh/authorized_keys\OT1/cmr/m/n/12 .
  []
@@ -772,7 +772,7 @@ Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no  in font cmr12!
 
-Overfull \hbox (23.25319pt too wide) in paragraph at lines 296--304
+Overfull \hbox (23.25319pt too wide) in paragraph at lines 297--305
 [] \OT1/cmtt/m/n/12 sudo aptitude install pyqt4-dev-tools\OT1/cmr/m/n/12 . Then
 , one may run [] \OT1/cmtt/m/n/12 pyuic4 SALSA_UI.ui > UI.py
  []
@@ -802,7 +802,7 @@ Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no  in font cmr12!
 
-Overfull \hbox (39.00111pt too wide) in paragraph at lines 404--411
+Overfull \hbox (39.00111pt too wide) in paragraph at lines 405--412
 \OT1/cmr/m/n/12 com-mands []\OT1/cmtt/m/n/12 sysctl -w net.core.rmem_max=500000
 00 \OT1/cmr/m/n/12 and []\OT1/cmtt/m/n/12 sysctl -w net.core.wmem_max=1048576\O
 T1/cmr/m/n/12 .
@@ -829,14 +829,14 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 33.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 33.
 Package rerunfilecheck Info: File `SALSA-SERVICEMANUAL_English.out' has not cha
 nged.
-(rerunfilecheck)             Checksum: 55CD212FC3A478C4CF5962C70E2787E4;2069.
+(rerunfilecheck)             Checksum: 555DCD4B416D4E428F7E4CED8998F6B4;2129.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 33.
  ) 
 Here is how much of TeX's memory you used:
- 8751 strings out of 493029
- 128743 string characters out of 6136235
+ 8753 strings out of 493029
+ 128767 string characters out of 6136235
  243201 words of memory out of 5000000
- 12101 multiletter control sequences out of 15000+600000
+ 12102 multiletter control sequences out of 15000+600000
  10925 words of font info for 41 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  36i,6n,38p,1041b,455s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -844,10 +844,10 @@ Here is how much of TeX's memory you used:
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on SALSA-SERVICEMANUAL_English.pdf (13 pages, 495550 bytes).
+Output written on SALSA-SERVICEMANUAL_English.pdf (13 pages, 496165 bytes).
 PDF statistics:
- 258 PDF objects out of 1000 (max. 8388607)
- 231 compressed objects within 3 object streams
- 52 named destinations out of 1000 (max. 500000)
- 248 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 263 PDF objects out of 1000 (max. 8388607)
+ 236 compressed objects within 3 object streams
+ 53 named destinations out of 1000 (max. 500000)
+ 256 words of extra memory for PDF output out of 10000 (max. 10000000)
 

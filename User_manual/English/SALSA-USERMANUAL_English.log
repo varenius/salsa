@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.3.15)  4 MAY 2017 15:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.3.15)  5 SEP 2017 15:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -423,21 +423,21 @@ LaTeX Info: Redefining \nameref on input line 30.
 \openout3 = `SALSA-USERMANUAL_English.out'.
 
 
-(./coverpage.tex <../figures/OSO-logo.jpg, id=140, 105.996pt x 86.724pt>
+(./coverpage.tex <../figures/OSO-logo.jpg, id=144, 105.996pt x 86.724pt>
 File: ../figures/OSO-logo.jpg Graphic file (type jpg)
 
 <use ../figures/OSO-logo.jpg>
 Package pdftex.def Info: ../figures/OSO-logo.jpg used on input line 6.
 (pdftex.def)             Requested size: 139.10968pt x 113.81102pt.
 
-<../figures/CHALMERS-logo.pdf, id=141, 202.7575pt x 226.8475pt>
+<../figures/CHALMERS-logo.pdf, id=145, 202.7575pt x 226.8475pt>
 File: ../figures/CHALMERS-logo.pdf Graphic file (type pdf)
 
 <use ../figures/CHALMERS-logo.pdf>
 Package pdftex.def Info: ../figures/CHALMERS-logo.pdf used on input line 8.
 (pdftex.def)             Requested size: 101.725pt x 113.81102pt.
 
-<../figures/SALSA.png, id=142, 338.26375pt x 382.42876pt>
+<../figures/SALSA.png, id=146, 338.26375pt x 382.42876pt>
 File: ../figures/SALSA.png Graphic file (type png)
 
 <use ../figures/SALSA.png>
@@ -460,7 +460,7 @@ res/OSO-logo.jpg> <../figures/CHALMERS-logo.pdf> <../figures/SALSA.png>])
  identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.37 ...Local Sidereal Time}{20}{subsection.A.2.2}
+l.37 ...atorial coordinates}{19}{subsection.A.2.1}
                                                    [1
 
 ])
@@ -472,14 +472,14 @@ l.37 ...Local Sidereal Time}{20}{subsection.A.2.2}
 
 ]
 Chapter 1.
-<../figures/SALSA_website.png, id=208, 558.085pt x 202.7575pt>
+<../figures/SALSA_website.png, id=213, 558.085pt x 202.7575pt>
 File: ../figures/SALSA_website.png Graphic file (type png)
 
 <use ../figures/SALSA_website.png>
 Package pdftex.def Info: ../figures/SALSA_website.png used on input line 8.
 (pdftex.def)             Requested size: 483.69684pt x 175.73552pt.
 
-<../figures/SALSA_book.png, id=210, 524.96124pt x 322.20375pt>
+<../figures/SALSA_book.png, id=215, 524.96124pt x 322.20375pt>
 File: ../figures/SALSA_book.png Graphic file (type png)
 
 <use ../figures/SALSA_book.png>
@@ -488,7 +488,7 @@ Package pdftex.def Info: ../figures/SALSA_book.png used on input line 30.
  [4
 
  <../figures/SALSA_website.png>] [5 <../figures/SALSA_book.png>]
-<../figures/SALSA_archive.png, id=224, 937.5025pt x 204.765pt>
+<../figures/SALSA_archive.png, id=229, 937.5025pt x 204.765pt>
 File: ../figures/SALSA_archive.png Graphic file (type png)
 
 <use ../figures/SALSA_archive.png>
@@ -506,15 +506,15 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 80.
  [8]
-<../figures/Controller_start.png, id=244, 808.01875pt x 593.21625pt>
+<../figures/Controller_start.png, id=249, 837.1275pt x 661.47125pt>
 File: ../figures/Controller_start.png Graphic file (type png)
 
 <use ../figures/Controller_start.png>
 Package pdftex.def Info: ../figures/Controller_start.png used on input line 145
 .
-(pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
+(pdftex.def)             Requested size: 483.69684pt x 382.20016pt.
  [9]
-<../figures/Controller_move.png, id=255, 808.01875pt x 593.21625pt>
+<../figures/Controller_move.png, id=260, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_move.png Graphic file (type png)
 
 <use ../figures/Controller_move.png>
@@ -523,7 +523,7 @@ Package pdftex.def Info: ../figures/Controller_move.png used on input line 201.
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
  [10 <../figures/Controller_start.png>]
 [11 <../figures/Controller_move.png>]
-<../figures/Controller_measure.png, id=272, 808.01875pt x 593.21625pt>
+<../figures/Controller_measure.png, id=277, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_measure.png Graphic file (type png)
 
 <use ../figures/Controller_measure.png>
@@ -531,7 +531,7 @@ Package pdftex.def Info: ../figures/Controller_measure.png used on input line 2
 40.
 (pdftex.def)             Requested size: 483.69684pt x 355.11783pt.
 
-<../figures/Controller_spectra.png, id=274, 808.01875pt x 593.21625pt>
+<../figures/Controller_spectra.png, id=279, 808.01875pt x 593.21625pt>
 File: ../figures/Controller_spectra.png Graphic file (type png)
 
 <use ../figures/Controller_spectra.png>
@@ -541,7 +541,7 @@ Package pdftex.def Info: ../figures/Controller_spectra.png used on input line 2
  [12] [13 <../figures/Controller_measure.png>] [14 <../figures/Controller_spect
 ra.png>]) (./techspec.tex [15]
 Chapter 3.
-<../figures/Beam_vale_2014-10-03.pdf, id=308, 915.11888pt x 579.0634pt>
+<../figures/Beam_vale_2014-10-03.pdf, id=313, 915.11888pt x 579.0634pt>
 File: ../figures/Beam_vale_2014-10-03.pdf Graphic file (type pdf)
 
 <use ../figures/Beam_vale_2014-10-03.pdf>
@@ -554,14 +554,14 @@ Package pdftex.def Info: ../figures/Beam_vale_2014-10-03.pdf used on input line
 
 ]
 Appendix A.
-<../figures/longlat.pdf, id=383, 395.4775pt x 402.50375pt>
+<../figures/longlat.pdf, id=388, 395.4775pt x 402.50375pt>
 File: ../figures/longlat.pdf Graphic file (type pdf)
 
 <use ../figures/longlat.pdf>
 Package pdftex.def Info: ../figures/longlat.pdf used on input line 38.
 (pdftex.def)             Requested size: 227.62204pt x 231.6651pt.
 
-<../figures/celestial.pdf, id=384, 395.4775pt x 424.58624pt>
+<../figures/celestial.pdf, id=389, 395.4775pt x 424.58624pt>
 File: ../figures/celestial.pdf Graphic file (type pdf)
 
 <use ../figures/celestial.pdf>
@@ -570,7 +570,7 @@ Package pdftex.def Info: ../figures/celestial.pdf used on input line 54.
  [19
 
 ]
-<../figures/lst.pdf, id=394, 427.5975pt x 404.51125pt>
+<../figures/lst.pdf, id=399, 427.5975pt x 404.51125pt>
 File: ../figures/lst.pdf Graphic file (type pdf)
 
 <use ../figures/lst.pdf>
@@ -586,14 +586,14 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 43.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 43.
 Package rerunfilecheck Info: File `SALSA-USERMANUAL_English.out' has not change
 d.
-(rerunfilecheck)             Checksum: 79AF58B2AE595DCFEB9ACA36B4D708AC;2383.
+(rerunfilecheck)             Checksum: E8381330548C085ACED145E5BD2DEEEE;2462.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 43.
  ) 
 Here is how much of TeX's memory you used:
- 8916 strings out of 493014
- 132422 string characters out of 6133351
+ 8918 strings out of 493014
+ 132446 string characters out of 6133351
  248024 words of memory out of 5000000
- 12218 multiletter control sequences out of 15000+600000
+ 12219 multiletter control sequences out of 15000+600000
  15748 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,10n,77p,1038b,464s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -611,10 +611,10 @@ exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/tex
 live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texl
 ive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texli
 ve/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on SALSA-USERMANUAL_English.pdf (24 pages, 912722 bytes).
+Output written on SALSA-USERMANUAL_English.pdf (24 pages, 916757 bytes).
 PDF statistics:
- 587 PDF objects out of 1000 (max. 8388607)
- 406 compressed objects within 5 object streams
- 80 named destinations out of 1000 (max. 500000)
- 343 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 592 PDF objects out of 1000 (max. 8388607)
+ 411 compressed objects within 5 object streams
+ 81 named destinations out of 1000 (max. 500000)
+ 351 words of extra memory for PDF output out of 10000 (max. 10000000)
 

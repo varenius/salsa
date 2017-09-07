@@ -29,6 +29,7 @@
 \contentsline {chapter}{\numberline {3}Tekniska specifikationer}{16}{chapter.3}
 \contentsline {section}{\numberline {3.1}Vinkeluppl\IeC {\"o}sning och precision}{16}{section.3.1}
 \contentsline {section}{\numberline {3.2}Frekvensuppl\IeC {\"o}sning och precision}{16}{section.3.2}
+\contentsline {section}{\numberline {3.3}Fluxkalibrering och os\IeC {\"a}kerhet}{17}{section.3.3}
 \contentsline {chapter}{Bilagor}{18}{chapter*.17}
 \contentsline {chapter}{\numberline {A}Himmelssf\IeC {\"a}ren och astronomiska koordinatsystem}{19}{appendix.A}
 \contentsline {section}{\numberline {A.1}En position p\IeC {\r a} jorden}{19}{section.A.1}
