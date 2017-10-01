@@ -35,6 +35,13 @@ software_gain = 960
 
 # Directory for tempfiles during measurement
 tmpdir=/tmp
+[TLE]
+# Directory for TLE files and the link
+tledir_name=/home/GrzegorzK/Desktop/SALSA_GNSS/TLE/
+# File with links to TLE
+tlelinks=TLElinks.txt
+# Begining of the TLE filename, which contains specific GNSS constellation
+tleoutfile_name=TLE_
 
 [ARCHIVE]
 # Credentials to connect to online archive for data upload
