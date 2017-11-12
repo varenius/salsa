@@ -1,0 +1,5 @@
+# The list of links with TLE data
+GPS https://celestrak.com/NORAD/elements/gps-ops.txt
+GALILEO https://celestrak.com/NORAD/elements/galileo.txt
+GLONASS https://celestrak.com/NORAD/elements/glo-ops.txt
+BEIDOU https://celestrak.com/NORAD/elements/beidou.txt
