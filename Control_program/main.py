@@ -23,7 +23,8 @@ from tendo import singleton
 me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
 ##### SET CONFIG FILE #######
-configfile = os.path.dirname(__file__) + '/SALSA.config'
+abspath = os.path.abspath(__file__)
+configfile = os.path.dirname(abspath) + '/SALSA.config'
 #############################
 
 # Customize NavigatinoToolBarcalsss
@@ -125,7 +126,10 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.coordselector, QtCore.SIGNAL('activated(QString)'), self.coordselector_chosen)
         # Connect the activated signal on the GNSSselector to our handler which sets the currentGNSStarget
         self.connect(self.GNSSselector, QtCore.SIGNAL('activated(QString)'), self.GNSSselector_chosen)
-	
+
+	# opens GNSS AzEl window after clicking the btn_GNSS_lh button
+        self.btn_GNSS_lh.clicked.connect(self.open_GNSSAzEl)
+
         # RECEIVER CONTROL
         self.btn_observe.clicked.connect(self.observe)
         self.btn_observe.clicked.connect(self.disable_receiver_controls)
@@ -148,26 +152,22 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         # it takes the Canvas widget and a parent
         self.toolbar = NavigationToolbar(self.canvas, self.groupBox_spectrum)
         # set the layout
-        # Position as left, top, width, height
-        #self.canvas.setGeometry(QtCore.QRect(20, 20, 500, 380)
         plotwinlayout = QtGui.QVBoxLayout()
         plotwinlayout.addWidget(self.canvas)
         plotwinlayout.addWidget(self.toolbar)
         self.groupBox_spectrum.setLayout(plotwinlayout)
         self.radioButton_frequency.toggled.connect(self.change_spectra)
-	
-	    # opens GNSS AzEl window after clicking the btn_GNSS_lh button
-        self.btn_GNSS_lh.clicked.connect(self.open_GNSSAzEl)
-       
+ 
     def change_spectra(self):
         # Plot spectra of currently selected item
-        spectrum = self.spectra[str(self.listWidget_spectra.currentItem().text())]
-        self.plot(spectrum)
-        spectrum.print_total_power()
-        if spectrum.uploaded:
-            self.btn_upload.setEnabled(False)
-        else:
-            self.btn_upload.setEnabled(True)
+        if self.listWidget_spectra.count() >0 :
+            spectrum = self.spectra[str(self.listWidget_spectra.currentItem().text())]
+            self.plot(spectrum)
+            spectrum.print_total_power()
+            if spectrum.uploaded:
+                self.btn_upload.setEnabled(False)
+            else:
+                self.btn_upload.setEnabled(True)
 
     def clear_progressbar(self):
         self.lapsedtime = 0
@@ -223,8 +223,8 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
     def coordselector_chosen(self, text):
         """
-        Handler called when a target is chosen from the coordselector combo box
-        Turns on the GNSS-related parts of GUI if target is 'GNSS'
+        The handler called when a target is chosen from the coordselector combobox.
+        Turns on the GNSS-related parts of GUI if target is 'GNSS'.
         """
         if text == "GNSS":
             self.GNSS_GUI_visible(True)
@@ -233,17 +233,17 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
     def GNSSselector_chosen(self, text):
         """
-        Sets the currentGNSStarget based on the selected GNSS target from the GNSSselector combo box
+        Sets the currentGNSStarget based on the selected GNSS target from the GNSSselector combobox
 
         """
         self.currentGNSStarget=str(text)
 
     def GNSS_GUI_visible(self,visibility):
         """
-        Handler turning on/off all GNSS-related items of GUI
+        The handler turning on/off all GNSS-related items of GUI
         """
         if visibility == True:
-	    self.GNSS_createCombobox() 
+	    self.GNSS_createCombobox()
 	    self.GNSSselector.setVisible(True)
             self.btn_GNSS_lh.setVisible(True)
 	    self.GNSS_hide_guiobjects(True)
@@ -256,7 +256,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
     def GNSS_hide_guiobjects(self,visibility):
         """
-        Handler turning on/off some original SALSA's GUI objects when switching to GNSS tracking
+        The handler turning on/off some original SALSA's GUI objects when switching to GNSS tracking
         """
         if visibility == True:
             self.inputleftcoord.setVisible(False)
@@ -271,17 +271,17 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
     def GNSS_createCombobox(self):
 	"""
-	Creates a GNSSselector combo box using a list of visible GNSS satellites
+	Creates a GNSSselector combobox using a list of visible GNSS satellites
 	"""
 	[GNSSname,phi,r]=satellites.SatCompute('visible','ALL') # fills the list with all GNSS satellites
         self.GNSSselector.addItem('None')
 	for i in range(0,len(GNSSname)):
                 self.GNSSselector.addItem(GNSSname[i])
-	self.GNSSselector.setCurrentIndex(0) # Set the target in the GNSS selector to None
-    
+	self.GNSSselector.setCurrentIndex(0) # Sets the target in the GNSS selector to None
+
     def GNSS_clearCombobox(self):
 	"""
-	resets the list of visible GNSS satellites
+	Resets the list of visible GNSS satellites
 	"""
 	self.GNSSselector.clear()
 
@@ -303,7 +303,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event):
 	"""
-	Confirmation whether one would like to quit the program
+	Confirmation whether one would like to quit SALSA
 	"""
         reply = QtGui.QMessageBox.question(self, 'Quit',
         "Are you sure you want to quit?", QtGui.QMessageBox.Yes |
@@ -755,7 +755,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.btn_track.setText('Stop')
         style = "QWidget { background-color:red;}"
         self.btn_track.setStyleSheet(style)
-    
+
     def enable_movement_controls(self):
         self.inputleftcoord.setReadOnly(False)
         self.inputrightcoord.setReadOnly(False)
@@ -805,7 +805,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         self.btn_observe.setEnabled(False)
         msg = "Dear user. The telescope is lost, this may happen when there is a power cut. A reset is needed for SALSA to know where it is pointing. Please press reset and wait until reset is finished."
         self.show_message(msg)
-    
+ 
     def reset(self):
         # Show a message box
         qmsg = "You have asked for a system reset. This process may take a few minutes if the telescope is far from its starting position so please be patient. Do you really want to reset the telescope?"
@@ -844,26 +844,21 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
         super(GNSSAzEl_window, self).__init__()
         self.setupUi(self)
         self.init_Ui()
-        
+ 
     def init_Ui(self):
-        
-        self.create_menu()
-        self.create_status_bar()
-          
+
+        self.create_menuActions()
         self.btn_close.clicked.connect(self.close)
-        self.checkBoxGPS.setChecked(True)
-        self.checkBoxGLONASS.setChecked(True)
-        self.checkBoxGALILEO.setChecked(True)
-        self.checkBoxBEIDOU.setChecked(True)
 
         self.dpi = 100
         self.fig = Figure((6.6, 6.6), dpi=self.dpi)
         self.fig.patch.set_facecolor('none')
         self.canvas = FigureCanvas(self.fig)
-        self.canvas.setGeometry(QtCore.QRect(40,40, 600, 600))  
+        # Position as left, top, width, height
+        self.canvas.setGeometry(QtCore.QRect(40,60, 600, 600))  
         self.canvas.setParent(self)
         self.drawPlt()
-        
+
         self.checkBoxGPS.clicked.connect(self.refreshPlt)
         self.checkBoxGLONASS.clicked.connect(self.refreshPlt)
         self.checkBoxGALILEO.clicked.connect(self.refreshPlt)
@@ -877,7 +872,7 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
             
     def drawPlt(self):
 	"""
-	Draws the GNSS Az-El plot
+	Draws the GNSS Az-El plot.
 
 	"""
  
@@ -900,9 +895,8 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
         self.ax.set_autoscaley_on(False)
 
         if self.checkBoxGPS.isChecked() == True :
-
             [GPSname, phi_GPS, r_GPS] = satellites.SatCompute('visible', 'GPS')  # fills the list with all GPS satellites
-            GPSname = [j[13:19] for j in GPSname]
+            GPSname = [j.split()[-2].replace("(","" ) + j.split()[-1].replace(")" ,"") for j in GPSname] # shortens the displayed satellites' names on the plot
             self.ax.plot(phi_GPS,r_GPS, 'ro',label='GPS')
             for i,txt in enumerate(GPSname):
                 self.ax.annotate(txt,(phi_GPS[i],r_GPS[i]))
@@ -916,12 +910,13 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
 
         if self.checkBoxGALILEO.isChecked() == True:
             [GALILEOname, phi_GALILEO, r_GALILEO] = satellites.SatCompute('visible', 'GSAT')  # fills the list with all GALILEO satellites
-            GALILEOname = [j[10:17] for j in GALILEOname]
+            GALILEOname = [j.split()[-2].replace("(","" ) + j.split()[-1].replace(")" ,"") for j in GALILEOname]
             self.ax.plot(phi_GALILEO, r_GALILEO, 'go', label='GALILEO')
             for i, txt in enumerate(GALILEOname):
                 self.ax.annotate(txt, (phi_GALILEO[i], r_GALILEO[i]))
         if self.checkBoxBEIDOU.isChecked() == True:
             [BEIDOUname, phi_BEIDOU, r_BEIDOU] = satellites.SatCompute('visible','BEIDOU')  # fills the list with all BEIDOU satellites
+            BEIDOUname = [ j.split()[-1] for j in BEIDOUname]
             self.ax.plot(phi_BEIDOU, r_BEIDOU, 'ko', label='BEIDOU')
             for i, txt in enumerate(BEIDOUname):
                 self.ax.annotate(txt, (phi_BEIDOU[i], r_BEIDOU[i]))
@@ -931,33 +926,29 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
     def refreshPlt(self):
         """
 	    Refreshes the drawn plot
-	    """
+	"""
         self.ax.clear()
         self.drawPlt()
 
         
-    def create_menu(self):
+    def create_menuActions(self):
         """
-        Creates the menubar of the GNSS Az-El window
+        Creates actions for the menubar of the GNSS Az-El window.
         :return: Nothing
         """
-        self.menubar=self.menuBar()
-        self.menubar.setNativeMenuBar(False)        
-        self.file_menu = self.menubar.addMenu("&File")
-        
-        load_file_action = self.create_action("&Save current view",
+        save_file_action = self.create_action("&Save current view",
             shortcut="Ctrl+S", slot=self.save_plot, 
-            tip="Saves current view")
+            tip="Saves current Azimuth-Elevation view as an image.")
+
         quit_action = self.create_action("&Quit", slot=self.close, 
             shortcut="Ctrl+Q", tip="Closes current window")
-        
-        self.add_actions(self.file_menu, 
-            (load_file_action, None, quit_action))
-        
-        self.help_menu = self.menuBar().addMenu("&Help")
+
         about_action = self.create_action("&About", 
             shortcut='F1', slot=self.on_about, 
-            tip='Help')
+            tip='Displays additional information.')
+
+        self.add_actions(self.file_menu, 
+            (save_file_action, None, quit_action))
         
         self.add_actions(self.help_menu, (about_action,))
         
@@ -986,33 +977,29 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
         if checkable:
             action.setCheckable(True)
         return action
-        
+
     def save_plot(self):
         """
         Saves the current GNSS Az-El plot
         """
         file_choices = "PNG (*.png)|*.png"
-        
+
         path = unicode(QtGui.QFileDialog.getSaveFileName(self, 
                         'Save file', '', 
                         file_choices))
         if path:
             self.canvas.print_figure(path, dpi=self.dpi)
             self.statusBar().showMessage('Saved to %s' % path, 2000)
-         
+
     def on_about(self):
         """
-        A message of the Help option
+        A message of the help option
         """
         msg = """
-        
-         This window displays actual positions of GNSS satellites above the local horizon
+
+        This window displays current positions of GNSS satellites above the local horizon. Positions computed using two-line element set (TLE) data.
         """
         QtGui.QMessageBox.about(self, "GNSS Az-El view", msg.strip())
-        
-    def create_status_bar(self):
-        self.status_text = QtGui.QLabel("")
-        self.statusBar().addWidget(self.status_text, 1)
 
 def main():
     app = QtGui.QApplication(sys.argv)

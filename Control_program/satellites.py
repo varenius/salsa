@@ -10,7 +10,8 @@ import math
 sys.path.append('./')
 
 # Load the config file
-configfile = os.path.dirname(__file__) + '/SALSA.config'
+abspath = os.path.abspath(__file__)
+configfile = os.path.dirname(abspath) + '/SALSA.config'
 config=ConfigParser.ConfigParser()
 config.read(configfile)
 
@@ -21,7 +22,7 @@ h = config.getfloat('SITE', 'elevation')
 
 # load TLE files
 TLEdir=config.get('TLE','tledir_name')
-tleEphem=TLEephem.TLEephem(TLEdir)
+tleEphem=TLEephem.TLEephem(TLEdir, config)
 tleEphem.SetObserver(lat,lon,h)
 
 def SatCompute(visibility, constellation):

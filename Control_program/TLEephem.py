@@ -7,6 +7,9 @@ import ephem
 import datetime
 import shutil
 
+import getpass # To find current username
+import ConfigParser
+
 
 class TLEephem:
     """A simple class coping with TLE"""
@@ -14,10 +17,10 @@ class TLEephem:
     itsObjectLines=np.zeros((1, 3),dtype=object)
     itsObserver= ephem.Observer()
 
-    def __init__(self,iTLEdir):
+    def __init__(self,iTLEdir, config):
         self.TLEdir=iTLEdir
         self.Extension='*.tle'
-        self.GetFiles()
+        self.GetFiles(config)
 
     def SetObserver(self, phi, lam, eh, time = None ):
         """
@@ -36,13 +39,16 @@ class TLEephem:
         self.itsObserver.date=time.strftime('%Y/%d/%m %H:%M:%S')
 
 
-    def GetFiles(self):
+    def GetFiles(self, config):
         """
         Parses the TLE files and stores TLE lines in the itsObjectLines container.
 
         :return: nothing
         """
-        tmpFile="tmp1.txt"
+        # Set current username, used for tmp file to ensure write access
+        username = getpass.getuser()
+        tmpFile = config.get('USRP', 'tmpdir') + "/SALSA_" + username + "TLE.tmp"
+
         with open(tmpFile, 'wb') as wfd:
             for filename in glob.glob(os.path.join(self.TLEdir, self.Extension)):
                 with open(filename, 'rb') as fd:

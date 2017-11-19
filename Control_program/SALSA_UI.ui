@@ -35,9 +35,15 @@
        <rect>
         <x>20</x>
         <y>30</y>
-        <width>751</width>
+        <width>721</width>
         <height>191</height>
        </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="title">
        <string>Telescope movement control</string>
@@ -52,8 +58,21 @@
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
         <item row="0" column="2">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QPushButton" name="btn_GNSS_lh">
+            <property name="visible">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>GNSS Az-El View</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QLabel" name="coordlabel_right">
             <property name="text">
@@ -199,6 +218,13 @@
         <item row="0" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
+           <widget class="QComboBox" name="GNSSselector">
+            <property name="visible">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="coordlabel_left">
             <property name="text">
              <string>Longitude</string>
@@ -258,6 +284,11 @@
             <item>
              <property name="text">
               <string>Cas. A</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>GNSS</string>
              </property>
             </item>
             <item>
@@ -701,9 +732,9 @@
       <property name="geometry">
        <rect>
         <x>250</x>
-        <y>20</y>
+        <y>30</y>
         <width>521</width>
-        <height>471</height>
+        <height>461</height>
        </rect>
       </property>
       <property name="title">
@@ -749,15 +780,21 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>600</x>
+        <x>590</x>
         <y>0</y>
         <width>196</width>
-        <height>24</height>
+        <height>32</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="vel_or_freq_group">
        <item>
         <widget class="QRadioButton" name="radioButton_velocity">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
          <property name="text">
           <string>Velocity</string>
          </property>
@@ -768,6 +805,12 @@
        </item>
        <item>
         <widget class="QRadioButton" name="radioButton_frequency">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
          <property name="text">
           <string>Frequency</string>
          </property>
@@ -817,7 +860,7 @@
      <x>0</x>
      <y>0</y>
      <width>835</width>
-     <height>20</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>

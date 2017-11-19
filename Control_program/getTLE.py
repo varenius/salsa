@@ -11,7 +11,8 @@ import ConfigParser
 sys.path.append('./')
 
 # Load the config file
-configfile = os.path.dirname(__file__) + '/SALSA.config'
+abspath = os.path.abspath(__file__)
+configfile = os.path.dirname(abspath) + '/SALSA.config'
 config=ConfigParser.ConfigParser()
 config.read(configfile)
 # set the directory with TLE files and names of the new files
