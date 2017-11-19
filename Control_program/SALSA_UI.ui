@@ -487,12 +487,18 @@
                   <x>10</x>
                   <y>0</y>
                   <width>171</width>
-                  <height>24</height>
+                  <height>27</height>
                  </rect>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
                   <widget class="QRadioButton" name="mode_signal">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>15</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Signal</string>
                    </property>
@@ -500,6 +506,12 @@
                  </item>
                  <item>
                   <widget class="QRadioButton" name="mode_switched">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>15</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Switched</string>
                    </property>
