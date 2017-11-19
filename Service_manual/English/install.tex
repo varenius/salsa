@@ -450,3 +450,11 @@ and then reboot the computer.
 Note that it is possible to add a guest account WITH a password by adding a
 normal user to the OS. However, this user should NOT be in the SALSA users
 group, since its password should not be handled by the cronjob.
+
+\section{GNSS TLE tracking data}
+The TLE data for GNSS satellite tracking needs to be updated every day
+to stay accurate. Do to so, add the following line to the bottom of
+the sudo crontab -e
+\begin{verbatim}
+25 2 * * * python /opt/salsa/controller/getTLE.py
+\end{verbatim}

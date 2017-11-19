@@ -7,12 +7,28 @@ can be remotely controlled via internet at
 \verb! http://pwcontrol2.oso.chalmers.se!
 
 \section{RIO}
-RIO 47200 from Galil
-comref: \verb! http://www.galil.com/download/comref/com47xxx/index.html#cover.html+RIO!
+RIO 47200 from Galil, the command reference is heref: 
+\begin{verbatim}
+http://www.galil.com/download/comref/com47xxx/
+index.html#cover.html+RIO!
+\end{verbatim}
+To revise the RIO code, to as follows:
+Run galiltools as a terminal. When connected to the RIO, press Upload to read
+the current DMC code from the RIO. Then change the program as you want and
+save it locally on the computer TO replace the RIO software, you first need
+to turn off any ongoing loops. This can be done by running the four commands
+AB0, AB1, AB2, AB3 in sequence (i.e. AB0 ENTER, then next) to abort the
+four running threads. You can send the command TB to check the status
+of the controller, if 127 then things are still running.
+After all is aborted, you can press download to download the editor code to
+the RIO. To keep it there after a restart, run BP to burn it to memory.
+Finally, run RS to reset all to default power on setting.
+Note that print statements in the code may cause python communication to fail
+so be careful to comment those before burning the code for production use.
+Output can be useful for testing though.
 
-Weather:
-http://www.oso.chalmers.se/weather/
-Try to keep below 10m/s
+\section{Weather}
+See http://www.oso.chalmers.se/weather/ and try to keep below 10m/s.
 
 \section{Usage report}
 To compile a usage report, go to the Usage Report page on the admin pages in the
