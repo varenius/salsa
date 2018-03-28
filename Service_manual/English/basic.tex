@@ -41,7 +41,7 @@ time should be doubled if we have two telescopes for the session. One
 way of doing this is the following> add a new colum besides the one with times.
 In one cell in this column, insert
 \begin{verbatim}
-=IF(OR(B246="Vale, Brage",B246="Brage, Vale "),A246*2,A246)
+=IF(OR(B246="Vale, Brage",B246="Brage, Vale"),A246*2,A246)
 \end{verbatim}
 with 246 being the row numbers, change accordingly.
 Then drag downwards, and it will follow the relative cell paths,
