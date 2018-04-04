@@ -1,0 +1,11 @@
+\select@language {english}
+\contentsline {chapter}{Abstract}{2}{chapter*.4}
+\contentsline {chapter}{\numberline {1}Global Navigation Satellite Systems}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}GNSS signals}{5}{section.1.1}
+\contentsline {section}{\numberline {1.2}GNSS positioning principle}{6}{section.1.2}
+\contentsline {chapter}{\numberline {2}Observing signal spectra of GNSS satellites}{7}{chapter.2}
+\contentsline {section}{\numberline {2.1}How does SALSA know where to point at ?}{7}{section.2.1}
+\contentsline {section}{\numberline {2.2}Tracking GNSS satellites}{7}{section.2.2}
+\contentsline {section}{\numberline {2.3}Observing signals of GNSS satellites}{8}{section.2.3}
+\contentsline {section}{\numberline {2.4}Related questions}{9}{section.2.4}
+\contentsline {chapter}{References}{13}{section.2.4}

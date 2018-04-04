@@ -8,28 +8,29 @@
 \BOOKMARK [1][-]{section.2.1}{What can be observed with SALSA?}{chapter.2}% 8
 \BOOKMARK [2][-]{subsection.2.1.1}{The Milky Way}{section.2.1}% 9
 \BOOKMARK [2][-]{subsection.2.1.2}{The Sun}{section.2.1}% 10
-\BOOKMARK [1][-]{section.2.2}{When can SALSA see my desired target?}{chapter.2}% 11
-\BOOKMARK [1][-]{section.2.3}{Connecting to SALSA}{chapter.2}% 12
-\BOOKMARK [2][-]{subsection.2.3.1}{Ending your session}{section.2.3}% 13
-\BOOKMARK [2][-]{subsection.2.3.2}{Troubleshooting}{section.2.3}% 14
-\BOOKMARK [1][-]{section.2.4}{The telescope control program}{chapter.2}% 15
-\BOOKMARK [2][-]{subsection.2.4.1}{Movement control: To point the telescope}{section.2.4}% 16
-\BOOKMARK [2][-]{subsection.2.4.2}{Receiver control: To measure a spectrum}{section.2.4}% 17
-\BOOKMARK [2][-]{subsection.2.4.3}{Measurement results}{section.2.4}% 18
-\BOOKMARK [1][-]{section.2.5}{How to process archived data}{chapter.2}% 19
-\BOOKMARK [2][-]{subsection.2.5.1}{PNG: Images}{section.2.5}% 20
-\BOOKMARK [2][-]{subsection.2.5.2}{FITS: A common format for astronomical data}{section.2.5}% 21
-\BOOKMARK [2][-]{subsection.2.5.3}{TXT: Textfiles}{section.2.5}% 22
-\BOOKMARK [2][-]{subsection.2.5.4}{Python}{section.2.5}% 23
-\BOOKMARK [2][-]{subsection.2.5.5}{R}{section.2.5}% 24
-\BOOKMARK [0][-]{chapter.3}{Technical specifications}{}% 25
-\BOOKMARK [1][-]{section.3.1}{Angular resolution and accuracy}{chapter.3}% 26
-\BOOKMARK [1][-]{section.3.2}{Spectral resolution and accuracy}{chapter.3}% 27
-\BOOKMARK [1][-]{section.3.3}{Flux calibration and uncertainty}{chapter.3}% 28
-\BOOKMARK [0][-]{chapter*.16}{Appendices}{}% 29
-\BOOKMARK [0][-]{appendix.A}{The celestial sphere and astronomical coordinates}{}% 30
-\BOOKMARK [1][-]{section.A.1}{A place on Earth}{appendix.A}% 31
-\BOOKMARK [1][-]{section.A.2}{The celestial sphere}{appendix.A}% 32
-\BOOKMARK [2][-]{subsection.A.2.1}{Equatorial coordinates}{section.A.2}% 33
-\BOOKMARK [2][-]{subsection.A.2.2}{The Local Sidereal Time}{section.A.2}% 34
-\BOOKMARK [2][-]{subsection.A.2.3}{How can I know whether my source is up?}{section.A.2}% 35
+\BOOKMARK [2][-]{subsection.2.1.3}{GNSS satellites}{section.2.1}% 11
+\BOOKMARK [1][-]{section.2.2}{When can SALSA see my desired target?}{chapter.2}% 12
+\BOOKMARK [1][-]{section.2.3}{Connecting to SALSA}{chapter.2}% 13
+\BOOKMARK [2][-]{subsection.2.3.1}{Ending your session}{section.2.3}% 14
+\BOOKMARK [2][-]{subsection.2.3.2}{Troubleshooting}{section.2.3}% 15
+\BOOKMARK [1][-]{section.2.4}{The telescope control program}{chapter.2}% 16
+\BOOKMARK [2][-]{subsection.2.4.1}{Movement control: To point the telescope}{section.2.4}% 17
+\BOOKMARK [2][-]{subsection.2.4.2}{Receiver control: To measure a spectrum}{section.2.4}% 18
+\BOOKMARK [2][-]{subsection.2.4.3}{Measurement results}{section.2.4}% 19
+\BOOKMARK [1][-]{section.2.5}{How to process archived data}{chapter.2}% 20
+\BOOKMARK [2][-]{subsection.2.5.1}{PNG: Images}{section.2.5}% 21
+\BOOKMARK [2][-]{subsection.2.5.2}{FITS: A common format for astronomical data}{section.2.5}% 22
+\BOOKMARK [2][-]{subsection.2.5.3}{TXT: Textfiles}{section.2.5}% 23
+\BOOKMARK [2][-]{subsection.2.5.4}{Python}{section.2.5}% 24
+\BOOKMARK [2][-]{subsection.2.5.5}{R}{section.2.5}% 25
+\BOOKMARK [0][-]{chapter.3}{Technical specifications}{}% 26
+\BOOKMARK [1][-]{section.3.1}{Angular resolution and accuracy}{chapter.3}% 27
+\BOOKMARK [1][-]{section.3.2}{Spectral resolution and accuracy}{chapter.3}% 28
+\BOOKMARK [1][-]{section.3.3}{Flux calibration and uncertainty}{chapter.3}% 29
+\BOOKMARK [0][-]{chapter*.19}{Appendices}{}% 30
+\BOOKMARK [0][-]{appendix.A}{The celestial sphere and astronomical coordinates}{}% 31
+\BOOKMARK [1][-]{section.A.1}{A place on Earth}{appendix.A}% 32
+\BOOKMARK [1][-]{section.A.2}{The celestial sphere}{appendix.A}% 33
+\BOOKMARK [2][-]{subsection.A.2.1}{Equatorial coordinates}{section.A.2}% 34
+\BOOKMARK [2][-]{subsection.A.2.2}{The Local Sidereal Time}{section.A.2}% 35
+\BOOKMARK [2][-]{subsection.A.2.3}{How can I know whether my source is up?}{section.A.2}% 36

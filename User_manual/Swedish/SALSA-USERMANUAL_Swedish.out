@@ -8,27 +8,28 @@
 \BOOKMARK [1][-]{section.2.1}{Vad kan observeras med SALSA?}{chapter.2}% 8
 \BOOKMARK [2][-]{subsection.2.1.1}{Vintergatan}{section.2.1}% 9
 \BOOKMARK [2][-]{subsection.2.1.2}{Solen}{section.2.1}% 10
-\BOOKMARK [1][-]{section.2.2}{N\344r kan SALSA se ett visst objekt?}{chapter.2}% 11
-\BOOKMARK [1][-]{section.2.3}{Att ansluta till SALSA}{chapter.2}% 12
-\BOOKMARK [2][-]{subsection.2.3.1}{Att avsluta din session}{section.2.3}% 13
-\BOOKMARK [2][-]{subsection.2.3.2}{Fels\366kning}{section.2.3}% 14
-\BOOKMARK [1][-]{section.2.4}{Kontrollprogrammet f\366r SALSA}{chapter.2}% 15
-\BOOKMARK [2][-]{subsection.2.4.1}{Movement control: Att peka \345t r\344tt h\345ll}{section.2.4}% 16
-\BOOKMARK [2][-]{subsection.2.4.2}{Receiver control: Att g\366ra en m\344tning}{section.2.4}% 17
-\BOOKMARK [2][-]{subsection.2.4.3}{M\344tresultat}{section.2.4}% 18
-\BOOKMARK [1][-]{section.2.5}{Att analysera data fr\345n webarkivet}{chapter.2}% 19
-\BOOKMARK [2][-]{subsection.2.5.1}{PNG: Bilder}{section.2.5}% 20
-\BOOKMARK [2][-]{subsection.2.5.2}{FITS: Ett vanligt format f\366r astronomidata}{section.2.5}% 21
-\BOOKMARK [2][-]{subsection.2.5.3}{TXT: Textfiler}{section.2.5}% 22
-\BOOKMARK [2][-]{subsection.2.5.4}{R}{section.2.5}% 23
-\BOOKMARK [0][-]{chapter.3}{Tekniska specifikationer}{}% 24
-\BOOKMARK [1][-]{section.3.1}{Vinkeluppl\366sning och precision}{chapter.3}% 25
-\BOOKMARK [1][-]{section.3.2}{Frekvensuppl\366sning och precision}{chapter.3}% 26
-\BOOKMARK [1][-]{section.3.3}{Fluxkalibrering och os\344kerhet}{chapter.3}% 27
-\BOOKMARK [0][-]{chapter*.17}{Bilagor}{}% 28
-\BOOKMARK [0][-]{appendix.A}{Himmelssf\344ren och astronomiska koordinatsystem}{}% 29
-\BOOKMARK [1][-]{section.A.1}{En position p\345 jorden}{appendix.A}% 30
-\BOOKMARK [1][-]{section.A.2}{Himmelsf\344ren}{appendix.A}% 31
-\BOOKMARK [2][-]{subsection.A.2.1}{Ekvatoriella koordinater}{section.A.2}% 32
-\BOOKMARK [2][-]{subsection.A.2.2}{Den lokala stj\344rntiden}{section.A.2}% 33
-\BOOKMARK [2][-]{subsection.A.2.3}{Hur kan jag veta om min k\344lla \344r synlig?}{section.A.2}% 34
+\BOOKMARK [2][-]{subsection.2.1.3}{GNSS satelliter}{section.2.1}% 11
+\BOOKMARK [1][-]{section.2.2}{N\344r kan SALSA se ett visst objekt?}{chapter.2}% 12
+\BOOKMARK [1][-]{section.2.3}{Att ansluta till SALSA}{chapter.2}% 13
+\BOOKMARK [2][-]{subsection.2.3.1}{Att avsluta din session}{section.2.3}% 14
+\BOOKMARK [2][-]{subsection.2.3.2}{Fels\366kning}{section.2.3}% 15
+\BOOKMARK [1][-]{section.2.4}{Kontrollprogrammet f\366r SALSA}{chapter.2}% 16
+\BOOKMARK [2][-]{subsection.2.4.1}{Movement control: Att peka \345t r\344tt h\345ll}{section.2.4}% 17
+\BOOKMARK [2][-]{subsection.2.4.2}{Receiver control: Att g\366ra en m\344tning}{section.2.4}% 18
+\BOOKMARK [2][-]{subsection.2.4.3}{M\344tresultat}{section.2.4}% 19
+\BOOKMARK [1][-]{section.2.5}{Att analysera data fr\345n webarkivet}{chapter.2}% 20
+\BOOKMARK [2][-]{subsection.2.5.1}{PNG: Bilder}{section.2.5}% 21
+\BOOKMARK [2][-]{subsection.2.5.2}{FITS: Ett vanligt format f\366r astronomidata}{section.2.5}% 22
+\BOOKMARK [2][-]{subsection.2.5.3}{TXT: Textfiler}{section.2.5}% 23
+\BOOKMARK [2][-]{subsection.2.5.4}{R}{section.2.5}% 24
+\BOOKMARK [0][-]{chapter.3}{Tekniska specifikationer}{}% 25
+\BOOKMARK [1][-]{section.3.1}{Vinkeluppl\366sning och precision}{chapter.3}% 26
+\BOOKMARK [1][-]{section.3.2}{Frekvensuppl\366sning och precision}{chapter.3}% 27
+\BOOKMARK [1][-]{section.3.3}{Fluxkalibrering och os\344kerhet}{chapter.3}% 28
+\BOOKMARK [0][-]{chapter*.20}{Bilagor}{}% 29
+\BOOKMARK [0][-]{appendix.A}{Himmelssf\344ren och astronomiska koordinatsystem}{}% 30
+\BOOKMARK [1][-]{section.A.1}{En position p\345 jorden}{appendix.A}% 31
+\BOOKMARK [1][-]{section.A.2}{Himmelsf\344ren}{appendix.A}% 32
+\BOOKMARK [2][-]{subsection.A.2.1}{Ekvatoriella koordinater}{section.A.2}% 33
+\BOOKMARK [2][-]{subsection.A.2.2}{Den lokala stj\344rntiden}{section.A.2}% 34
+\BOOKMARK [2][-]{subsection.A.2.3}{Hur kan jag veta om min k\344lla \344r synlig?}{section.A.2}% 35

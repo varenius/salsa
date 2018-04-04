@@ -33,6 +33,16 @@ av solen kan användas för att mäta antennens mottagaregenskaper. Mer informat
 om detta projekt finns i dokumentet \emph{Antennrespons för SALSA}, som finns
 att ladda ner via SALSA-hemsidan. 
 
+\subsection{GNSS satelliter}
+
+Framsteg i rymdvetenskap och utforskning av universum, som inleddes 1960, orsakade att
+många satelliter började dyka upp på jordens bana vid höjder från 2000 till 20 000 km.
+Sådana konstgjorda föremål används i många olika områden inom vetenskap och teknik, såsom
+telekommunikation, meteorologi, miljöövervakning eller navigering. Den senare är realiserad genom
+ett så kallat Global Navigation Satellite System (GNSS). SALSA-användare kan upptäcka signaler som emitteras från
+GNSS satelliter. Mer information om detta projekt finns i dokumentet
+\emph {GNSS signal spectra with SALSA}, tillgänglig på SALSA webbplats.
+
 %\subsection{Cassiopeia A}
 %Cassiopeia A is a bright radio source and should be observable
 %with SALSA in a way similar to how we observe the Sun. We have not yet
@@ -287,7 +297,30 @@ se avsnitt \ref{sect:archive}. Datan bör finnas i arkivet någon sekund
 efter att du tryck på Upload-knappen, så kolla gärna att din data verkligen 
 har laddats upp innan du avslutar kontrollprogrammet. Notera att om du inte 
 laddar upp dina mätningar så kommer de att tas bort när du stänger programmet.
-
+\subsubsection{LSR-korrigering}
+Skiftet av frekvens som man mäter med SALSA är resultatet av
+en hastighetsskillnad mellan teleskopet (observatören) och målet (källan)
+längs synfältet. Som standard korrigeras i SALSA den beräknade radiella hastigheten och den uppmätt frekvensen
+för observatörens rörelse och uttryckt med avseende på Local-Standard-of-Rest (LSR)
+ram. Denna korrigering betraktar två huvudeffekter: solens rörelseförhållande
+till LSR och jordens orbitalrörelse i förhållande till solen. LSR-korrigering kan inaktiveras på fliken \emph {Advanced}
+om man inte vill använda det här alternativet.
+\subsubsection{RFI-borttagning}
+Som standard används medianfiltrering i SALSA för att filtrera bort eventuell radiofrekvensinterferens (RFI)
+närvaro i den inspelade signalen. Tanken med detta filter är att gå igenom signalvärdet och
+ersätta varje värde med medianen av närliggande värden. Det är viktigt att identifiera vilken RFI som direkt
+påverkar de erhållna resultaten (Fig.~\ref{fig:RFIremoval}). RFI-borttagning kan dock inaktiveras
+fliken \emph {Advanced}, om man inte vill använda det här alternativet.
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/RFIremoval.png}
+\end{center}
+\caption{
+RFI-borttagning i SALSA. Spektrat på vänster sida erhölls med standardinställningar där RFI filtreras bort.
+Det andra spektrat är ett resultat av en efterföljande mätning där alternativet RFI-borttagning avaktiverats. 
+Man kan identifiera en smal och stark topp som är resultat av störningar som genereras av en extern radiokälla.}
+\label{fig:RFIremoval}
+\end{figure}
 \section{Att analysera data från webarkivet}
 \label{sect:archiveprocess}
 Som beskrivits i föregående avsnitt så kan du inspektera din data direkt i

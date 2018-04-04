@@ -1,0 +1,29 @@
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+SALSA-Onsala (``Such A Lovely Small Antenna'') is a 2.3~m diameter radio
+telescope built at Onsala Space Observatory in Sweden to introduce pupils,
+students and teachers to the marvels of radio astronomy. The sensitive
+receiver makes possible to detect radio emission from atomic hydrogen far
+away in our galaxy. From these measurements one can learn about the kinematics
+and distribution of gases in our galaxy, the Milky Way. One can also use
+the antenna for other projects which do not involve hydrogen. In this
+document we describe how you can observe spectra of signals emitted by
+constellation of navigation satellites, which are crucial part of the 
+Global Navigation Satellite System (GNSS).\par{}
+
+First, we give a brief introduction to GNSS and its applications. Next, we describe the basic navigation principle. Finally, 
+we describe how to use the SALSA control program to detect signals emitted from GNSS satellites.
+In the introductory part, the contemporary regional and Global Navigation Satellite Systems (GNSS) were 
+briefly described. Next, the basic principles of satellite positioning were introduced together with the 
+description of GNSS signal structure
+%Please note that this document only briefly describes the telescope control program. 
+%Instructions for operating the SALSA telescope can be found in the document
+%entitled \emph{SALSA users manual} available at the SALSA website.
+
+
+\vspace{9cm}
+
+
+
+
+{\bf Cover image:} A satellite (upper) of the Galileo navigation system and SALSA's telescopes (lower).

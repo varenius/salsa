@@ -1,0 +1,47 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: SALSA-GNSStracking_English.aux
+The style file: model2-names.bst.bst
+Database file #1: references.bib
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 3 entries,
+            2990 wiz_defined-function locations,
+            756 strings with 7027 characters,
+and the built_in function-call counts, 1965 in all, are:
+= -- 151
+> -- 78
+< -- 1
++ -- 30
+- -- 27
+* -- 215
+:= -- 294
+add.period$ -- 10
+call.type$ -- 3
+change.case$ -- 24
+chr.to.int$ -- 3
+cite$ -- 3
+duplicate$ -- 144
+empty$ -- 140
+format.name$ -- 38
+if$ -- 360
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 28
+newline$ -- 31
+num.names$ -- 12
+pop$ -- 55
+preamble$ -- 1
+purify$ -- 21
+quote$ -- 0
+skip$ -- 43
+stack$ -- 0
+substring$ -- 58
+swap$ -- 99
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 24
+warning$ -- 0
+while$ -- 11
+width$ -- 0
+write$ -- 59

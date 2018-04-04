@@ -9,31 +9,34 @@
 \contentsline {section}{\numberline {2.1}Vad kan observeras med SALSA?}{7}{section.2.1}
 \contentsline {subsection}{\numberline {2.1.1}Vintergatan}{7}{subsection.2.1.1}
 \contentsline {subsection}{\numberline {2.1.2}Solen}{7}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}GNSS satelliter}{8}{subsection.2.1.3}
 \contentsline {section}{\numberline {2.2}N\IeC {\"a}r kan SALSA se ett visst objekt?}{8}{section.2.2}
 \contentsline {section}{\numberline {2.3}Att ansluta till SALSA}{8}{section.2.3}
-\contentsline {subsection}{\numberline {2.3.1}Att avsluta din session}{8}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.1}Att avsluta din session}{9}{subsection.2.3.1}
 \contentsline {subsection}{\numberline {2.3.2}Fels\IeC {\"o}kning}{9}{subsection.2.3.2}
 \contentsline {section}{\numberline {2.4}Kontrollprogrammet f\IeC {\"o}r SALSA}{9}{section.2.4}
-\contentsline {subsection}{\numberline {2.4.1}Movement control: Att peka \IeC {\r a}t r\IeC {\"a}tt h\IeC {\r a}ll}{9}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.1}Movement control: Att peka \IeC {\r a}t r\IeC {\"a}tt h\IeC {\r a}ll}{10}{subsection.2.4.1}
 \contentsline {subsubsection}{Tracking}{11}{section*.9}
-\contentsline {subsubsection}{Hur noggrannt \IeC {\"a}r SALSA?}{12}{section*.11}
-\contentsline {subsubsection}{M\IeC {\"a}t endast ovanf\IeC {\"o}r 15$^\circ $ altitud}{12}{section*.12}
-\contentsline {subsection}{\numberline {2.4.2}Receiver control: Att g\IeC {\"o}ra en m\IeC {\"a}tning}{12}{subsection.2.4.2}
-\contentsline {subsection}{\numberline {2.4.3}M\IeC {\"a}tresultat}{12}{subsection.2.4.3}
-\contentsline {section}{\numberline {2.5}Att analysera data fr\IeC {\r a}n webarkivet}{13}{section.2.5}
+\contentsline {subsubsection}{Hur noggrannt \IeC {\"a}r SALSA?}{11}{section*.11}
+\contentsline {subsubsection}{M\IeC {\"a}t endast ovanf\IeC {\"o}r 15$^\circ $ altitud}{11}{section*.12}
+\contentsline {subsection}{\numberline {2.4.2}Receiver control: Att g\IeC {\"o}ra en m\IeC {\"a}tning}{11}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}M\IeC {\"a}tresultat}{13}{subsection.2.4.3}
+\contentsline {subsubsection}{LSR-korrigering}{14}{section*.15}
+\contentsline {subsubsection}{RFI-borttagning}{14}{section*.16}
+\contentsline {section}{\numberline {2.5}Att analysera data fr\IeC {\r a}n webarkivet}{14}{section.2.5}
 \contentsline {subsection}{\numberline {2.5.1}PNG: Bilder}{14}{subsection.2.5.1}
-\contentsline {subsection}{\numberline {2.5.2}FITS: Ett vanligt format f\IeC {\"o}r astronomidata}{15}{subsection.2.5.2}
+\contentsline {subsection}{\numberline {2.5.2}FITS: Ett vanligt format f\IeC {\"o}r astronomidata}{14}{subsection.2.5.2}
 \contentsline {subsection}{\numberline {2.5.3}TXT: Textfiler}{15}{subsection.2.5.3}
-\contentsline {subsubsection}{Python}{15}{section*.15}
+\contentsline {subsubsection}{Python}{15}{section*.18}
 \contentsline {subsection}{\numberline {2.5.4}R}{15}{subsection.2.5.4}
-\contentsline {chapter}{\numberline {3}Tekniska specifikationer}{16}{chapter.3}
-\contentsline {section}{\numberline {3.1}Vinkeluppl\IeC {\"o}sning och precision}{16}{section.3.1}
-\contentsline {section}{\numberline {3.2}Frekvensuppl\IeC {\"o}sning och precision}{16}{section.3.2}
-\contentsline {section}{\numberline {3.3}Fluxkalibrering och os\IeC {\"a}kerhet}{17}{section.3.3}
-\contentsline {chapter}{Bilagor}{18}{chapter*.17}
-\contentsline {chapter}{\numberline {A}Himmelssf\IeC {\"a}ren och astronomiska koordinatsystem}{19}{appendix.A}
-\contentsline {section}{\numberline {A.1}En position p\IeC {\r a} jorden}{19}{section.A.1}
-\contentsline {section}{\numberline {A.2}Himmelsf\IeC {\"a}ren}{19}{section.A.2}
-\contentsline {subsection}{\numberline {A.2.1}Ekvatoriella koordinater}{19}{subsection.A.2.1}
-\contentsline {subsection}{\numberline {A.2.2}Den lokala stj\IeC {\"a}rntiden}{20}{subsection.A.2.2}
-\contentsline {subsection}{\numberline {A.2.3}Hur kan jag veta om min k\IeC {\"a}lla \IeC {\"a}r synlig?}{21}{subsection.A.2.3}
+\contentsline {chapter}{\numberline {3}Tekniska specifikationer}{18}{chapter.3}
+\contentsline {section}{\numberline {3.1}Vinkeluppl\IeC {\"o}sning och precision}{18}{section.3.1}
+\contentsline {section}{\numberline {3.2}Frekvensuppl\IeC {\"o}sning och precision}{18}{section.3.2}
+\contentsline {section}{\numberline {3.3}Fluxkalibrering och os\IeC {\"a}kerhet}{19}{section.3.3}
+\contentsline {chapter}{Bilagor}{20}{chapter*.20}
+\contentsline {chapter}{\numberline {A}Himmelssf\IeC {\"a}ren och astronomiska koordinatsystem}{21}{appendix.A}
+\contentsline {section}{\numberline {A.1}En position p\IeC {\r a} jorden}{21}{section.A.1}
+\contentsline {section}{\numberline {A.2}Himmelsf\IeC {\"a}ren}{21}{section.A.2}
+\contentsline {subsection}{\numberline {A.2.1}Ekvatoriella koordinater}{21}{subsection.A.2.1}
+\contentsline {subsection}{\numberline {A.2.2}Den lokala stj\IeC {\"a}rntiden}{22}{subsection.A.2.2}
+\contentsline {subsection}{\numberline {A.2.3}Hur kan jag veta om min k\IeC {\"a}lla \IeC {\"a}r synlig?}{23}{subsection.A.2.3}

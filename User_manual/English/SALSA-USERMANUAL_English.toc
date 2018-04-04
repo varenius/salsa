@@ -9,31 +9,34 @@
 \contentsline {section}{\numberline {2.1}What can be observed with SALSA?}{7}{section.2.1}
 \contentsline {subsection}{\numberline {2.1.1}The Milky Way}{7}{subsection.2.1.1}
 \contentsline {subsection}{\numberline {2.1.2}The Sun}{7}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}GNSS satellites}{8}{subsection.2.1.3}
 \contentsline {section}{\numberline {2.2}When can SALSA see my desired target?}{8}{section.2.2}
 \contentsline {section}{\numberline {2.3}Connecting to SALSA}{8}{section.2.3}
-\contentsline {subsection}{\numberline {2.3.1}Ending your session}{8}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.1}Ending your session}{9}{subsection.2.3.1}
 \contentsline {subsection}{\numberline {2.3.2}Troubleshooting}{9}{subsection.2.3.2}
 \contentsline {section}{\numberline {2.4}The telescope control program}{9}{section.2.4}
-\contentsline {subsection}{\numberline {2.4.1}Movement control: To point the telescope}{9}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.1}Movement control: To point the telescope}{10}{subsection.2.4.1}
 \contentsline {subsubsection}{Tracking}{11}{section*.9}
-\contentsline {subsubsection}{What is the tracking accuracy?}{12}{section*.11}
-\contentsline {subsubsection}{Keep above 15$^\circ $ altitude}{12}{section*.12}
-\contentsline {subsection}{\numberline {2.4.2}Receiver control: To measure a spectrum}{12}{subsection.2.4.2}
+\contentsline {subsubsection}{What is the tracking accuracy?}{11}{section*.11}
+\contentsline {subsubsection}{Keep above 15$^\circ $ altitude}{11}{section*.12}
+\contentsline {subsection}{\numberline {2.4.2}Receiver control: To measure a spectrum}{11}{subsection.2.4.2}
 \contentsline {subsection}{\numberline {2.4.3}Measurement results}{12}{subsection.2.4.3}
-\contentsline {section}{\numberline {2.5}How to process archived data}{13}{section.2.5}
-\contentsline {subsection}{\numberline {2.5.1}PNG: Images}{14}{subsection.2.5.1}
+\contentsline {subsubsection}{LSR correction}{14}{section*.15}
+\contentsline {subsubsection}{RFI removal}{14}{section*.16}
+\contentsline {section}{\numberline {2.5}How to process archived data}{15}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}PNG: Images}{15}{subsection.2.5.1}
 \contentsline {subsection}{\numberline {2.5.2}FITS: A common format for astronomical data}{15}{subsection.2.5.2}
-\contentsline {subsection}{\numberline {2.5.3}TXT: Textfiles}{15}{subsection.2.5.3}
-\contentsline {subsection}{\numberline {2.5.4}Python}{15}{subsection.2.5.4}
-\contentsline {subsection}{\numberline {2.5.5}R}{15}{subsection.2.5.5}
-\contentsline {chapter}{\numberline {3}Technical specifications}{16}{chapter.3}
-\contentsline {section}{\numberline {3.1}Angular resolution and accuracy}{16}{section.3.1}
-\contentsline {section}{\numberline {3.2}Spectral resolution and accuracy}{16}{section.3.2}
-\contentsline {section}{\numberline {3.3}Flux calibration and uncertainty}{17}{section.3.3}
-\contentsline {chapter}{Appendices}{18}{chapter*.16}
-\contentsline {chapter}{\numberline {A}The celestial sphere and astronomical coordinates}{19}{appendix.A}
-\contentsline {section}{\numberline {A.1}A place on Earth}{19}{section.A.1}
-\contentsline {section}{\numberline {A.2}The celestial sphere}{19}{section.A.2}
-\contentsline {subsection}{\numberline {A.2.1}Equatorial coordinates}{19}{subsection.A.2.1}
-\contentsline {subsection}{\numberline {A.2.2}The Local Sidereal Time}{20}{subsection.A.2.2}
-\contentsline {subsection}{\numberline {A.2.3}How can I know whether my source is up?}{22}{subsection.A.2.3}
+\contentsline {subsection}{\numberline {2.5.3}TXT: Textfiles}{16}{subsection.2.5.3}
+\contentsline {subsection}{\numberline {2.5.4}Python}{16}{subsection.2.5.4}
+\contentsline {subsection}{\numberline {2.5.5}R}{16}{subsection.2.5.5}
+\contentsline {chapter}{\numberline {3}Technical specifications}{17}{chapter.3}
+\contentsline {section}{\numberline {3.1}Angular resolution and accuracy}{17}{section.3.1}
+\contentsline {section}{\numberline {3.2}Spectral resolution and accuracy}{17}{section.3.2}
+\contentsline {section}{\numberline {3.3}Flux calibration and uncertainty}{18}{section.3.3}
+\contentsline {chapter}{Appendices}{19}{chapter*.19}
+\contentsline {chapter}{\numberline {A}The celestial sphere and astronomical coordinates}{20}{appendix.A}
+\contentsline {section}{\numberline {A.1}A place on Earth}{20}{section.A.1}
+\contentsline {section}{\numberline {A.2}The celestial sphere}{20}{section.A.2}
+\contentsline {subsection}{\numberline {A.2.1}Equatorial coordinates}{20}{subsection.A.2.1}
+\contentsline {subsection}{\numberline {A.2.2}The Local Sidereal Time}{21}{subsection.A.2.2}
+\contentsline {subsection}{\numberline {A.2.3}How can I know whether my source is up?}{23}{subsection.A.2.3}

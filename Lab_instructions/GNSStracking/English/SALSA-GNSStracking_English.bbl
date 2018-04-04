@@ -1,0 +1,43 @@
+\begin{thebibliography}{3}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\href}[2]{#2}
+\providecommand{\path}[1]{#1}
+\providecommand{\DOIprefix}{doi:}
+\providecommand{\ArXivprefix}{arXiv:}
+\providecommand{\URLprefix}{URL: }
+\providecommand{\Pubmedprefix}{pmid:}
+\providecommand{\doi}[1]{\href{http://dx.doi.org/#1}{\path{#1}}}
+\providecommand{\Pubmed}[1]{\href{pmid:#1}{\path{#1}}}
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Article
+\bibitem[{Altamimi et~al.(2016)Altamimi, Rebischung, M\'etivier and
+  Collilieux}]{AltamimiITRF2014}
+\bibinfo{author}{Altamimi, Z.}, \bibinfo{author}{Rebischung, P.},
+  \bibinfo{author}{M\'etivier, L.}, \bibinfo{author}{Collilieux, X.},
+  \bibinfo{year}{2016}.
+\newblock \bibinfo{title}{{ITRF2014}: A new release of the {I}nternational
+  {T}errestrial {R}eference {F}rame modeling nonlinear station motions}.
+\newblock \bibinfo{journal}{\emph{Journal of Geophysical Research: Solid
+  Earth}} \DOIprefix\doi{10.1002/2016JB013098}.
+%Type = Book
+\bibitem[{Teunissen and Montenbruck(2017)}]{Teunissen:2017}
+\bibinfo{author}{Teunissen, P.}, \bibinfo{author}{Montenbruck, O.},
+  \bibinfo{year}{2017}.
+\newblock \bibinfo{title}{Springer Handbook of Global Navigation Satellite
+  Systems}.
+\newblock \bibinfo{edition}{1st} ed., \bibinfo{publisher}{Springer Publishing
+  Company, Incorporated}.
+%Type = Article
+\bibitem[{Wake et~al.(2016)Wake, Lecavalier and Bevis}]{Wake2016}
+\bibinfo{author}{Wake, L.M.}, \bibinfo{author}{Lecavalier, B.S.},
+  \bibinfo{author}{Bevis, M.}, \bibinfo{year}{2016}.
+\newblock \bibinfo{title}{{Glacial Isostatic Adjustment (GIA) in Greenland: a
+  Review}}.
+\newblock \bibinfo{journal}{\emph{Current Climate Change Reports}}
+  \bibinfo{volume}{2}, \bibinfo{pages}{101--111}.
+\newblock \URLprefix \url{https://doi.org/10.1007/s40641-016-0040-z},
+  \DOIprefix\doi{10.1007/s40641-016-0040-z}.
+
+\end{thebibliography}

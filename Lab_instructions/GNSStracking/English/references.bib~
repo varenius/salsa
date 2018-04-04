@@ -1,0 +1,36 @@
+@article {AltamimiITRF2014,
+author = {Altamimi, Zuheir and Rebischung, Paul and M\'etivier, Laurent and Collilieux, Xavier},
+title = {{ITRF2014}: A new release of the {I}nternational {T}errestrial {R}eference {F}rame modeling nonlinear station motions},
+journal = {\emph{Journal of Geophysical Research: Solid Earth}},
+year= {2016},
+issn = {2169-9356},
+doi = {10.1002/2016JB013098},
+}
+
+@book{Teunissen:2017,
+ author = {Teunissen, Peter and Montenbruck, Oliver},
+ title = {Springer Handbook of Global Navigation Satellite Systems},
+ year = {2017},
+ isbn = {3319429264, 9783319429267},
+ edition = {1st},
+ publisher = {Springer Publishing Company, Incorporated},
+} 
+
+@Article{Wake2016,
+author="Wake, Leanne M.
+and Lecavalier, Benoit S.
+and Bevis, Michael",
+title="{Glacial Isostatic Adjustment (GIA) in Greenland: a Review}",
+journal="\emph{Current Climate Change Reports}",
+year="2016",
+month="Sep",
+day="01",
+volume="2",
+number="3",
+pages="101--111",
+abstract="This review provides updated estimates of the glacial isostatic adjustment (GIA) component of present-day uplift at a suite of Global Navigation Satellite System (GNSS) sites in Greenland using the most recently published global ice sheet deglaciation histories. For some areas of Greenland (e.g. the north-west and north-east), the use of GNSS to estimate elastic uplift rates resulting from contemporary mass balance changes is more affected by the choice of GIA correction applied compared to other regions (e.g. central-west). The contribution of GIA to GRACE estimates of mass imbalance is becoming increasingly insignificant for large areas of Greenland as it enters a period of extreme warmth, and in total represents <5 {\%} contribution (−6 to +10 Gt/year) to the observed Greenland-wide mass trends over the last decade. However, differences between deglacial histories and uncertainties in their assumed viscoelastic Earth structure combine to result in significantly different region-by-region estimates of GIA.",
+issn="2198-6061",
+doi="10.1007/s40641-016-0040-z",
+url="https://doi.org/10.1007/s40641-016-0040-z"
+}
+
