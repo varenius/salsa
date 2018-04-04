@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'UI_LH.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created by: PyQt4 UI code generator 4.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,22 +25,24 @@ except AttributeError:
 class Ui_GNSSAzElWindow(object):
     def setupUi(self, GNSSAzElWindow):
         GNSSAzElWindow.setObjectName(_fromUtf8("GNSSAzElWindow"))
-        GNSSAzElWindow.resize(700, 700)
+        GNSSAzElWindow.resize(650, 650)
         self.centralwidget = QtGui.QWidget(GNSSAzElWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.horizontalLayoutWidget = QtGui.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(600, 0, 91, 31))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(550, 0, 91, 31))
         self.horizontalLayoutWidget.setObjectName(_fromUtf8("horizontalLayoutWidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayout.setMargin(0)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.btn_close = QtGui.QPushButton(self.horizontalLayoutWidget)
         self.btn_close.setObjectName(_fromUtf8("btn_close"))
         self.horizontalLayout.addWidget(self.btn_close)
         self.horizontalLayoutWidget_2 = QtGui.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(90, 0, 351, 24))
+        self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(190, 0, 351, 24))
         self.horizontalLayoutWidget_2.setObjectName(_fromUtf8("horizontalLayoutWidget_2"))
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.horizontalLayoutWidget_2)
         self.horizontalLayout_2.setSizeConstraint(QtGui.QLayout.SetFixedSize)
+        self.horizontalLayout_2.setMargin(0)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.checkBoxGPS = QtGui.QCheckBox(self.horizontalLayoutWidget_2)
         self.checkBoxGPS.setAcceptDrops(False)
@@ -59,12 +61,9 @@ class Ui_GNSSAzElWindow(object):
         self.checkBoxBEIDOU.setChecked(True)
         self.checkBoxBEIDOU.setObjectName(_fromUtf8("checkBoxBEIDOU"))
         self.horizontalLayout_2.addWidget(self.checkBoxBEIDOU)
-        self.horizontalLayoutWidget.raise_()
-        self.horizontalLayoutWidget_2.raise_()
-        self.btn_close.raise_()
         GNSSAzElWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(GNSSAzElWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 703, 27))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 650, 25))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.file_menu = QtGui.QMenu(self.menubar)
         self.file_menu.setObjectName(_fromUtf8("file_menu"))

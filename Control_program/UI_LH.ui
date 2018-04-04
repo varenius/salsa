@@ -17,7 +17,7 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>550</x>
       <y>0</y>
       <width>91</width>
       <height>31</height>
@@ -36,7 +36,7 @@
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>190</x>
       <y>0</y>
       <width>351</width>
       <height>24</height>
@@ -91,17 +91,14 @@
      </item>
     </layout>
    </widget>
-   <zorder>horizontalLayoutWidget</zorder>
-   <zorder>horizontalLayoutWidget_2</zorder>
-   <zorder>btn_close</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>703</width>
-     <height>27</height>
+     <width>650</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">

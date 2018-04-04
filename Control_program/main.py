@@ -138,7 +138,9 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
 
         # Plotting and saving
         self.btn_upload.clicked.connect(self.send_to_webarchive)
-
+	# store position of the telescope during measurements; used for plotting
+	self.azAtMeasurementTime=0.0
+	self.elAtMeasurementTime=0.0
         # ADD MATPLOTLIB CANVAS, based on:
         # http://stackoverflow.com/questions/12459811/how-to-embed-matplotib-in-pyqt-for-dummies
         # a figure instance to plot on
@@ -156,7 +158,10 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
         plotwinlayout.addWidget(self.canvas)
         plotwinlayout.addWidget(self.toolbar)
         self.groupBox_spectrum.setLayout(plotwinlayout)
+	# replot spectra in case status of freq, dBScale or normalized has changed
         self.radioButton_frequency.toggled.connect(self.change_spectra)
+        self.checkBox_dBScale.toggled.connect(self.change_spectra)
+        self.checkBox_normalized.toggled.connect(self.change_spectra)
  
     def change_spectra(self):
         # Plot spectra of currently selected item
@@ -344,6 +349,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             self.spectra[date] = sigspec
             item = QtGui.QListWidgetItem(date, self.listWidget_spectra)
             self.listWidget_spectra.setCurrentItem(item)
+        (self.elAtMeasurementTime,self.azAtMeasurementTime) =self.telescope.get_current_alaz()
         self.aborting = False
         self.progresstimer.stop()
         self.clear_progressbar()
@@ -452,38 +458,72 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
     def plot(self, spectpl):
         plt.clf()
         ax = self.figure.add_subplot(111)
+	# Get the target type from the coordselector
+	target = self.coordselector.currentText()
         # create an axis
         preephem = time.time()
-        # Get data and info
-        pos = ephem.Galactic(spectpl.target)
-        glon = str(pos.lon)
-        glat = str(pos.lat)
-        if (spectpl.vlsr_corr!=0):
+        # Get the reference frequency
+        referenceFreq=float(self.FrequencyInput.text())
+	if (spectpl.vlsr_corr!=0):
             if self.radioButton_velocity.isChecked():
                 x = 1e-3 * (spectpl.get_vels())
             else:
-                x = 1e-6*(spectpl.get_freqs() )-1420.4
+                x = 1e-6*(spectpl.get_freqs() )-referenceFreq
         else:
             if self.radioButton_velocity.isChecked():
                 x = 1e-3 * (spectpl.get_vels() - spectpl.vlsr_corr)
             else:
-                x = 1e-6*(spectpl.get_freqs() - spectpl.freq_vlsr_corr )-1420.4
+                x = 1e-6*(spectpl.get_freqs() - spectpl.freq_vlsr_corr )-referenceFreq
         y = spectpl.data
-        ax.plot(x,y, '-')
+
         if (spectpl.vlsr_corr!=0):
             if self.radioButton_velocity.isChecked():
                 ax.set_xlabel('Velocity shifted to LSR [km/s]')
             else:
-                ax.set_xlabel('Freq. shifted to LSR - 1420.4 [Mhz]')
+		labelX='Freq. shifted to LSR -'+ str("{:6.1f}".format(referenceFreq)) +'[MHz]'
+                ax.set_xlabel(labelX)
         else:
             if self.radioButton_velocity.isChecked():
                 ax.set_xlabel('Velocity relative to observer [km/s]')
             else:
-                ax.set_xlabel('Measured freq.-1420.4 [MHz]')
-        ax.set_ylabel('Uncalibrated antenna temperature [K]')
+		labelX='Measured freq.-'+ str("{:6.1f}".format(referenceFreq))+' [MHz]'
+          	ax.set_xlabel(labelX)
+	#normalize and/or convert to dB
+        if self.checkBox_normalized.isChecked() and self.checkBox_dBScale.isChecked(): 
+            ax.set_ylabel('Uncalibrated normalized antenna temperature [dB]')
+	    # avoid values at the edge of the band
+	    x=x[5:-5]
+	    y=y[5:-5]
+	    y=10*np.log10(np.abs(y/np.max(y)))
+	elif self.checkBox_dBScale.isChecked():        
+            ax.set_ylabel('Uncalibrated antenna temperature [dBK]')
+	    # avoid values at the edge of the band
+	    x=x[5:-5]
+	    y=y[5:-5]
+	    y=10*np.log10(np.abs(y))
+        elif self.checkBox_normalized.isChecked(): 
+            ax.set_ylabel('Uncalibrated normalized antenna temperature [-]')
+	    # avoid values at the edge of the band
+	    y=y[5:-5]
+	    x=x[5:-5]
+	    y=y/np.max(y)
+	else:
+            ax.set_ylabel('Uncalibrated antenna temperature [K]')
+	ax.plot(x,y, '-')
         ax.minorticks_on()
         ax.tick_params('both', length=6, width=0.5, which='minor')
-        ax.set_title('Galactic long=' + glon + ', lat='+glat)
+	
+	if not ( target == "GNSS" or target == "Horizontal"):
+		# Get galactic coordinates
+	        pos = ephem.Galactic(spectpl.target)
+	        coord1 = str(pos.lon)
+       	        coord2 = str(pos.lat)
+        	ax.set_title('Galactic long=' + coord1 + ', lat='+coord2)
+	else:
+        	# Get azimuth and elevation
+		coord1="{:-6.2f}".format(self.azAtMeasurementTime)
+		coord2="{:-6.2f}".format(self.elAtMeasurementTime)
+		ax.set_title('Azimuth=' + str(coord1) + ', Elevation='+ str(coord2))
         #ax.autoscale_view('tight')
         ax.grid(True, color='k', linestyle='-', linewidth=0.5)
         # refresh canvas
@@ -839,6 +879,7 @@ class main_window(QtGui.QMainWindow, Ui_MainWindow):
             self.show_message(msg)
 
 
+
 class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
     def __init__(self):
         super(GNSSAzEl_window, self).__init__()
@@ -857,20 +898,20 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
         # Position as left, top, width, height
         self.canvas.setGeometry(QtCore.QRect(40,60, 600, 600))  
         self.canvas.setParent(self)
-        self.drawPlt()
+        self.drawAzElPlt()
 
-        self.checkBoxGPS.clicked.connect(self.refreshPlt)
-        self.checkBoxGLONASS.clicked.connect(self.refreshPlt)
-        self.checkBoxGALILEO.clicked.connect(self.refreshPlt)
-        self.checkBoxBEIDOU.clicked.connect(self.refreshPlt)
+        self.checkBoxGPS.clicked.connect(self.refreshAzElPlt)
+        self.checkBoxGLONASS.clicked.connect(self.refreshAzElPlt)
+        self.checkBoxGALILEO.clicked.connect(self.refreshAzElPlt)
+        self.checkBoxBEIDOU.clicked.connect(self.refreshAzElPlt)
 
         self.refreshtimer = QtCore.QTimer()
         self.refreshtimer.start(5000) #ms
-        self.refreshtimer.timeout.connect(self.refreshPlt)
+        self.refreshtimer.timeout.connect(self.refreshAzElPlt)
 
         self.btn_close.clicked.connect(self.refreshtimer.stop)
             
-    def drawPlt(self):
+    def drawAzElPlt(self):
 	"""
 	Draws the GNSS Az-El plot.
 
@@ -887,7 +928,7 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
         self.ax.set_theta_offset(0.5*math.pi)
         self.ax.set_theta_direction(-1)
 
-        self.ax.set_title("GNSS satellites over the local horizon",va='bottom', )
+        self.ax.set_title("GNSS satellites on the local horizon",va='bottom', )
         self.ax.set_yticklabels(map(str, range(80, 0, -10)))
         self.ax.set_xticklabels(['N', '', 'E', '', 'S', '', 'W', ''])
 
@@ -923,12 +964,12 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
 
         self.canvas.draw()
 
-    def refreshPlt(self):
+    def refreshAzElPlt(self):
         """
 	    Refreshes the drawn plot
 	"""
         self.ax.clear()
-        self.drawPlt()
+        self.drawAzElPlt()
 
         
     def create_menuActions(self):
@@ -937,7 +978,7 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
         :return: Nothing
         """
         save_file_action = self.create_action("&Save current view",
-            shortcut="Ctrl+S", slot=self.save_plot, 
+            shortcut="Ctrl+S", slot=self.save_AzElPlot, 
             tip="Saves current Azimuth-Elevation view as an image.")
 
         quit_action = self.create_action("&Quit", slot=self.close, 
@@ -978,7 +1019,7 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
             action.setCheckable(True)
         return action
 
-    def save_plot(self):
+    def save_AzElPlot(self):
         """
         Saves the current GNSS Az-El plot
         """
@@ -997,7 +1038,7 @@ class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
         """
         msg = """
 
-        This window displays current positions of GNSS satellites above the local horizon. Positions computed using two-line element set (TLE) data.
+        This window displays current positions of GNSS satellites on the local horizon. Positions computed using two-line element set (TLE) data.
         """
         QtGui.QMessageBox.about(self, "GNSS Az-El view", msg.strip())
 
