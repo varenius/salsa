@@ -1,0 +1,11 @@
+[TLE]
+# Directory for TLE files and the link
+output-dir=/tmp
+
+[URLS]
+# The list of links with TLE data on the format
+# CONSTELLATION=LINK-TO-TLE-FILE.
+GPS=https://celestrak.com/NORAD/elements/gps-ops.txt
+GALILEO=https://celestrak.com/NORAD/elements/galileo.txt
+GLONASS=https://celestrak.com/NORAD/elements/glo-ops.txt
+BEIDOU=https://celestrak.com/NORAD/elements/beidou.txt

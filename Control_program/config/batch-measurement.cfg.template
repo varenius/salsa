@@ -1,0 +1,204 @@
+# config structure:
+#
+# # valid_values
+# key=value(s)
+#
+# valid_values should be comma-separated (,) to indicate a list of values
+# or forward-slash-separated to indicate that only one of the values
+# should be used.
+
+[GNSS-SYS]
+# The constellation to use. Constellations can either be one or more
+# from the GNSS sytem, e.g.
+#   GPS,COSMOS,GSAT,BEIDOU
+# If other celestial objects are to be used one can set this value to
+# ASTRO and enter the name of the celestial object in the satellites
+# list.
+# Additionally, one can enter MANUAL for manually entering coordinates
+# to observe.
+systems=GPS,COSMOS,GSAT,BEIDOU
+
+[GNSS-SAT]
+# Enter satellite NORAD names e.g. 'GPS BIIRM-5 (PRN 29)' or
+# abbreviated names e.g. 'PRN29'.
+#
+# If other celestial objects are entered here they will require their
+# own implementation which has to be added in the CelObjComp class in
+# satellites.py.
+# valid astro 'satellites' are 'Sun' and 'CasA'
+# If systems=MANUAL, then satellites should be a comma-separated list
+# of az-el tuples, e.g. (az0,el0),(az1,el1),...
+satellites=
+
+[PATHFIND]
+# satellites located at lower elevation will not be included when
+# computing the optimal path.
+# TODO: add warning when satellites in satellites=... is below
+# elevation-cutoff-angle
+#
+# 0<=, <=90
+elevation-cutoff-angle=30
+
+# If the number of satellites for a sector is greater than
+# maximum-batch-size, the section will be split in half based on
+# azimuth. The subsections will be evaluated in the same manner
+# until all sections have a size less than maximum-batch-size.
+#
+# Larger values is more likely to yield a shorter path but the
+# current algorithm scales as O(N!). You have been warned!
+# The recommended values is <15 and you should expect the algorithm
+# to run for <1 s with such values.
+maximum-batch-size=13
+
+[LOGGING]
+# Determines how much information is displayed.
+#
+# Examples of logging messages
+# info:           'Moving to <coordinare> to observe <satellite>'
+# debug:          'Telescope path is <path> and is <distance> long'
+# critical/fatal: '<frequency> is out of range for the telescope'
+#
+# Debug: information + debug messages only
+# Verbose: information messages only
+# silent: Only critical/fatal messages
+#
+# debug/info/warn/error/critical/fatal
+type=debug
+
+# Destination for log messages
+#
+# stdout / stderr / /path/to/file
+file=/dev/null
+
+[RESULT]
+# directory where measurement results are saved.
+# 
+# /path/to/dir
+data_dir=/tmp
+
+[MEASUREMENT]
+# number of seconds per satellite/ measurement time
+#
+# seconds; >0
+measurement-time-per-sat=1.0
+
+# number of observations per satellite before moving
+# to the next (if any).
+#
+# >0
+observations-per-satellite=1
+
+# number of observations per frequency before moving
+# to the next (if any).
+#
+# >0
+observations-per-frequency=1
+
+# maximum total scan duration
+# precedence over observations-per-satellite
+# 
+# hours; >0
+scan-time=12.0
+
+# time between measurements
+#
+# minutes; >0
+measurement-intervall=0.0
+
+# turn on LNA during measurements.
+# Normally this is required when measuring.
+
+# true/false
+lna=true
+
+# do back-to-back measurements with the noise diode
+# on and then off.
+#
+# true/false
+diode_switching=false
+
+# These are the frequency bands that should be observed.
+# A set of frequency bands must be a comma-sabarated list surrounded
+# by brackets (even if it is a single band).
+# In case specific frequencies are to be used, they can be specified
+# either as a comma-separated list or as a range with start, stop and step.
+# the range is defined as the range object in python (i.e. a list defined as
+# [start, stop) in steps of step).
+# The frequency bands have to match the GNSS systems in 'systems' and
+# be in the same order. This is also required when observing individual
+# satellites meaning that the 'systems' variable must contain all of
+# the systems for which there are individual satellites in 'satellites'.
+#
+# Bands, frequency ranges, frequency lists can not be combined in a single
+# measurement series because:
+# - Bands are intended for GNSS measurements.
+# - Frequency ranges are intended for evenly spaced measurements on any
+#   satellite (artificial or not).
+# - Frequency list is intended for use if none of the above matches the
+#   intention for the measurement series.
+#
+# Example:
+#  - Want to observe L1 for GPS, G1 and G2 for GLONASS then
+#      systems=COSMOS,GPS
+#      frequency-bands=[G1,G2],[L1]
+#    is a valid entry but not
+#      systems=COSMOS,GPS
+#      frequency-bands=[L1],[G1,G2]
+#  - Want to observe G1 for COSMOS 2426 (717), E1 and E5b for
+#    GSAT0101 (PRN E11) then
+#      systems=COSMOS,GSAT
+#      satellites=GSAT0101 (PRN E11),COSMOS 2426 (717)
+#      frequency-bands=[G1],[E1,E5b]
+#    is a valid entry.
+#  - Want to observe frequencies 1420.4, 1400, 1250 MHz then
+#      systems=<any>
+#      frequency-bands=1420.4,1400,1250
+#    is a valid entry.
+#  - Want to observe frequencies 1000 - 2000 MHz in steps of 10 MHz then
+#      systems=<any>
+#      frequency-bands=range(1000,2001,10)
+#    is a valid entry
+#
+# no unit for bands, MHz for range and frequency list
+#               L1,     L2,     L5,     E1,     E2,     E5a,     E5b,    E6,     G1(avg),G2(avg),G3(avg)
+frequency-bands=[L1],[G1],[E1],[E2]
+
+# The frequency for observing the sky ("band zero").
+# This requency can be used for observing the background temperature
+# while pointing at the desitred satellite. It should be chosen (mind
+# the bandwidth) so that it will not pick up signals from other systems,
+# in case such satellites are within the telescope beam.
+#
+# MHz
+sky-frequency=1400.0
+
+# TODO: Maybe should depend on which GNSS system is currentle active.
+#
+# MHz
+bandwidth=10.0
+
+# number of frequency points in output spectrum
+nchanels=512
+
+# Gain for calibrating antenna temperature
+#
+# 1
+calfact=800
+
+# If non-zero, the observation will include a frequency switching node
+# using the supplied offset as the reference signal.
+#
+# MHz
+frequency-offset=0.0
+
+# If non-zero, the observation will include a beam switching node
+# with the supplied azimuth offset
+#
+# degrees
+azimuth-offset=0.0
+
+# If non-zero, the observation will include a beam switching node
+# with the supplied elevation offset
+#
+# degrees
+elevation-offset=0.0

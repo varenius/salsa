@@ -1,0 +1,188 @@
+' SALSA RIO CONTROL BRAGE
+' Outputs:
+' 0: EL-motor, 1: EL-CCW-mode,
+' 2: AZ-motor, 3: AZ-CCW-mode,
+' 4: EL-LED,   5: AZ-LED
+' 8: LNA,      9: Noise diode
+' Inputs:
+' 0: EL-cog,   1: AZ-cog
+'
+' Cog ranges: az:0-2885, el:0-1437
+' DO NOT set min/max azimuth/elevation
+' values outside cog ranges above or
+' the telescope may break!
+'
+' For general info and guidlines, see
+' README.md
+' -------------------------------------
+#AUTO
+ CW 2; ' unsolicited traffic
+ ' min/max cog values.
+ minaz=20;minel=20
+ maxaz=2865;maxel=1417
+ az_dpch=0.125;el_dpch=0.125
+ ' Slow-margin cog values in az/el.
+ cls_az=128;cls_el=128
+ vcls_az=32;vcls_el=32
+ ' Deprecated. For compatability only
+ close_az=12;close_el=12
+ ' number of samples to average in
+ ' #chkaz and #chkel.
+ samples=9
+ ' current/target azimuth/elevation
+ c_az=0;t_az_=0;c_el=0;t_el_=0
+ ' changes telescope target position
+ t_az=minaz;t_el=minel
+ ' initial cog status
+ azoncog=@IN[1];eloncog=@IN[0]
+ ' =0 #INIT must be run, =1: OK
+ knowpos=0
+ ' =0: OK, =1 stuck
+ stuck=0
+ ' tolerance for current-target cog
+ ' in stuck detection
+ tol=8
+ ' samples for stuck detection
+ stks=29
+EN
+#tohome; ' reset position
+ SB3;SB1;SB2;SB0
+ o_az=c_az;o_el=c_el
+ WT 500
+ n_az=c_az;n_el=c_el
+ IF(n_az=o_az);CB2;CB3;ENDIF
+ IF(n_el=o_el);CB0;CB1;ENDIF
+ JP #tohome,((n_az<>o_az)|(n_el<>o_el))
+EN
+#frhome; ' move from home for 500ms
+ CB1;CB3;SB0;SB2;WT 500;CB0;CB2;WT 3000
+EN
+#rspt; ' reset pointing
+ knowpos=0;stuck=0
+ azoncog=@IN[1];eloncog=@IN[0]
+ XQ #chkaz,1;XQ #chkel,2
+ JS #tohome
+ ' reset once more for consistency
+ JS #frhome
+ JS #tohome
+ c_az=0;t_az=minaz;c_el=0;t_el=minel
+ knowpos=1
+EN
+#INIT; ' start autonomous telescope
+ JS #rspt; ' reset pointing
+ stpaz=0;sazcnt=0;azdiff=0
+ stpel=0;selcnt=0;eldiff=0
+ ' set up stuck-detection
+ az_same=0;el_same=0
+ o_az=c_az;o_el=c_el
+#chkmv; ' update target position
+ n_az=t_az;n_el=t_el
+ IF(n_az>maxaz);n_az=maxaz;ENDIF
+ IF(n_az<minaz);n_az=minaz;ENDIF
+ IF(n_el>maxel);n_el=maxel;ENDIF
+ IF(n_el<minel);n_el=minel;ENDIF
+ cazdir=(t_az_-c_az)*(n_az-c_az)
+ pazdir=(azdiff)*(t_az_-c_az)
+ IF((cazdir<0)|(pazdir<0)|((azdiff=0)&`
+    (t_az_<>c_az))|(stpaz=1))
+  IF(stpaz=0)
+   stpaz=1;sazcnt=0;CB2
+  ENDIF
+ ELSE
+  t_az_=n_az
+  IF(t_az_<c_az);SB3;ENDIF
+  IF(t_az_>c_az);CB3;ENDIF
+ ENDIF
+ celdir=(t_el_-c_el)*(n_el-c_el)
+ peldir=(eldiff)*(t_el_-c_el)
+ IF((celdir<0)|(peldir<0)|((eldiff=0)&`
+    (t_el_<>c_el))|(stpel=1))
+  IF(stpel=0)
+   stpel=1;selcnt=0;CB0
+  ENDIF
+ ELSE
+  t_el_=n_el
+  IF(t_el_<c_el);SB1;ENDIF
+  IF(t_el_>c_el);CB1;ENDIF
+ ENDIF
+ IF(stpaz&(sazcnt=0));c_az_=c_az;ENDIF
+ IF(stpel&(selcnt=0));c_el_=c_el;ENDIF
+ azdiff=t_az_-c_az
+ eldiff=t_el_-c_el
+ slow_az=(@ABS[azdiff]<=cls_az)
+ slow_el=(@ABS[eldiff]<=cls_el)
+ vslow_az=(@ABS[azdiff]<=vcls_az)
+ vslow_el=(@ABS[eldiff]<=vcls_el)
+ IF((t_az_<>c_az)&(stpaz=0));SB2;ENDIF
+ IF((t_el_<>c_el)&(stpel=0));SB0;ENDIF
+ WT 40;IF(vslow_az);CB2;ENDIF
+ WT 10;IF(vslow_el);CB0;ENDIF
+ WT 90;IF(slow_az);CB2;ENDIF
+ WT 10;IF(slow_el);CB0;ENDIF
+ WT 200
+ IF(stpaz)
+  m=0;IF(c_az_=c_az);m=sazcnt+1;ENDIF
+  sazcnt=m
+  IF(sazcnt>7)
+   t_az_=c_az;stpaz=0
+  ENDIF
+ ENDIF
+ IF(stpel)
+  m=0;IF(c_el_=c_el);m=selcnt+1;ENDIF
+  selcnt=m
+  IF(selcnt>7)
+   t_el_=c_el;stpel=0
+  ENDIF
+ ENDIF
+#chkstck; ' Detect if telescope stuck
+ IF((o_az=c_az)&(@ABS[c_az-t_az_]>tol))
+  az_same=az_same+1
+ ELSE
+  az_same=0;o_az=c_az
+ ENDIF
+ IF((o_el=c_el)&(@ABS[c_el-t_el_]>tol))
+  el_same=el_same+1
+ ELSE
+  el_same=0;o_el=c_el
+ ENDIF
+ IF(az_same>stks);stuck=1;CB2;CB3;ENDIF
+ IF(el_same>stks);stuck=1;CB0;CB1;ENDIF
+ JP #chkmv,(stuck=0)
+ ' Telescope is stuck
+ HX1;HX2
+ CB2;CB0;CB3;CB1
+ knowpos=0
+EN
+#chkaz; ' update az position (cog vals)
+ j_az=0;i_az=0
+#samplaz
+ j_az=j_az+@IN[1];i_az=i_az+1
+ WT 1
+ JP #samplaz,(i_az<samples)
+ JP #chkaz,((j_az>0)&(j_az<samples))
+ newazcog=(j_az=samples)
+ JP #chkaz,(newazcog=azoncog)
+ azoncog=newazcog
+ ' passed a cog/hole, update position
+ a=1;IF(@OUT[3]);a=-1;ENDIF;c_az=c_az+a
+ IF(azoncog);SB5;ELSE;CB5;ENDIF
+ JP #chkaz
+EN
+#chkel; ' update el position (cog vals)
+ j_el=0;i_el=0
+#samplel
+ j_el=j_el+@IN[0];i_el=i_el+1
+ WT 1
+ JP #samplel,(i_el<samples)
+ JP #chkel,((j_el>0)&(j_el<samples))
+ newelcog=(j_el=samples)
+ JP #chkel,(newelcog=eloncog)
+ eloncog=newelcog
+ ' passed a cog/hole, update position
+ e=1;IF(@OUT[1]);e=-1;ENDIF;c_el=c_el+e
+ IF(eloncog);SB4;ELSE;CB4;ENDIF
+ JP #chkel
+EN
+#TCPERR
+ CB2;CB0
+RE

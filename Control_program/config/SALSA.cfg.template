@@ -1,0 +1,48 @@
+# Example config file
+
+[SITE]
+# Name of telescope, e.g. vale, brage etc.
+name=Vale
+# Location of telescope, DEG:ARCMIN:ARCSEC
+latitude=57:23:36.4
+longitude=11:55:07.5
+# Elevation is relative to sea level, in meters.
+elevation=2
+
+[RIO]
+# The host is the IP to the RIO controller board or server.
+host=localhost
+# The port that the RIO controller board or server is listening on.
+port=55555
+# The minimum azimuth angle in degrees.
+minaz = -143.5
+# The minimum altitude angle in degrees.
+minal = -5.5
+# Maximum distance in degrees between target 
+# and pointing for UI color indicators.
+close_enough = 1.0 
+# Define stow position in horizontal coordinates, in degrees
+# When not snowing, use these
+#stowal=90
+#stowaz=260
+# When snowing, use these:
+stowal=0
+stowaz=220
+
+[USRP]
+# The sampler to record data
+host=localhost
+# USRP gain in dB
+usrp_gain=20
+# Software gain calibration factor (multiplying the measured spectrum)
+software_gain=800
+# Directory for tempfiles during measurement
+tmpdir=/tmp
+
+[ARCHIVE]
+# Credentials to connect to online archive for data upload
+host=secret
+user=secret
+password=secret
+database=secret
+table=secret

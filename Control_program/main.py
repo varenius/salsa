@@ -1,1055 +1,961 @@
-#!/usr/bin/env python
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar2QTAgg
-import satellites # to cope with GNSS tracking
-import sys
-import ephem
-from PyQt4 import QtGui, QtCore
-sys.path.append('./')
-from telescope import *
-from measurement import *
-from UI import Ui_MainWindow
-from UI_LH import Ui_GNSSAzElWindow # to import Az-El View window
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure,show,rc,ion,draw
+#!/usr/bin/env python2
+
+from logging import getLogger, Formatter, StreamHandler, DEBUG
+from time import time
+from sys import argv
+from getpass import getuser
+from socket import socket, AF_INET, SOCK_STREAM
+from threading import Thread
+from multiprocessing.pool import ThreadPool
+from ConfigParser import ConfigParser
+from os import path
+from glob import glob
+
+from numpy import pi, log10, abs, max, min, radians, size
 from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from ephem import (Observer, degrees as ephem_deg, now, Galactic, Ecliptic,
+                   Equatorial, hours, J2000, B1950)
+from PyQt4.QtCore import QTimer
+from PyQt4.QtGui import (QMessageBox, QMainWindow, QListWidgetItem,
+                         QApplication, QStyleFactory, QComboBox, QPushButton)
 
-import getpass # To find current username
-import ConfigParser
-
-# Make sure only one instance is running of this program
 from tendo import singleton
-me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
-##### SET CONFIG FILE #######
-abspath = os.path.abspath(__file__)
-configfile = os.path.dirname(abspath) + '/SALSA.config'
-#############################
+from UI.SALSA_UI import Ui_MainWindow
+from UI.UI_LH import Ui_GNSSAzElWindow
+from controller.tle.tle_ephem import TLEephem
 
-# Customize NavigatinoToolBarcalsss
-class NavigationToolbar(NavigationToolbar2QTAgg):
-    # only display the buttons we need/want
-    toolitems = [t for t in NavigationToolbar2QTAgg.toolitems if
-                 t[0] in ('Home','Pan','Zoom')]
+from controller.telescope.telescope_controller import TelescopeController
+from controller.telescope.communication_handler import TelescopeCommunication
+from controller.telescope.connection_handler import TelescopeConnection
+from controller.telescope.position_interface import TelescopePosInterface
+from controller.observation.measurement import (
+    WarnOnNaN, MeasurementSetup, BatchMeasurementSetup
+)
+from controller.observation.observation_nodes import (
+    ObservationNode, SingleFrequencyNode,
+    LNANode, DiodeNode, SignalNode, SwitchingNode,
+    ObservationAborting
+)
+from controller.observation.post_processing_nodes import (
+    DecimateChannelsNode, ShiftToVLSRFrameNode, RemoveRFINode,
+    UploadToArchiveNode, CustomNode
+)
+from controller.frequency_translation import Frequency
+from controller.observation.receiver import SALSA_Receiver
+from controller.observation.spectrum import ArchiveConnection
+from controller.util import (project_file_path, AzEl, ephdeg_to_deg, overrides)
+from controller.tracking import SatelliteTracker
+from controller.satellites.poscomp import SatPosComp, CelObjComp
+from controller.satellites.posmodel import PositionModel
+from controller.satellites.satellite import ReferenceSatellite
 
-# Define object used to run GNUradio in a separate QThread, according to:
-# http://stackoverflow.com/questions/6783194/background-thread-with-qthread-in-pyqt
-# TODO: Move to measurement class?
-class Worker(QtCore.QObject):
-    finished = QtCore.pyqtSignal()
 
-    @QtCore.pyqtSlot()
-    def work(self):
-        self.measurement.measure()
-        self.finished.emit()
+class SALSA_GUI(QMainWindow, Ui_MainWindow):
+    class SpectrumPlot:
+        def __init__(self, spec_, title_):
+            self.spec = spec_
+            self.title = title_
 
-# Implement custom Thread class, according to:
-# http://stackoverflow.com/questions/6783194/background-thread-with-qthread-in-pyqt
-class Thread(QtCore.QThread):
-    def __init__(self, parent=None):
-        QtCore.QThread.__init__(self, parent)
+    def __init__(self, logger_, tleEphem_, site_, telescope_, software_gain_,
+                 sat_pos_comp_, obj_pos_comp_, stow_sat_, tmpfile_,
+                 measurement_setup_, tracker_):
+        QMainWindow.__init__(self)
+        Ui_MainWindow.__init__(self)
 
-    def start(self):
-        QtCore.QThread.start(self)
+        self._logger = logger_
+        self._tleEphem = tleEphem_
+        self._site = site_
+        self._telescope = telescope_
+        self._software_gain = software_gain_
+        self._sat_pos_comp = sat_pos_comp_
+        self._obj_pos_comp = obj_pos_comp_
+        self._stow_target = stow_sat_
+        self._tmpfile = tmpfile_
+        self._measurement_setup = measurement_setup_
+        self._tracker = tracker_
 
-    def run(self):
-        QtCore.QThread.run(self)
+        self._tracking_update_intervall = 0.250  # s
+        self._tracker.set_update_intervall(self._tracking_update_intervall)
+        self._tracker.set_lost_callback(self._telescope_lost_action)
 
-class main_window(QtGui.QMainWindow, Ui_MainWindow):
-    def __init__(self):
-        super(main_window, self).__init__()
         # Dict used to store spectra observed in this session
-        self.spectra = {}
-        # Set current username, used for tmp files and spectrum uploads
-        self.observer = getpass.getuser()
-        # Set config file location
-        self.config = ConfigParser.ConfigParser()
-        self.config.read(configfile)
-        # Initialise telescope and UI
-        self.telescope = TelescopeController(self.config)
+        self._reset_anim_frame = 0
+        self._spectra = dict()
+        self._gnss_view_active = False
+        self._gnss_window = None
+        self._target = None
+        self._target_selected = None
+        self._obs_node = None
+        self._emitt_telescope_lost = self._nothing
+        self._emitt_observation_finished = self._nothing
+
+        self._update_pos_labels = self.__update_pos_labels
+
+        self._progressbar_update_interval = 100  # ms
+        self._ui_update_interval = 100           # ms
+        self._reset_update_intervall = 250       # ms
+        self._progress_timer = QTimer()          # updates progressbar
+        self._ui_timer = QTimer()                # updates ui
+        self._tracking_timer = QTimer()  # updates telescope target
+        self._reset_timer = QTimer()     # resets telescope pointing
+
         self.setupUi(self)
-        self.init_Ui()
-        self.setWindowTitle("SALSA Controller: " + self.telescope.site.name)
+        self._init_Ui()
+        self.setWindowTitle("SALSA Controller: %s" % site_.name)
+        self._update_target_obj()
 
-        # Check if telescope knows where it is (position can be lost e.g. during powercut).
-        if self.telescope.get_pos_ok():
-            msg = "Welcome to SALSA. If this is your first measurement for today, please reset the telscope to make sure that it tracks the sky correctly. A small position error can accumulate if using the telescope for multiple hours, but this is fixed if you press the reset button and wait until the telescope is reset."
-            print (msg)
-            self.show_message(msg)
+    @overrides(QMainWindow)
+    def show(self):
+        QMainWindow.show(self)
+        # Check if telescope knows where it is (position can be lost
+        # e.g. during powercut).
+        if self._telescope.is_lost():
+            self._reset_needed()
         else:
-            self.reset_needed()
-    
-    def init_Ui(self):
-            
-        # Set software gain
-        self.gain.setText(self.config.get('USRP', 'software_gain'))
+            QMessageBox.about(self, "Welcome to SALSA",
+                              "If this is your first measurement for today, "
+                              "please reset the telscope to make sure that it "
+                              "tracks the sky correctly. A small position "
+                              "error can accumulate if using the telescope "
+                              "for multiple hours, but this is fixed if you "
+                              "press the reset button and issue a soft reset.")
 
-        self.listWidget_spectra.currentItemChanged.connect(self.change_spectra)
-
-        # Define progresstimer
-        self.clear_progressbar()
-        self.progresstimer = QtCore.QTimer()
-        self.progresstimer.timeout.connect(self.update_progressbar)
-
-        # Define and run UiTimer
-        self.uitimer = QtCore.QTimer()
-        self.uitimer.timeout.connect(self.update_Ui)
-        self.uitimer.start(250) #ms
-
-        # Create timer used to toggle (and update) tracking
-        # Do not start this, started by user on Track button.
-        self.trackingtimer = QtCore.QTimer()
-        self.trackingtimer.timeout.connect(self.track) 
-        
-        # Reset needs its own timer to be able
-        # to check if reset position has been reached
-        # and then, only then, enable GUI input again.
-        self.resettimer = QtCore.QTimer()
-        self.resettimer.timeout.connect(self.resettimer_action)
-
-        # Initialise buttons and tracking status.
-        self.tracking = False
-        self.btn_track.clicked.connect(self.track_or_stop)
-        self.btn_reset.clicked.connect(self.reset)
-
-        # Make sure Ui is updated when changing target
-        self.coordselector.currentIndexChanged.connect(self.update_Ui)
-        # Make sure special targets like "The Sun" are handled correctly.
-        self.coordselector.currentIndexChanged.connect(self.update_desired_target)
-
-        # Set the GNSS-related parts of GUI to non-visible
-	self.GNSS_GUI_visible(False)
-        # Set the current GNSStarget to none
-	self.currentGNSStarget="none"
-        # Connect the activated signal on the coordselector to our handler which turns on/off the GNSS-related parts of GUI
-        self.connect(self.coordselector, QtCore.SIGNAL('activated(QString)'), self.coordselector_chosen)
-        # Connect the activated signal on the GNSSselector to our handler which sets the currentGNSStarget
-        self.connect(self.GNSSselector, QtCore.SIGNAL('activated(QString)'), self.GNSSselector_chosen)
-
-	# opens GNSS AzEl window after clicking the btn_GNSS_lh button
-        self.btn_GNSS_lh.clicked.connect(self.open_GNSSAzEl)
-
-        # RECEIVER CONTROL
-        self.btn_observe.clicked.connect(self.observe)
-        self.btn_observe.clicked.connect(self.disable_receiver_controls)
-        self.btn_abort.clicked.connect(self.abort_obs)
-        self.btn_abort.setEnabled(False)
-
-        # Plotting and saving
-        self.btn_upload.clicked.connect(self.send_to_webarchive)
-	# store position of the telescope during measurements; used for plotting
-	self.azAtMeasurementTime=0.0
-	self.elAtMeasurementTime=0.0
-        # ADD MATPLOTLIB CANVAS, based on:
-        # http://stackoverflow.com/questions/12459811/how-to-embed-matplotib-in-pyqt-for-dummies
-        # a figure instance to plot on
-        self.figure = plt.figure()
-        self.figure.patch.set_facecolor('white')
-        # this is the Canvas Widget that displays the `figure`
-        # it takes the `figure` instance as a parameter to __init__
-        self.canvas = FigureCanvas(self.figure)
-        self.canvas.setParent(self.groupBox_spectrum)
-        # this is the Navigation widget
-        # it takes the Canvas widget and a parent
-        self.toolbar = NavigationToolbar(self.canvas, self.groupBox_spectrum)
-        # set the layout
-        plotwinlayout = QtGui.QVBoxLayout()
-        plotwinlayout.addWidget(self.canvas)
-        plotwinlayout.addWidget(self.toolbar)
-        self.groupBox_spectrum.setLayout(plotwinlayout)
-	# replot spectra in case status of freq, dBScale or normalized has changed
-        self.radioButton_frequency.toggled.connect(self.change_spectra)
-        self.checkBox_dBScale.toggled.connect(self.change_spectra)
-        self.checkBox_normalized.toggled.connect(self.change_spectra)
- 
-    def change_spectra(self):
-        # Plot spectra of currently selected item
-        if self.listWidget_spectra.count() >0 :
-            spectrum = self.spectra[str(self.listWidget_spectra.currentItem().text())]
-            self.plot(spectrum)
-            spectrum.print_total_power()
-            if spectrum.uploaded:
-                self.btn_upload.setEnabled(False)
-            else:
-                self.btn_upload.setEnabled(True)
-
-    def clear_progressbar(self):
-        self.lapsedtime = 0
-        if self.cycle_checkbox.isChecked():
-            sig_time = int(self.sig_time_spinbox.text()) # [s]
-            ref_time = int(self.ref_time_spinBox.text()) # [s]
-            loops = int(self.loops_spinbox.text())
-            target = int((sig_time+ref_time)*loops) 
-        else:
-            target = int(self.int_time_spinbox.text())
-        overhead = int(0.1*target) # Calculate extra time for processing, stacking etc.
-        target +=  max(1.5,overhead) #Add extra time, at least 2 second
-        self.expectedtime = target
-        self.progressBar.setValue(100*self.lapsedtime/self.expectedtime)
-
-    def update_progressbar(self):
-        self.lapsedtime += 1
-        self.progressBar.setValue(100*self.lapsedtime/self.expectedtime)
-
-    def disable_receiver_controls(self):
-        self.FrequencyInput.setReadOnly(True)
-        self.RefFreqInput.setReadOnly(True)
-        self.BandwidthInput.setReadOnly(True)
-        self.ChannelsInput.setReadOnly(True)
-        self.autoedit_bad_data_checkBox.setEnabled(False)
-        self.mode_switched.setEnabled(False)
-        self.mode_signal.setEnabled(False)
-        self.LNA_checkbox.setEnabled(False)
-        self.noise_checkbox.setEnabled(False)
-        self.cycle_checkbox.setEnabled(False)
-        self.vlsr_checkbox.setEnabled(False)
-        self.btn_observe.setEnabled(False)
-        self.btn_abort.setEnabled(True)
-        self.sig_time_spinbox.setEnabled(False)
-        self.ref_time_spinBox.setEnabled(False)
-    
-    def enable_receiver_controls(self):
-        self.FrequencyInput.setReadOnly(False)
-        self.RefFreqInput.setReadOnly(False)
-        self.BandwidthInput.setReadOnly(False)
-        self.ChannelsInput.setReadOnly(False)
-        self.autoedit_bad_data_checkBox.setEnabled(True)
-        self.cycle_checkbox.setEnabled(True)
-        self.mode_switched.setEnabled(True)
-        self.mode_signal.setEnabled(True)
-        self.LNA_checkbox.setEnabled(True)
-        self.noise_checkbox.setEnabled(True)
-        self.vlsr_checkbox.setEnabled(True)
-        self.btn_observe.setEnabled(True)
-        self.btn_abort.setEnabled(False)
-        self.sig_time_spinbox.setEnabled(True)
-        self.ref_time_spinBox.setEnabled(True)
-
-    def coordselector_chosen(self, text):
-        """
-        The handler called when a target is chosen from the coordselector combobox.
-        Turns on the GNSS-related parts of GUI if target is 'GNSS'.
-        """
-        if text == "GNSS":
-            self.GNSS_GUI_visible(True)
-        else:
-            self.GNSS_GUI_visible(False)
-
-    def GNSSselector_chosen(self, text):
-        """
-        Sets the currentGNSStarget based on the selected GNSS target from the GNSSselector combobox
-
-        """
-        self.currentGNSStarget=str(text)
-
-    def GNSS_GUI_visible(self,visibility):
-        """
-        The handler turning on/off all GNSS-related items of GUI
-        """
-        if visibility == True:
-	    self.GNSS_createCombobox()
-	    self.GNSSselector.setVisible(True)
-            self.btn_GNSS_lh.setVisible(True)
-	    self.GNSS_hide_guiobjects(True)
-        else:
-	    self.GNSSselector.setVisible(False)
-            self.btn_GNSS_lh.setVisible(False)
-	    self.GNSS_hide_guiobjects(False)
-	    self.GNSS_clearCombobox() 
-	    self.close_GNSSAzEl()
-
-    def GNSS_hide_guiobjects(self,visibility):
-        """
-        The handler turning on/off some original SALSA's GUI objects when switching to GNSS tracking
-        """
-        if visibility == True:
-            self.inputleftcoord.setVisible(False)
-            self.inputrightcoord.setVisible(False)
-            self.coordlabel_left.setVisible(False)
-            self.coordlabel_right.setVisible(False)
-        else:
-            self.inputleftcoord.setVisible(True)
-            self.inputrightcoord.setVisible(True)
-            self.coordlabel_left.setVisible(True)
-            self.coordlabel_right.setVisible(True)
-
-    def GNSS_createCombobox(self):
-	"""
-	Creates a GNSSselector combobox using a list of visible GNSS satellites
-	"""
-	[GNSSname,phi,r]=satellites.SatCompute('visible','ALL') # fills the list with all GNSS satellites
-        self.GNSSselector.addItem('None')
-	for i in range(0,len(GNSSname)):
-                self.GNSSselector.addItem(GNSSname[i])
-	self.GNSSselector.setCurrentIndex(0) # Sets the target in the GNSS selector to None
-
-    def GNSS_clearCombobox(self):
-	"""
-	Resets the list of visible GNSS satellites
-	"""
-	self.GNSSselector.clear()
-
-    def open_GNSSAzEl(self):
-	"""
-	Opens the GNSS Azimuth-Elevation Window
-	"""
-
-     	self.GNSSAzElWd = GNSSAzEl_window()
-        self.GNSSAzElWd.show()
-
-    def close_GNSSAzEl(self):
-	"""
-	Closes the GNSS Azimuth-Elevation Window
-	"""
-
-     	self.GNSSAzElWd = GNSSAzEl_window()
-        self.GNSSAzElWd.hide()
-
+    @overrides(QMainWindow)
     def closeEvent(self, event):
-	"""
-	Confirmation whether one would like to quit SALSA
-	"""
-        reply = QtGui.QMessageBox.question(self, 'Quit',
-        "Are you sure you want to quit?", QtGui.QMessageBox.Yes |
-        QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+        """
+        Confirmation whether one would like to quit SALSA
+        """
+        reply = QMessageBox.question(
+            self, "Quit", "Are you sure you want to quit?",
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
-        if reply == QtGui.QMessageBox.Yes:
+        if reply == QMessageBox.Yes:
             event.accept()
-	    self.close_GNSSAzEl()
+            self._close_gnss_window()
+            if self._ui_timer.isActive():
+                self._ui_timer.stop()
+            if self._progress_timer.isActive():
+                self._progress_timer.stop()
+            if self._tracker.is_tracking():
+                self._tracker.stop_tracking()
+            if self._reset_timer.isActive():
+                self._reset_timer.stop()
+            self._telescope.set_target(self._stow_target.compute_az_el())
+            self._telescope.terminate()
         else:
             event.ignore()
 
-    def observation_finished(self):
-        # Turn off LNA after observation
-        self.telescope.set_LNA(False)
-        self.telescope.set_noise_diode(False)
-        if not self.aborting:
-            # Post-process data
-            sigspec = self.sigworker.measurement.signal_spec
-            if self.autoedit_bad_data_checkBox.isChecked():
-                print "Removing RFI from signal..."
-                sigspec.auto_edit_bad_data()
-            if self.mode_switched.isChecked():
-                refspec = self.sigworker.measurement.reference_spec
-                if self.autoedit_bad_data_checkBox.isChecked():
-                    print "Removing RFI from reference..."
-                    refspec.auto_edit_bad_data()
-                print "Removing reference from signal..."
-                sigspec.data -= refspec.data
-            # Average to desired number of channels
-            nchans = self.sigworker.measurement.noutchans
-            sigspec.decimate_channels(nchans)
-            # Correct VLSR
-            if self.vlsr_checkbox.isChecked():
-                print 'Translating freq/vel to LSR frame of reference.'
-                sigspec.shift_to_vlsr_frame()
-            # Store final spectra in list of observations
-            date = str(sigspec.site.date.datetime().replace(microsecond=0))
-            self.spectra[date] = sigspec
-            item = QtGui.QListWidgetItem(date, self.listWidget_spectra)
-            self.listWidget_spectra.setCurrentItem(item)
-        (self.elAtMeasurementTime,self.azAtMeasurementTime) =self.telescope.get_current_alaz()
-        self.aborting = False
-        self.progresstimer.stop()
-        self.clear_progressbar()
-        #Make sure receiver and current thread is stopped
-        if hasattr(self, 'sigthread'):
-            self.sigworker.measurement.abort = True
-            self.sigworker.measurement.receiver.stop()
-            self.sigthread.quit()
-        # TODO: clean up temp data file.
-        self.enable_receiver_controls()
+    def _init_Ui(self):
+        self._gnss_selector = QComboBox(self.layoutWidget)
+        self._gnss_selector.setVisible(False)
+        self._gnss_selector.setObjectName("_gnss_selector")
+        self.horizontalLayout_6.addWidget(self._gnss_selector)
+        self._gnss_lh_btn = QPushButton("GNSS Az-El View", self.layoutWidget)
+        self._gnss_lh_btn.setVisible(False)
+        self._gnss_lh_btn.setObjectName("_gnss_lh_btn")
+        self.horizontalLayout_7.addWidget(self._gnss_lh_btn)
 
-    def send_to_webarchive(self):
-        date = str(self.listWidget_spectra.currentItem().text())
-        spectrum = self.spectra[date]
-        if not spectrum.uploaded:
-            tmpdir = self.config.get('USRP', 'tmpdir')
-            tmpfile = tmpdir + '/tmp_vale_' + spectrum.observer
-            # Save temporary files
-            txtfile = tmpfile + '.txt'
-            spectrum.save_to_txt(txtfile)
-            fitsfile = tmpfile + '.fits'
-            spectrum.save_to_fits(fitsfile)
-            pngfile = tmpfile + '.png'
-            plt.savefig(pngfile) # current item
-            spectrum.upload_to_archive(fitsfile, pngfile, txtfile)
-            self.btn_upload.setEnabled(False)
+        self.gain.setText(str(self._software_gain))
 
-    def abort_obs(self):
-        print "Aborting measurement."
-        self.aborting = True
-        if hasattr(self, 'sigthread'):
-            self.sigworker.measurement.abort = True
-            self.sigworker.measurement.receiver.stop()
-            self.sigthread.quit()
-        # TODO: clean up temp data file.
-        self.enable_receiver_controls()
-    
-    def observe(self):
-        self.aborting = False
+        self.listWidget_spectra.currentItemChanged.connect(self._change_spectra)
+        self._progress_timer.timeout.connect(self._update_progressbar)
+        self._ui_timer.timeout.connect(self._update_ui)
+        self._reset_timer.timeout.connect(self.resettimer_action)
+        self.btn_track.clicked.connect(self._track_clicked)
+        self.btn_reset.clicked.connect(self._reset_clicked)
+        self.mode_switched.clicked.connect(self._switched_mode_clicked)
+        self.mode_signal.clicked.connect(self._signal_mode_clicked)
+        self.cycle_checkbox.stateChanged.connect(self._cycle_checkbox_changed)
+        self.coordselector.currentIndexChanged.connect(self._update_target_obj)
+        self.coordselector.currentIndexChanged.connect(self._update_ui)
+        self._gnss_selector.currentIndexChanged.connect(self._gnss_selector_chosen)
+        self._gnss_lh_btn.clicked.connect(self._open_gnss_satellite_window)
+
+        # Receiver control
+        self.btn_observe.clicked.connect(self._pre_observation)
+        self.btn_abort.clicked.connect(self._abort_obs)
+        self.btn_abort.setEnabled(False)
+
+        # Plotting and saving
+        self.btn_upload.clicked.connect(self._send_to_webarchive)
+        self._figure = Figure(facecolor="white")
+        self.canvas = FigureCanvasQTAgg(self._figure)
+        self.canvas.setParent(self.groupBox_spectrum)
+        self.plotwinlayout.addWidget(self.canvas)
+        self.plotwinlayout.addWidget(NavigationToolbar2QT(
+            self.canvas, self.groupBox_spectrum))
+
+        # replot spectra in case status of freq,
+        # dBScale or normalized has changed
+        self.radioButton_frequency.toggled.connect(self._change_spectra)
+        self.checkBox_dBScale.toggled.connect(self._change_spectra)
+        self.checkBox_normalized.toggled.connect(self._change_spectra)
+
+        self._clear_progressbar()
+        self._ui_timer.start(self._ui_update_interval)
+
+    def _switched_mode_clicked(self):
+        self.cycle_checkbox.setEnabled(True)
+        self.sig_time_spinbox.setEnabled(True)
+        self.ref_time_spinBox.setEnabled(True)
+        self.loops_spinbox.setEnabled(True)
+
+    def _signal_mode_clicked(self):
+        self.cycle_checkbox.setEnabled(False)
+        self.sig_time_spinbox.setEnabled(False)
+        self.ref_time_spinBox.setEnabled(False)
+        self.loops_spinbox.setEnabled(False)
+        self.cycle_checkbox.setChecked(False)
+
+    def _cycle_checkbox_changed(self):
+        manual_cycle = self.cycle_checkbox.isChecked()
+        self.sig_time_spinbox.setEnabled(manual_cycle)
+        self.ref_time_spinBox.setEnabled(manual_cycle)
+        self.loops_spinbox.setEnabled(manual_cycle)
+        self.int_time_spinbox.setEnabled(not manual_cycle)
+
+    def _change_spectra(self):
+        # Plot spectra of currently selected item
+        if self.listWidget_spectra.count() > 0:
+            spec_plt = self._spectra[str(self.listWidget_spectra.currentItem().text())]
+            self._plot(spec_plt)
+            spec = spec_plt.spec
+            self.lbl_val_offset_el.setText("%.3f" % spec.get_offset_el())
+            self.lbl_val_offset_az.setText("%.3f" % spec.get_offset_az())
+            self.lbl_val_total_power.setText("%e" % spec.get_total_power())
+            self.lbl_val_el.setText("%.3f" % spec.get_elevation())
+            self.lbl_val_az.setText("%.3f" % spec.get_azimuth())
+            self.btn_upload.setEnabled(not spec_plt.spec.is_uploaded())
+
+    def _start_progressbar(self, integration_time):
+        # Add extra time for processing, stacking etc.
+        self._expected_time = 1.0625*integration_time
+        self._start_time = time()
+
+    def _clear_progressbar(self):
+        self._expected_time = -1
+        self._start_time = -1
+        self.progressBar.setValue(0)
+
+    def _update_progressbar(self):
+        if self._expected_time < 0:  # unknown expected time
+            return
+        perenct = 100*(time()-self._start_time)/self._expected_time
+        self.progressBar.setValue(max((0, min((100, perenct)))))
+
+    def _pre_observation(self):
         self.btn_abort.setEnabled(True)
         self.btn_observe.setEnabled(False)
-        self.clear_progressbar()
-        self.progresstimer.start(1000) # ms
-        
-        # Use LNA if selected
-        if self.LNA_checkbox.isChecked():
-            self.telescope.set_LNA(True)
-        # Use noise diode if selected
-        if self.noise_checkbox.isChecked():
-            self.telescope.set_noise_diode(True)
-            
-        sig_freq = float(self.FrequencyInput.text())*1e6 # Hz
-        ref_freq = float(self.RefFreqInput.text())*1e6
-        bw = float(self.BandwidthInput.text())*1e6 # Hz
+        if self._progress_timer.isActive():
+            self._progress_timer.stop()
+        self._clear_progressbar()
+        self._observe()
 
-        if self.cycle_checkbox.isChecked():
-            sig_time = float(self.sig_time_spinbox.text()) # [s]
-            ref_time = float(self.ref_time_spinBox.text()) # [s]
-            loops = int(self.loops_spinbox.text()) #
-            int_time = (sig_time+ref_time)*loops
-        else:
-            if self.mode_switched.isChecked():
-                sig_time = float(self.int_time_spinbox.text())/2
-                #print 'sig_time', sig_time 
-                ref_time = float(self.int_time_spinbox.text())/2
-                loops = 1;
-                while sig_time > 20:
-                     sig_time = sig_time/2.0
-                     ref_time = ref_time/2.0
-                     loops = loops*2
-                     #print sig_time, loops
-                int_time = (sig_time+ref_time)*loops
-                #print 'int_time', int_time
-            else:
-                sig_time = float(self.int_time_spinbox.text())
-                ref_time = 0
-                loops = 1
-                int_time = sig_time
+    def _post_observation(self):
+        self._emitt_observation_finished = self._nothing
+        self.btn_abort.setEnabled(False)
+        self.btn_observe.setEnabled(True)
+        if self._progress_timer.isActive():
+            self._progress_timer.stop()
+        self._clear_progressbar()
+        try:
+            self._obs_thrd.join()
+            del self._obs_thrd
+        except ObservationAborting:
+            pass
+        self.listWidget_spectra.setCurrentRow(self.listWidget_spectra.count()-1)
+        self._obs_node = None
 
+    def _abort_obs(self):
+        self._logger.info("Aborting measurement.")
+        if self._obs_node:
+            self._obs_node.abort_measurement()
+
+    def _observe(self):
+        offset = self._get_desired_offset()
+        bw = float(self.BandwidthInput.text())*1e6        # Hz
+        nchans = int(self.ChannelsInput.text())  # Number of output channels
+        calfact = float(self.gain.text())        # Software gain
+        int_time = float(self.int_time_spinbox.text())   # s
+        sig_freq = float(self.FrequencyInput.text())*1e6  # Hz
+        ref_freq = float(self.RefFreqInput.text())*1e6    # Hz
+        ref_offset = ref_freq - sig_freq
+        meas_setup = BatchMeasurementSetup(
+            self._measurement_setup, bw, nchans, calfact, int_time,
+            offset, ref_offset, 1, 1, self.LNA_checkbox.isChecked(),
+            self.noise_checkbox.isChecked())
         if self.mode_switched.isChecked():
-            print "Signal cycle time per loop: ", sig_time
-            print "Reference cycle time per loop: ", ref_time
-            print "Loops: ", loops
+            first_obs_node = SwitchingNode(ref_offset)
+        else:
+            first_obs_node = SignalNode()
+        prev_node = first_obs_node
 
-        nchans = int(self.ChannelsInput.text()) # Number of output channels
-        calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
-        self.telescope.site.date = ephem.now()
-        switched = self.mode_switched.isChecked()
-        # Get ra, dec using radec_of. This function
-        # has input order AZ, ALT, i.e. inverted to most other functions.
-        # Then, make ephem object to pass to measurement
-        (calt_deg, caz_deg) = self.telescope.get_current_alaz()
-        (coff_alt, coff_az) = self.get_desired_alaz_offset()
-        
-        self.sigworker = Worker()
-        self.sigthread = Thread() # Create thread to run GNURadio in background
-        self.sigthread.setTerminationEnabled(True)
-        self.sigworker.moveToThread(self.sigthread)
-        self.sigworker.measurement = Measurement(sig_freq, ref_freq, switched, int_time, sig_time, ref_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, calfact)
+        freq_node = SingleFrequencyNode(Frequency(sig_freq))
+        prev_node.connect(freq_node)
+        prev_node = freq_node
 
-        self.sigthread.started.connect(self.sigworker.work)
-        self.sigworker.finished.connect(self.sigthread.quit)
-        self.sigworker.finished.connect(self.observation_finished)
-        self.sigthread.start()
-        
-    def plot(self, spectpl):
-        plt.clf()
-        ax = self.figure.add_subplot(111)
-	# Get the target type from the coordselector
-	target = self.coordselector.currentText()
-        # create an axis
-        preephem = time.time()
-        # Get the reference frequency
-        referenceFreq=float(self.FrequencyInput.text())
-	if (spectpl.vlsr_corr!=0):
+        if meas_setup.get_diode_on():
+            use_diode = DiodeNode()
+            prev_node.connect(use_diode)
+            prev_node = use_diode
+        if meas_setup.get_lna_on():
+            use_lna = LNANode()
+            prev_node.connect(use_lna)
+            prev_node = use_lna
+
+        if self._target and self._tracker.is_tracking():
+            target_name = self._tracker.get_target().name()
+        else:
+            target_name = "Nothing"
+        self._obs_node = ObservationNode(self._logger, self._telescope,
+                                         meas_setup, target_name)
+        prev_node.connect(self._obs_node)
+
+        # connect post-processing nodes
+        prev_node = first_pp_node = None
+        if self.autoedit_bad_data_checkBox.isChecked():
+            first_pp_node = RemoveRFINode(self._logger)
+            self._obs_node.connect_post_processer(first_pp_node)
+            prev_node = first_pp_node
+        decch_node = DecimateChannelsNode(self._logger, nchans)
+        if first_pp_node:
+            first_pp_node.connect(decch_node)
+        else:
+            first_pp_node = decch_node
+            self._obs_node.connect_post_processer(first_pp_node)
+        prev_node = decch_node
+
+        if self.vlsr_checkbox.isChecked():
+            vlsr_node = ShiftToVLSRFrameNode(self._logger)
+            prev_node.connect(vlsr_node)
+            prev_node = vlsr_node
+
+        store_spec_node = CustomNode(
+            self._logger,
+            lambda spec, targ_type=str(self.coordselector.currentText()), targ=self._target: self._store_spectrum(spec, self._store_spectrum_title(targ_type, targ)))
+        prev_node.connect(store_spec_node)
+        prev_node = store_spec_node
+
+        self._start_progressbar(int_time)
+        self._progress_timer.start(self._progressbar_update_interval)
+        # run GNURadio in background
+        self._obs_thrd = Thread(target=self._observation_thread,
+                                args=(first_obs_node, self._obs_node))
+        self._obs_thrd.start()
+
+    def _observation_thread(self, first_obs_node_, obs_node_):
+        try:
+            first_obs_node_.execute(obs_node_)
+        except ObservationAborting:
+            pass                # measurement was aborted, do nothing
+        self._emitt_observation_finished = self._post_observation
+
+    def _send_to_webarchive(self):
+        date = str(self.listWidget_spectra.currentItem().text())
+        spec_plt = self._spectra[date]
+        spectrum = spec_plt.spec
+        if not spectrum.is_uploaded():
+            ul = UploadToArchiveNode(self._logger, self._figure, self._tmpfile,
+                                     lambda: self._plot(spec_plt),
+                                     save_vel_=self.radioButton_velocity.isChecked())
+            ul.execute(spectrum)
+            self.btn_upload.setEnabled(False)
+
+    def _store_spectrum_title(self, target_type, target):
+        if target_type == "GNSS":
+            pos = self._telescope.get_current()
+            return ('%s @ Az=%6.2f, El=%6.2f' %
+                    (target.name() if target else "Nothing",
+                     pos.get_azimuth(), pos.get_elevation()))
+        elif target_type == "Horizontal":
+            pos = self._telescope.get_current()
+            return 'Azimuth=%6.2f, Elevation=%6.2f' % (pos.get_azimuth(),
+                                                       pos.get_elevation())
+        else:
+            return ""
+
+    def _store_spectrum(self, spec, title):
+        # Store final spectra in list of observations
+        if not title:  # Get galactic coordinates
+            pos = Galactic(spec.get_target())
+            title = 'Galactic lon=%s, lat=%s' % (str(pos.lon),
+                                                 str(pos.lat))
+        date = str(spec.get_site_date().datetime().replace(microsecond=0))
+        self._spectra[date] = self.SpectrumPlot(spec, title)
+        self.listWidget_spectra.addItem(QListWidgetItem(date, self.listWidget_spectra))
+
+    def _plot(self, spec_plt):
+        spec = spec_plt.spec
+
+        f_center = spec.get_center_freq() * 1e-6
+        if spec.get_vlsr_corr() != 0:
             if self.radioButton_velocity.isChecked():
-                x = 1e-3 * (spectpl.get_vels())
+                x_label = 'Velocity shifted to LSR [km/s]'
+                x = 1e-3*(spec.get_vels())
             else:
-                x = 1e-6*(spectpl.get_freqs() )-referenceFreq
+                x_label = 'Freq. shifted to LSR -%6.1f [MHz]' % f_center
+                x = 1e-6*(spec.get_freqs())-f_center
         else:
             if self.radioButton_velocity.isChecked():
-                x = 1e-3 * (spectpl.get_vels() - spectpl.vlsr_corr)
+                x_label = 'Velocity relative to observer [km/s]'
+                x = 1e-3*(spec.get_vels()-spec.get_vlsr_corr())
             else:
-                x = 1e-6*(spectpl.get_freqs() - spectpl.freq_vlsr_corr )-referenceFreq
-        y = spectpl.data
+                x_label = 'Center frequency: %6.1f [MHz]' % f_center
+                x = 1e-6*(spec.get_freqs()-spec.get_freq_vlsr_corr()) - f_center
 
-        if (spectpl.vlsr_corr!=0):
-            if self.radioButton_velocity.isChecked():
-                ax.set_xlabel('Velocity shifted to LSR [km/s]')
-            else:
-		labelX='Freq. shifted to LSR -'+ str("{:6.1f}".format(referenceFreq)) +'[MHz]'
-                ax.set_xlabel(labelX)
-        else:
-            if self.radioButton_velocity.isChecked():
-                ax.set_xlabel('Velocity relative to observer [km/s]')
-            else:
-		labelX='Measured freq.-'+ str("{:6.1f}".format(referenceFreq))+' [MHz]'
-          	ax.set_xlabel(labelX)
-	#normalize and/or convert to dB
-        if self.checkBox_normalized.isChecked() and self.checkBox_dBScale.isChecked(): 
-            ax.set_ylabel('Uncalibrated normalized antenna temperature [dB]')
-	    # avoid values at the edge of the band
-	    x=x[5:-5]
-	    y=y[5:-5]
-	    y=10*np.log10(np.abs(y/np.max(y)))
-	elif self.checkBox_dBScale.isChecked():        
-            ax.set_ylabel('Uncalibrated antenna temperature [dBK]')
-	    # avoid values at the edge of the band
-	    x=x[5:-5]
-	    y=y[5:-5]
-	    y=10*np.log10(np.abs(y))
-        elif self.checkBox_normalized.isChecked(): 
-            ax.set_ylabel('Uncalibrated normalized antenna temperature [-]')
-	    # avoid values at the edge of the band
-	    y=y[5:-5]
-	    x=x[5:-5]
-	    y=y/np.max(y)
-	else:
-            ax.set_ylabel('Uncalibrated antenna temperature [K]')
-	ax.plot(x,y, '-')
-        ax.minorticks_on()
-        ax.tick_params('both', length=6, width=0.5, which='minor')
-	
-	if not ( target == "GNSS" or target == "Horizontal"):
-		# Get galactic coordinates
-	        pos = ephem.Galactic(spectpl.target)
-	        coord1 = str(pos.lon)
-       	        coord2 = str(pos.lat)
-        	ax.set_title('Galactic long=' + coord1 + ', lat='+coord2)
-	else:
-        	# Get azimuth and elevation
-		coord1="{:-6.2f}".format(self.azAtMeasurementTime)
-		coord2="{:-6.2f}".format(self.elAtMeasurementTime)
-		ax.set_title('Azimuth=' + str(coord1) + ', Elevation='+ str(coord2))
-        #ax.autoscale_view('tight')
-        ax.grid(True, color='k', linestyle='-', linewidth=0.5)
-        # refresh canvas
+        unit_ = ["[K]", "[-]", "[dBK]", "[dB]"]
+        normalize_y = 1 if self.checkBox_normalized.isChecked() else 0
+        y_in_db = 2 if self.checkBox_dBScale.isChecked() else 0
+        y = spec.get_data()
+        y_label = "Uncalibrated"
+        if normalize_y:
+            y_label += " normalized"
+            y = y/max(y)
+        y_label += " antenna temperature "
+        if y_in_db:
+            # avoid bad data at the edges
+            n = int(0.02*len(y))
+            x = x[n:-n]
+            y = 10*log10(abs(y[n:-n]))
+        y_label += unit_[normalize_y | y_in_db]
+
+        self._figure.clear()
+        ax_ = self._figure.add_axes([0.2, 0.1, 0.7, 0.8])
+        ax_.set_title(spec_plt.title)
+        ax_.plot(x, y, '-b')
+        ax_.grid(True, color='k', linestyle='-', linewidth=0.5)
+        ax_.set_xlabel(x_label)
+        ax_.set_ylabel(y_label)
+        ax_.minorticks_on()
+        ax_.tick_params('both', length=6, width=0.5, which='minor')
         self.canvas.draw()
 
-    def clear_plot(self):
-        self.figure.clf()
+    def _update_ui(self):
+        self._update_pos_labels()
+        self._emitt_telescope_lost()
+        self._emitt_observation_finished()
 
-    def update_Ui(self):
-        self.update_desired_altaz()
-        self.update_current_altaz()
-        self.update_coord_labels()
-        if self.mode_switched.isChecked():
-            self.cycle_checkbox.setEnabled(True)
-            self.sig_time_spinbox.setEnabled(True)
-            self.ref_time_spinBox.setEnabled(True)
-            self.loops_spinbox.setEnabled(True)
-            self.int_time_spinbox.setEnabled(True)
-        if not self.mode_switched.isChecked():
-            self.cycle_checkbox.setEnabled(False)
-            self.sig_time_spinbox.setEnabled(False)
-            self.ref_time_spinBox.setEnabled(False)
-            self.loops_spinbox.setEnabled(False)
-            self.int_time_spinbox.setEnabled(True)
-            self.cycle_checkbox.setChecked(False)
-        if self.cycle_checkbox.isChecked():
-            self.sig_time_spinbox.setEnabled(True)
-            self.ref_time_spinBox.setEnabled(True)
-            self.loops_spinbox.setEnabled(True)
-            self.int_time_spinbox.setEnabled(False)
-        if not self.cycle_checkbox.isChecked():
-            self.sig_time_spinbox.setEnabled(False)
-            self.ref_time_spinBox.setEnabled(False)
-            self.loops_spinbox.setEnabled(False)
-            self.int_time_spinbox.setEnabled(True)
+    def __update_pos_labels(self):
+        self._update_target_pos_labels()
+        self._update_current_pos_labels()
 
-        if ((not self.telescope.is_moving()) and (not self.trackingtimer.isActive())):
-            self.btn_track.setEnabled(True)
-            self.btn_reset.setEnabled(True)
-            self.btn_track.setText('Track')
-            style = "QWidget {}"
-            self.btn_track.setStyleSheet(style)
+    def __update_pos_labels_reset(self):
+        _text = "Resetting" + "."*(self._reset_anim_frame >> 2)
+        self._reset_anim_frame = (self._reset_anim_frame + 1) & 0xf
 
-    def update_desired_target(self):
-        target = self.coordselector.currentText()
-        if target == 'The Sun':
-            self.inputleftcoord.setReadOnly(True)
-            self.inputrightcoord.setReadOnly(True)
-            self.inputleftcoord.setText('The Sun')
-            self.inputrightcoord.setText('The Sun')
-        elif target == 'The Moon':
-            self.inputleftcoord.setReadOnly(True)
-            self.inputrightcoord.setReadOnly(True)
-            self.inputleftcoord.setText('The Moon')
-            self.inputrightcoord.setText('The Moon')
-        elif target == 'Cas. A':
-            self.inputleftcoord.setReadOnly(True)
-            self.inputrightcoord.setReadOnly(True)
-            self.inputleftcoord.setText('Cas. A')
-            self.inputrightcoord.setText('Cas. A')
-        elif target == 'Stow':
-            self.inputleftcoord.setReadOnly(True)
-            self.inputrightcoord.setReadOnly(True)
-            self.inputleftcoord.setText('Stow')
-            self.inputrightcoord.setText('Stow')
-        else:
-            # Convert from QString to String to not confuse ephem
-            leftcoord = str(self.inputleftcoord.text())
-            rightcoord= str(self.inputrightcoord.text())
-            # Reset values in case they are not numbers, i.e. Sun/Cas A mode.
+        self.cur_alt.setText(_text)
+        self.cur_az.setText(_text)
+        self.cur_alt.setStyleSheet("QWidget { }")
+        self.cur_az.setStyleSheet("QWidget { }")
+        self.calc_des_left.setText(_text)
+        self.calc_des_right.setText(_text)
+
+    def _update_target_pos_labels(self):
+        try:
+            pos = self._target.compute_az_el()
+        except AttributeError:  # no valid target selected
             try:
-                ephem.degrees(leftcoord)
-                ephem.degrees(rightcoord)
-            except ValueError:
-                self.inputleftcoord.setText('0.0')
-                self.inputrightcoord.setText('0.0')
-            # Unlock input if not in Sun/Cas A mode.
-            if not self.trackingtimer.isActive():
-                self.inputleftcoord.setReadOnly(False)
-                self.inputrightcoord.setReadOnly(False)
+                pos = self._telescope.get_target()
+            except IOError:     # error getting telescope target
+                self.calc_des_left.setText("--:--:--")
+                self.calc_des_right.setText("--:--:--")
+                return
+        el_str = str(ephem_deg(radians(pos.get_elevation())))
+        az_str = str(ephem_deg(radians(pos.get_azimuth())))
+        self.calc_des_left.setText(el_str)
+        self.calc_des_right.setText(az_str)
 
-    def update_desired_altaz(self):
-        (alt, az) = self.calculate_desired_alaz()
-        leftval = str(ephem.degrees(alt*np.pi/180.0))
-        rightval = str(ephem.degrees(az*np.pi/180.0))
-        self.calc_des_left.setText(leftval)
-        self.calc_des_right.setText(rightval)
-    
-    def update_current_altaz(self):
-        (alt, az) = self.telescope.get_current_alaz()
-        leftval = str(ephem.degrees(alt*np.pi/180.0))
-        rightval = str(ephem.degrees(az*np.pi/180.0))
-        self.cur_alt.setText(leftval)
-        self.cur_az.setText(rightval)
-        # Color coding works, but what about color blind people?
-        # Should perhaps use blue and yellow?
-        if self.telescope.is_close_to_target():
-            style = "QWidget {}"
+    def _update_current_pos_labels(self):
+        try:
+            pos = self._telescope.get_current()
+            el_str = str(ephem_deg(radians(pos.get_elevation())))
+            az_str = str(ephem_deg(radians(pos.get_azimuth())))
+            self.cur_alt.setText(el_str)
+            self.cur_az.setText(az_str)
+        except Exception:
+            pass                # invalid position; do not update
+        if self._telescope.is_at_target():
+            style = "QWidget { background-color:#8AE234;}"  # bright green
+        elif self._telescope.is_close_to_target():
+            style = "QWidget { background-color:#FCE94F;}"  # bright yellow
         else:
-            style = "QWidget { background-color:yellow;}"
+            style = "QWidget { background-color:#EF2929;}"  # bright red
         self.cur_alt.setStyleSheet(style)
         self.cur_az.setStyleSheet(style)
-    
-    def update_coord_labels(self):
-        target = self.coordselector.currentText()
-        if target == 'Horizontal':
-            leftval = 'Altitude [deg]'
-            rightval = 'Azimuth [deg]'
-        elif (target == 'Galactic' or target == 'Ecliptic'):
-            leftval = 'Longitude [deg]'
-            rightval = 'Latitude [deg]'
-        elif (target == 'Eq. J2000' or target == 'Eq. B1950'):
-            leftval = 'R.A. [H:M:S]'
-            rightval = 'Dec. [D:\':\"]'
-        else:
-            leftval = 'Object:'
-            rightval = 'Object:'
-        self.coordlabel_left.setText(leftval)
-        self.coordlabel_right.setText(rightval)
 
-    def get_desired_alaz_offset(self):
-        # Read specified offset
-        # Convert from QString to String to not confuse ephem,then to decimal degrees in case the string had XX:XX:XX.XX format.
-        try:
-            offset_alt_deg = float(ephem.degrees(str(self.offset_left.text())))*180.0/np.pi
-            offset_az_deg= float(ephem.degrees(str(self.offset_right.text())))*180.0/np.pi
-        except ValueError:
-            offset_alt_deg = 0.0
-            offset_az_deg = 0.0
-       
-        return (offset_alt_deg, offset_az_deg)
+    def _get_desired_offset(self):
+        return AzEl(ephdeg_to_deg(self.offset_right.text()),
+                    ephdeg_to_deg(self.offset_left.text()))
 
-    def calculate_desired_alaz(self):
-	"""Calculates the desired alt/az for the current time based on current desired target position."""
-        target = self.coordselector.currentText()
-
-        # Convert from QString to String to not confuse ephem
-        leftcoord = str(self.inputleftcoord.text())
-        rightcoord= str(self.inputrightcoord.text())
-        
-        # Get current offset
-        (offset_alt_deg, offset_az_deg) = self.get_desired_alaz_offset()
-
-        # Reset values in case they are "The Sun"
-        # since otherwise errors appear when switchin from "The Sun"-mode 
-        # to something else
-        try:
-            ephem.degrees(leftcoord)
-            ephem.degrees(rightcoord)
-        except ValueError:
-            leftcoord = 0.0
-            rightcoord = 0.0
-
-        self.telescope.site.date = ephem.now()
-        if target == 'Horizontal':
-            alt = ephem.degrees(leftcoord)
-            az = ephem.degrees(rightcoord)
-            # Make sure azimut is given in interval 0 to 360 degrees.
-            #az = (float(rightcoord) %360.0)* np.pi/180.0
-            # Save as targetpos, will be minor offset because of radec_of conversion
-            # Note reverse order of az, alt in this radec_of-function.
-            #(ra, dec) = self.telescope.site.radec_of(az, alt)
-            #pos = ephem.FixedBody()
-            #pos._ra = ra
-            #pos._dec = dec
-            #pos._epoch = self.telescope.site.date
-            #pos.compute(self.telescope.site)
-            # Do not set position to tracking target in this case, because of radec_of discrepancy.
-            # Instead set to given values manually
-            alt_deg = float(alt)*180.0/np.pi
-            az_deg = float(az)*180.0/np.pi
-        elif target == 'GNSS':
-            az_deg,alt_deg= satellites.SatComputeAzElSingle(self.currentGNSStarget)
-        elif target == 'Stow':
-            # Read stow position from file
-            (alt_deg,az_deg)=self.telescope.get_stow_alaz()
-        else:
-            # If given system is something else, we do not have to use radec_of and we get
-            # http://stackoverflow.com/questions/11169523/how-to-compute-alt-az-for-given-galactic-coordinate-glon-glat-with-pyephem
-            if target == 'The Sun':
-                pos = ephem.Sun()
-                pos.compute(self.telescope.site) # Needed for the sun since depending on time
-            elif target == 'The Moon':
-                pos = ephem.Moon()
-                pos.compute(self.telescope.site) # Needed for the moon since depending on time
-            elif target == 'Cas. A':
-                pos = ephem.Equatorial(ephem.hours('23:23:26'), ephem.degrees('58:48:0'), epoch=ephem.J2000)
-                # Coordinate from http://en.wikipedia.org/wiki/Cassiopeia_A
-            elif target == 'Galactic':
-                pos = ephem.Galactic(ephem.degrees(leftcoord), ephem.degrees(rightcoord))
-            elif target == 'Eq. J2000':
-                pos = ephem.Equatorial(ephem.hours(leftcoord), ephem.degrees(rightcoord), epoch=ephem.J2000)
-            elif target == 'Eq. B1950':
-                pos = ephem.Equatorial(ephem.hours(leftcoord), ephem.degrees(rightcoord), epoch=ephem.B1950)
-            elif target == 'Ecliptic':
-                pos = ephem.Ecliptic(ephem.degrees(leftcoord), ephem.degrees(rightcoord)) # Use some epoch?
-                #pos = ephem.Ecliptic(ephem.degrees(leftcoord), ephem.degrees(rightcoord), epoch=ephem.J2000)
-            # Calculate alt, az, via fixedbody since only fixed body has alt, az
-            # First needs to make sure we have equatorial coordinates
-            eqpos = ephem.Equatorial(pos)
-            fixedbody = ephem.FixedBody()
-            fixedbody._ra = eqpos.ra
-            fixedbody._dec = eqpos.dec
-            fixedbody._epoch = eqpos.epoch
-            fixedbody.compute(self.telescope.site)
-            alt = fixedbody.alt
-            az = fixedbody.az
-            alt_deg = float(alt)*180.0/np.pi
-            az_deg = float(az)*180.0/np.pi
-        
-        # Include possible offset, e.g. for beam observations on the Sun
-        fin_alt_deg = alt_deg + offset_alt_deg
-        fin_az_deg = az_deg + offset_az_deg
-
-        if target == 'Horizontal':
-            return (fin_alt_deg, fin_az_deg)
-        elif target=='Stow':
-            # Ignore offset
-            return (alt_deg, az_deg)
-        else:
-            # Check if the desired direction is best reached via simple alt, az
-            # or at 180-alt, az+180.
-            flip_alt_deg = 180-fin_alt_deg
-            flip_az_deg = (fin_az_deg+180)%360
-            # Check if directions are reachable
-            finreach = self.telescope.can_reach(fin_alt_deg, fin_az_deg) 
-            flipreach = self.telescope.can_reach(flip_alt_deg, flip_az_deg) 
-            # If flip direction cannot be reached, return original one.
-            # (even if this one may not be reached)
-            if not flipreach:
-                return (fin_alt_deg, fin_az_deg)
-            # But, if flip direction can be reached, but not original one,
-            # then we have to go to flipdirection to point to this position
-            # E.g. in mecanically forbidden azimuth range
-            elif flipreach and (not finreach):
-                return (flip_alt_deg, flip_az_deg)
-            # If both directions are valid, which is the most common case,
-            # then we find the closest one (in azimuth driving, not in angular distance)
-            # to the current pointing
-            elif flipreach and finreach: 
-                (calt_deg, caz_deg) = self.telescope.get_current_alaz()
-                flipd = self.telescope.get_azimuth_distance(caz_deg, flip_az_deg)
-                find = self.telescope.get_azimuth_distance(caz_deg, fin_az_deg)
-                if flipd<find:
-                    return (flip_alt_deg, flip_az_deg)
-                else:
-                    return (fin_alt_deg, fin_az_deg)
-
-    def set_telescope_target(self):
-	"""Set the target position of the telescope from chosen values and
-        coordinate system."""
-        (alt_deg, az_deg) = self.calculate_desired_alaz()
-        self.telescope.set_target_alaz(alt_deg, az_deg)
-
-    def track_or_stop(self):
-        if self.trackingtimer.isActive():
-            self.stop()
-        else:
+    def _track_clicked(self):
+        if self._tracker.is_tracking():
+            self.stop_tracking()
+        elif self._target_selected:
             self.start_tracking()
-    
-    def disable_movement_controls(self):
-        self.inputleftcoord.setReadOnly(True)
-        self.inputrightcoord.setReadOnly(True)
-        self.offset_left.setReadOnly(True)
-        self.offset_right.setReadOnly(True)
-        self.btn_reset.setEnabled(False)
-        self.coordselector.setEnabled(False)
-        self.GNSSselector.setEnabled(False)
-        self.btn_track.setText('Stop')
-        style = "QWidget { background-color:red;}"
-        self.btn_track.setStyleSheet(style)
-
-    def enable_movement_controls(self):
-        self.inputleftcoord.setReadOnly(False)
-        self.inputrightcoord.setReadOnly(False)
-        self.offset_left.setReadOnly(False)
-        self.offset_right.setReadOnly(False)
-        self.trackingtimer.stop()
-        #Tracking button text is handeled by the update_UI-function to check that the telescope is still before offering new track position
-        self.coordselector.setEnabled(True)
-        self.GNSSselector.setEnabled(True)
-        self.btn_track.setText('Stopping...')
-        style = "QWidget { background-color:orange;}"
-        self.btn_track.setStyleSheet(style)
-        self.btn_track.setEnabled(False)
+        else:
+            self._show_message("You must select a target before tracking.")
 
     def start_tracking(self):
         try:
-            # This includes a check if position is reachable
-            self.set_telescope_target()
-            self.update_desired_altaz()
-            # Toggle tracking on
-            self.trackingtimer.start(1000) # ms
-            # Do not wait for tracking timer first time, 
-            # start tracking directly.
-            self.disable_movement_controls()
-            self.track()
-        except Exception as e: 
-            self.show_message(e.message)
+            self.btn_track.setText("Stop")
+            self.btn_track.setStyleSheet("QWidget { background-color:red;}")
+            self.btn_reset.setEnabled(False)
 
-    def show_message(self, m):
-        QtGui.QMessageBox.about(self, "Message from telescope:", m)
+            self._target = self._target_selected
+            self._tracker.set_target(self._target)
+            self._tracker.set_offset(self._get_desired_offset())
+            if not self._tracker.is_tracking():
+                self._tracker.start_tracking()
+        except Exception as e:
+            self.stop_tracking()
+            self._logger.error("An error occurred when starting tracker", exc_info=1)
+            self._show_message(e.message)
 
-    def track(self):
+    def stop_tracking(self):
+        if self._tracker.is_tracking():
+            self._tracker.stop_tracking()
+
+        self._target = None
+        self.btn_track.setText("Track")
+        self.btn_track.setStyleSheet("QWidget {}")
+        self.btn_reset.setEnabled(True)
+
+    def _telescope_lost_action(self):
+        self._emitt_telescope_lost = self._reset_needed
+
+    def _reset_clicked(self):
+        # Show a message box
+        msg_box = QMessageBox(QMessageBox.Information, "Confirm reset",
+                              "Hard reset: reboot the telescope hardware and "
+                              "issue a soft reset.\n"
+                              "Soft reset: restart the telescope software and "
+                              "move the telescope to a known position.\n"
+                              "Most users will find that a soft reset is "
+                              "enough.\n\n"
+                              "Resetting the telescope pointing may take a "
+                              "few minutes if the telescope is far from its "
+                              "starting position so please be patient.")
+        hard_btn = msg_box.addButton("Hard reset", QMessageBox.ResetRole)
+        soft_btn = msg_box.addButton("Soft reset", QMessageBox.ResetRole)
+        msg_box.addButton("Cancel", QMessageBox.RejectRole)
+        msg_box.setDefaultButton(soft_btn)
+
+        msg_box.exec_()
+        clicked = msg_box.clickedButton()
+        if (clicked is hard_btn or clicked is soft_btn):
+            self.stop_tracking()
+            self._reset_anim_frame = 0
+            self._update_pos_labels = self.__update_pos_labels_reset
+            self.btn_observe.setEnabled(False)
+            self.btn_track.setEnabled(False)
+            self.btn_reset.setEnabled(False)
+            self._telescope.reset(hard_reset=clicked is hard_btn)
+            self._reset_timer.start(self._reset_update_intervall)
+
+    def resettimer_action(self):
+        if self._telescope.isreset():
+            self._reset_timer.stop()
+            self.btn_reset.setEnabled(True)
+            self.btn_track.setEnabled(True)
+            self.btn_observe.setEnabled(True)
+            self._update_pos_labels = self.__update_pos_labels
+            self._show_message("Dear user: The telescope has been reset "
+                               "and now knows its position. Thank you "
+                               "for your patience.")
+
+    def _open_gnss_satellite_window(self):
+        if self._gnss_window:
+            if self._gnss_window.isVisible():
+                self._gnss_window.activateWindow()
+            else:
+                self._gnss_window.show()
+            return
+        self._gnss_window = GNSSWindow(self._sat_pos_comp)
+        self._gnss_window.show()
+
+    def _close_gnss_window(self):
+        if not self._gnss_window:
+            return
+        self._gnss_window.close()
+
+    def _toggle_gnss_view(self, gnss_view):
+        if self._gnss_view_active == gnss_view:
+            return              # same view; no action needed
+        self._gnss_view_active = gnss_view
+
+        self.inputleftcoord.setVisible(not gnss_view)
+        self.inputrightcoord.setVisible(not gnss_view)
+        self.coordlabel_left.setVisible(not gnss_view)
+        self.coordlabel_right.setVisible(not gnss_view)
+
+        self._gnss_selector.setVisible(gnss_view)
+        self._gnss_lh_btn.setVisible(gnss_view)
+        if gnss_view:
+            for n, _, _ in zip(*self._sat_pos_comp.SatCompute('ALL', 5.0)):
+                self._gnss_selector.addItem(n)
+            self._gnss_selector.setCurrentIndex(-1)
+        else:
+            self._gnss_selector.clear()
+            self._close_gnss_window()
+
+    def _update_target_obj(self):
+        read_only = False
+        tf_left_coord = "0.0"
+        tf_right_coord = "0.0"
+        lbl_left_coord = "Object:"
+        lbl_right_coord = "Object:"
+        target = str(self.coordselector.currentText())
+        # switching away from GNSS view emitts a currentIndexChanged
+        # signal and self._target_selected will be set to None.
+        # Solution: toggle gnss view before setting target here.
+        self._toggle_gnss_view(target == "GNSS")
+        if target == "The Sun":
+            read_only = True
+            tf_left_coord = "The Sun"
+            tf_right_coord = "The Sun"
+            self._target_selected = self._obj_pos_comp.load_satellite("Sun")
+        elif target == "The Moon":
+            read_only = True
+            tf_left_coord = "The Moon"
+            tf_right_coord = "The Moon"
+            self._target_selected = self._obj_pos_comp.load_satellite("Moon")
+        elif target == "Cas. A":
+            read_only = True
+            tf_left_coord = "Cas. A"
+            tf_right_coord = "Cas. A"
+            self._target_selected = self._obj_pos_comp.load_satellite("CasA")
+        elif target == "Stow":
+            read_only = True
+            tf_left_coord = "Stow"
+            tf_right_coord = "Stow"
+            self._target_selected = self._stow_target
+        elif target == "Horizontal":
+            lbl_left_coord = "Altitude [deg]"
+            lbl_right_coord = "Azimuth [deg]"
+            self.inputleftcoord.setText(tf_left_coord)
+            self.inputrightcoord.setText(tf_right_coord)
+            posmdl = PositionModel(
+                lambda: AzEl(ephdeg_to_deg(self.inputrightcoord.text()),
+                             ephdeg_to_deg(self.inputleftcoord.text())))
+            self._target_selected = ReferenceSatellite(target, posmdl)
+        elif target == "Galactic":
+            tf_left_coord = "120.0"
+            lbl_left_coord = "Longitude [deg]"
+            lbl_right_coord = "Latitude [deg]"
+            self.inputleftcoord.setText(tf_left_coord)
+            self.inputrightcoord.setText(tf_right_coord)
+            posmdl = PositionModel(
+                lambda: CelObjComp.astro_compute(
+                    Galactic(ephem_deg(str(self.inputleftcoord.text())),
+                             ephem_deg(str(self.inputrightcoord.text()))),
+                    CelObjComp.refresh_observer_time(self._site)))
+            self._target_selected = ReferenceSatellite(target, posmdl)
+        elif target == "Ecliptic":
+            lbl_left_coord = "Longitude [deg]"
+            lbl_right_coord = "Latitude [deg]"
+            self.inputleftcoord.setText(tf_left_coord)
+            self.inputrightcoord.setText(tf_right_coord)
+            posmdl = PositionModel(
+                lambda: CelObjComp.astro_compute(
+                    Ecliptic(ephem_deg(str(self.inputleftcoord.text())),
+                             ephem_deg(str(self.inputrightcoord.text()))),
+                    CelObjComp.refresh_observer_time(self._site)))
+            self._target_selected = ReferenceSatellite(target, posmdl)
+        elif target == "Eq. J2000":
+            lbl_left_coord = "R.A. [H:M:S]"
+            lbl_right_coord = "Dec. [D:\':\"]"
+            self.inputleftcoord.setText(tf_left_coord)
+            self.inputrightcoord.setText(tf_right_coord)
+            posmdl = PositionModel(
+                lambda: CelObjComp.astro_compute(
+                    Equatorial(hours(str(self.inputleftcoord.text())),
+                               ephem_deg(str(self.inputrightcoord.text())),
+                               epoch=J2000),
+                    CelObjComp.refresh_observer_time(self._site)))
+            self._target_selected = ReferenceSatellite(target, posmdl)
+        elif target == "Eq. B1950":
+            lbl_left_coord = "R.A. [H:M:S]"
+            lbl_right_coord = "Dec. [D:\':\"]"
+            self.inputleftcoord.setText(tf_left_coord)
+            self.inputrightcoord.setText(tf_right_coord)
+            posmdl = PositionModel(
+                lambda: CelObjComp.astro_compute(
+                    Equatorial(hours(str(self.inputleftcoord.text())),
+                               ephem_deg(str(self.inputrightcoord.text())),
+                               epoch=B1950),
+                    CelObjComp.refresh_observer_time(self._site)))
+            self._target_selected = ReferenceSatellite(target, posmdl)
+        elif target == "GNSS":
+            # target is set with the gnss selector
+            pass
+
+        if self._tracker.is_tracking():
+            read_only = True
+
+        self.inputleftcoord.setReadOnly(read_only)
+        self.inputrightcoord.setReadOnly(read_only)
+        self.inputleftcoord.setText(tf_left_coord)
+        self.inputrightcoord.setText(tf_right_coord)
+        self.coordlabel_left.setText(lbl_left_coord)
+        self.coordlabel_right.setText(lbl_right_coord)
+        self._update_pos_labels()
+
+    def _gnss_selector_chosen(self):
+        """
+        Sets the current gnss target based on the selected GNSS
+        target from the _gnss_selector combobox
+        """
         try:
-            self.set_telescope_target()
-        except Exception as e: 
-            print e.message
-            self.stop()
+            target = str(self._gnss_selector.currentText())
+            self._target_selected = self._sat_pos_comp.load_satellite(target)
+        except NameError:
+            self._target_selected = None
+        self._update_pos_labels()
 
-    def stop(self):
-        self.telescope.stop()
-        self.enable_movement_controls()
-
-    def reset_needed(self):
+    def _reset_needed(self):
+        # user have been notified
+        self._emitt_telescope_lost = self._nothing
         # Telescope must apparently be resetted
         self.btn_track.setEnabled(False)
         self.btn_reset.setEnabled(True)
         self.btn_observe.setEnabled(False)
-        msg = "Dear user. The telescope is lost, this may happen when there is a power cut. A reset is needed for SALSA to know where it is pointing. Please press reset and wait until reset is finished."
-        self.show_message(msg)
- 
-    def reset(self):
-        # Show a message box
-        qmsg = "You have asked for a system reset. This process may take a few minutes if the telescope is far from its starting position so please be patient. Do you really want to reset the telescope?"
-        result = QtGui.QMessageBox.question(QtGui.QWidget(), 'Confirmation', qmsg, QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-        if result==QtGui.QMessageBox.Yes:
-            self.telescope.reset()
-            self.resettimer.start(1000)
+        self.stop_tracking()
+        self._show_message("Dear user. The telescope is lost, this may "
+                           "happen when there is a power cut. A reset "
+                           "is needed for SALSA to know where it is "
+                           "pointing. Please press reset and wait until "
+                           "reset is finished.")
 
-    def resettimer_action(self):
-        self.inputleftcoord.setReadOnly(True)
-        self.inputleftcoord.setText("Resetting...")
-        self.inputrightcoord.setReadOnly(True)
-        self.inputrightcoord.setText("Resetting...")
-        self.btn_track.setEnabled(False)
-        self.btn_reset.setEnabled(False)
-        self.coordselector.setEnabled(False)
-        self.disable_receiver_controls()
-        self.btn_abort.setEnabled(False)
+    def _show_message(self, m):
+        msg_box = QMessageBox(QMessageBox.Information, "Message from SALSA", m,
+                              QMessageBox.Ok)
+        msg_box.exec_()
 
-        if self.telescope.isreset():
-            self.resettimer.stop()
-            # Set default values for input fields
-            self.inputleftcoord.setText("140.0")
-            self.inputrightcoord.setText("0.0")
-            self.enable_movement_controls()
-            self.enable_receiver_controls()
-            # Make sure labels are properly updated again, will change input values for fixed objects like the Sun etc.
-            self.update_desired_target()
-            self.telescope.set_pos_ok() # Know we know where we are
-            msg = "Dear user: The telescope has been reset and now knows its position. Thank you for your patience."
-            self.show_message(msg)
+    def _nothing(self):
+        """
+        Empty method that can be used instead of 'lambda: None'
+        to avoid warnings about assigning lambda expressions.
+        """
+        return
 
 
+class GNSSWindow(QMainWindow, Ui_GNSSAzElWindow):
+    def __init__(self, sat_pos_comp_):
+        QMainWindow.__init__(self)
+        Ui_GNSSAzElWindow.__init__(self)
+        self._gps_plots = list()
+        self._gps_texts = list()
+        self._glonass_plots = list()
+        self._glonass_texts = list()
+        self._galileo_plots = list()
+        self._galileo_texts = list()
+        self._beidou_plots = list()
+        self._beidou_texts = list()
 
-class GNSSAzEl_window(QtGui.QMainWindow, Ui_GNSSAzElWindow ):
-    def __init__(self):
-        super(GNSSAzEl_window, self).__init__()
+        self._sat_pos_comp = sat_pos_comp_
+        self._dpi = 100
+        self._refreshtimer = QTimer()
+
         self.setupUi(self)
-        self.init_Ui()
- 
-    def init_Ui(self):
+        self._init_ui()
 
-        self.create_menuActions()
-        self.btn_close.clicked.connect(self.close)
+    @overrides(QMainWindow)
+    def closeEvent(self, event):
+        if self._refreshtimer.isActive():
+            self._refreshtimer.stop()
+        QMainWindow.closeEvent(self, event)
 
-        self.dpi = 100
-        self.fig = Figure((6.6, 6.6), dpi=self.dpi)
-        self.fig.patch.set_facecolor('none')
-        self.canvas = FigureCanvas(self.fig)
-        # Position as left, top, width, height
-        self.canvas.setGeometry(QtCore.QRect(40,60, 600, 600))  
-        self.canvas.setParent(self)
-        self.drawAzElPlt()
+    @overrides(QMainWindow)
+    def showEvent(self, event):
+        if not self._refreshtimer.isActive():
+            self._refresh_all()
+            self._refreshtimer.start(1000)  # ms
+        QMainWindow.showEvent(self, event)
 
-        self.checkBoxGPS.clicked.connect(self.refreshAzElPlt)
-        self.checkBoxGLONASS.clicked.connect(self.refreshAzElPlt)
-        self.checkBoxGALILEO.clicked.connect(self.refreshAzElPlt)
-        self.checkBoxBEIDOU.clicked.connect(self.refreshAzElPlt)
+    def _init_ui(self):
+        fig = Figure((6.6, 6.6), dpi=self._dpi)
+        fig.patch.set_facecolor('none')
+        self._canvas = FigureCanvasQTAgg(fig)
+        self._canvas.setParent(self.groupBox)
+        self.verticalLayout.addWidget(self._canvas)
+        self.verticalLayout.addWidget(NavigationToolbar2QT(self._canvas,
+                                                           self.groupBox))
+        self._ax = self._create_axes(fig)
 
-        self.refreshtimer = QtCore.QTimer()
-        self.refreshtimer.start(5000) #ms
-        self.refreshtimer.timeout.connect(self.refreshAzElPlt)
+        self.checkBoxGPS.stateChanged.connect(self._refresh_gps)
+        self.checkBoxGLONASS.stateChanged.connect(self._refresh_glonass)
+        self.checkBoxGALILEO.stateChanged.connect(self._refresh_galileo)
+        self.checkBoxBEIDOU.stateChanged.connect(self._refresh_beidou)
+        self._refreshtimer.timeout.connect(self._refresh_all)
 
-        self.btn_close.clicked.connect(self.refreshtimer.stop)
-            
-    def drawAzElPlt(self):
-	"""
-	Draws the GNSS Az-El plot.
+    def _create_axes(self, fig):
+        ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], projection='polar',
+                          axisbg='#d5de9c')
+        ax.grid(color='green', linewidth=0.5, linestyle='-')
+        ax.set_rmax(90)
 
-	"""
- 
-        self.grid=rc('grid', color='green', linewidth=0.5, linestyle='-')
-        self.grid=rc('xtick', labelsize=15)
-        self.grid=rc('ytick', labelsize=10)
+        ax.set_rgrids(range(10, 91, 10), angle=0)
+        # controll room / webcam is roughly looking directly east
+        ax.set_theta_offset(pi/2 + pi/2)
+        ax.set_theta_direction(-1)
 
-        self.ax = self.fig.add_axes([0.1, 0.1, 0.8, 0.8], projection='polar', axisbg='#d5de9c')
-        self.ax.set_rmax(90)
+        ax.set_yticklabels(map(str, range(80, 1, -10)), fontsize=10)
+        ax.set_xticklabels(['N', '', 'E', '', 'S', '', 'W', ''], fontsize=15)
 
-        self.ax.set_rgrids([10,20,30,40,50,60,70,80,90], angle=0)
-        self.ax.set_theta_offset(0.5*math.pi)
-        self.ax.set_theta_direction(-1)
+        ax.set_autoscalex_on(False)
+        ax.set_autoscaley_on(False)
+        return ax
 
-        self.ax.set_title("GNSS satellites on the local horizon",va='bottom', )
-        self.ax.set_yticklabels(map(str, range(80, 0, -10)))
-        self.ax.set_xticklabels(['N', '', 'E', '', 'S', '', 'W', ''])
+    def _clear_constellation(self, plots, texts):
+        while len(plots) > 0:
+            self._ax.lines.pop(self._ax.lines.index(plots.pop()))
+        while len(texts) > 0:
+            self._ax.texts.pop(self._ax.texts.index(texts.pop()))
 
-        self.ax.set_autoscalex_on(False)
-        self.ax.set_autoscaley_on(False)
+    def _gps_abbrev_name(self, norad_name):
+        return norad_name[norad_name.find("(")+1:norad_name.find(")")]
 
-        if self.checkBoxGPS.isChecked() == True :
-            [GPSname, phi_GPS, r_GPS] = satellites.SatCompute('visible', 'GPS')  # fills the list with all GPS satellites
-            GPSname = [j.split()[-2].replace("(","" ) + j.split()[-1].replace(")" ,"") for j in GPSname] # shortens the displayed satellites' names on the plot
-            self.ax.plot(phi_GPS,r_GPS, 'ro',label='GPS')
-            for i,txt in enumerate(GPSname):
-                self.ax.annotate(txt,(phi_GPS[i],r_GPS[i]))
+    def _glonass_abbrev_name(self, norad_name):
+        return norad_name[norad_name.find("(")+1:norad_name.find(")")]
 
-        if self.checkBoxGLONASS.isChecked() == True:
-            [GLONASSname, phi_GLONASS, r_GLONASS] = satellites.SatCompute('visible', 'COSMOS')  # fills the list with all GLONASS satellites
-            GLONASSname = [j[13:16] for j in GLONASSname]
-            self.ax.plot(phi_GLONASS, r_GLONASS, 'bo', label='GLONASS')
-            for i, txt in enumerate(GLONASSname):
-                self.ax.annotate(txt, (phi_GLONASS[i], r_GLONASS[i]))
+    def _galileo_abbrev_name(self, norad_name):
+        return norad_name[norad_name.find("(")+1:norad_name.find(")")]
 
-        if self.checkBoxGALILEO.isChecked() == True:
-            [GALILEOname, phi_GALILEO, r_GALILEO] = satellites.SatCompute('visible', 'GSAT')  # fills the list with all GALILEO satellites
-            GALILEOname = [j.split()[-2].replace("(","" ) + j.split()[-1].replace(")" ,"") for j in GALILEOname]
-            self.ax.plot(phi_GALILEO, r_GALILEO, 'go', label='GALILEO')
-            for i, txt in enumerate(GALILEOname):
-                self.ax.annotate(txt, (phi_GALILEO[i], r_GALILEO[i]))
-        if self.checkBoxBEIDOU.isChecked() == True:
-            [BEIDOUname, phi_BEIDOU, r_BEIDOU] = satellites.SatCompute('visible','BEIDOU')  # fills the list with all BEIDOU satellites
-            BEIDOUname = [ j.split()[-1] for j in BEIDOUname]
-            self.ax.plot(phi_BEIDOU, r_BEIDOU, 'ko', label='BEIDOU')
-            for i, txt in enumerate(BEIDOUname):
-                self.ax.annotate(txt, (phi_BEIDOU[i], r_BEIDOU[i]))
+    def _beidou_abbrev_name(self, norad_name):
+        return norad_name[norad_name.find(" ")+1:]
 
-        self.canvas.draw()
+    def _refresh_gps(self):
+        self._clear_constellation(self._gps_plots, self._gps_texts)
+        if self.checkBoxGPS.isChecked():
+            name, phi, r = self._sat_pos_comp.SatCompute('GPS', 5.0)
+            name = [self._gps_abbrev_name(n) for n in name]
+            self._gps_plots.extend(self._ax.plot(phi, r, 'ro', label='GPS'))
+            for n, v, d in zip(name, phi, r):
+                self._gps_texts.append(self._ax.annotate(n, (v, d)))
+        self._canvas.draw()
 
-    def refreshAzElPlt(self):
-        """
-	    Refreshes the drawn plot
-	"""
-        self.ax.clear()
-        self.drawAzElPlt()
+    def _refresh_glonass(self):
+        self._clear_constellation(self._glonass_plots, self._glonass_texts)
+        if self.checkBoxGLONASS.isChecked():
+            name, phi, r = self._sat_pos_comp.SatCompute('COSMOS', 5.0)
+            name = [self._glonass_abbrev_name(n) for n in name]
+            self._glonass_plots.extend(self._ax.plot(phi, r, 'bo', label='GLONASS'))
+            for n, v, d in zip(name, phi, r):
+                self._glonass_texts.append(self._ax.annotate(n, (v, d)))
+        self._canvas.draw()
 
-        
-    def create_menuActions(self):
-        """
-        Creates actions for the menubar of the GNSS Az-El window.
-        :return: Nothing
-        """
-        save_file_action = self.create_action("&Save current view",
-            shortcut="Ctrl+S", slot=self.save_AzElPlot, 
-            tip="Saves current Azimuth-Elevation view as an image.")
+    def _refresh_galileo(self):
+        self._clear_constellation(self._galileo_plots, self._galileo_texts)
+        if self.checkBoxGALILEO.isChecked():
+            name, phi, r = self._sat_pos_comp.SatCompute('GSAT', 5.0)
+            name = [self._galileo_abbrev_name(n) for n in name]
+            self._galileo_plots.extend(self._ax.plot(phi, r, 'go', label='GALILEO'))
+            for n, v, d in zip(name, phi, r):
+                self._galileo_texts.append(self._ax.annotate(n, (v, d)))
+        self._canvas.draw()
 
-        quit_action = self.create_action("&Quit", slot=self.close, 
-            shortcut="Ctrl+Q", tip="Closes current window")
+    def _refresh_beidou(self):
+        self._clear_constellation(self._beidou_plots, self._beidou_texts)
+        if self.checkBoxBEIDOU.isChecked():
+            name, phi, r = self._sat_pos_comp.SatCompute('BEIDOU', 5.0)
+            name = [self._beidou_abbrev_name(n) for n in name]
+            self._beidou_plots.extend(self._ax.plot(phi, r, 'wo', label='BEIDOU'))
+            for n, v, d in zip(name, phi, r):
+                self._beidou_texts.append(self._ax.annotate(n, (v, d)))
+        self._canvas.draw()
 
-        about_action = self.create_action("&About", 
-            shortcut='F1', slot=self.on_about, 
-            tip='Displays additional information.')
+    def _refresh_all(self):
+        self._refresh_beidou()
+        self._refresh_galileo()
+        self._refresh_glonass()
+        self._refresh_gps()
 
-        self.add_actions(self.file_menu, 
-            (save_file_action, None, quit_action))
-        
-        self.add_actions(self.help_menu, (about_action,))
-        
-    def add_actions(self, target, actions):
 
-        for action in actions:
-            if action is None:
-                target.addSeparator()
-            else:
-                target.addAction(action)
+def load_logger():
+    logger = getLogger(__file__)
+    logger.setLevel(DEBUG)
+    fmt = Formatter('[%(asctime)s] [%(levelname)s] %(message)s', "%H:%M:%S")
 
-    def create_action(  self, text, slot=None, shortcut=None, 
-                        icon=None, tip=None, checkable=False, 
-                        signal="triggered()"):
+    # create console handler
+    ch = StreamHandler()
+    ch.setLevel(DEBUG)
+    ch.setFormatter(fmt)
+    logger.addHandler(ch)
+    return logger
 
-        action = QtGui.QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            self.connect(action, QtCore.SIGNAL(signal), slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
-
-    def save_AzElPlot(self):
-        """
-        Saves the current GNSS Az-El plot
-        """
-        file_choices = "PNG (*.png)|*.png"
-
-        path = unicode(QtGui.QFileDialog.getSaveFileName(self, 
-                        'Save file', '', 
-                        file_choices))
-        if path:
-            self.canvas.print_figure(path, dpi=self.dpi)
-            self.statusBar().showMessage('Saved to %s' % path, 2000)
-
-    def on_about(self):
-        """
-        A message of the help option
-        """
-        msg = """
-
-        This window displays current positions of GNSS satellites on the local horizon. Positions computed using two-line element set (TLE) data.
-        """
-        QtGui.QMessageBox.about(self, "GNSS Az-El view", msg.strip())
-
-def main():
-    app = QtGui.QApplication(sys.argv)
-    #app.setStyle(QtGui.QStyleFactory.create("plastique"))
-    # Do not use default GTK, strange low level warnings. Others see this as well.
-    app.setStyle(QtGui.QStyleFactory.create("cleanlooks"))
-    window = main_window()
-    window.show()
-    sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    main()    
+    # Make sure only one instance is running of this program
+    #me = singleton.SingleInstance()
+
+    salsa_config = ConfigParser()
+    salsa_config.read(project_file_path('/config/SALSA.cfg'))
+    tle_config = ConfigParser()
+    tle_config.read(project_file_path('/config/tle.cfg'))
+    site = Observer()
+    site.date = now()
+    site.lat = ephem_deg(salsa_config.get('SITE', 'latitude'))
+    site.lon = ephem_deg(salsa_config.get('SITE', 'longitude'))
+    site.elev = salsa_config.getfloat('SITE', 'elevation')
+    site.name = salsa_config.get('SITE', 'name')
+    tle_files = glob(path.join(tle_config.get('TLE', 'output-dir'), '*.tle'))
+    tleEphem = TLEephem(tle_files, site)
+
+    logger = load_logger()
+    username = getuser()
+
+    stow_az = salsa_config.getfloat('RIO', 'stowaz')
+    stow_el = salsa_config.getfloat('RIO', 'stowal')
+
+    tconn = TelescopeConnection(salsa_config.get('RIO', 'host'),
+                                salsa_config.getint('RIO', 'port'),
+                                socket(AF_INET, SOCK_STREAM))
+    tcom = TelescopeCommunication(logger, tconn)
+    lim = TelescopePosInterface(tcom,
+                                salsa_config.getfloat('RIO', 'minaz'),
+                                salsa_config.getfloat('RIO', 'minal'))
+    tolerance = salsa_config.getfloat('RIO', 'close_enough')
+    telescope = TelescopeController(logger, tcom,
+                                    AzEl(stow_az, stow_el),
+                                    lim, tolerance)
+
+    software_gain = salsa_config.getfloat('USRP', 'software_gain')
+    usrp_gain = salsa_config.getfloat('USRP', 'usrp_gain')
+    tmpdir = salsa_config.get('USRP', 'tmpdir')
+    dbconn = ArchiveConnection(
+        salsa_config.get('ARCHIVE', 'host'),
+        salsa_config.get('ARCHIVE', 'database'),
+        salsa_config.get('ARCHIVE', 'user'),
+        salsa_config.get('ARCHIVE', 'password'),
+        salsa_config.get('ARCHIVE', 'table'))
+    usrp_outfile = "%s/SALSA_%s" % (tmpdir, username)
+    receiver = SALSA_Receiver(salsa_config.get('USRP', 'host'),
+                              "%s.tmp" % usrp_outfile)
+    receiver.set_gain(usrp_gain)
+    sat_pos_comp = SatPosComp(tleEphem)
+    obj_pos_comp = CelObjComp(site)
+    stow_sat = ReferenceSatellite("Stow", PositionModel(lambda: AzEl(stow_az, stow_el)))
+
+    tmpfile = "%s/tmp_%s_%s" % (tmpdir, site.name, username)
+
+    # use 1 process for signal
+    tp_signal = ThreadPool(processes=1)
+    # use 1 process for signal and 1 for reference
+    tp_switched = ThreadPool(processes=2)
+    nan_handler = WarnOnNaN(logger)
+    meas_setup = MeasurementSetup(logger, nan_handler, site,
+                                  telescope.get_current, dbconn, receiver,
+                                  username, tp_signal, tp_switched)
+    tracker = SatelliteTracker(logger, telescope, stow_sat)
+
+    app = QApplication(argv)
+    # app.setStyle(QStyleFactory.create("plastique"))
+    app.setStyle(QStyleFactory.create("cleanlooks"))
+    window = SALSA_GUI(logger, tleEphem, site, telescope,
+                       software_gain, sat_pos_comp, obj_pos_comp,
+                       stow_sat, tmpfile, meas_setup, tracker)
+    window.show()
+    app.exec_()
