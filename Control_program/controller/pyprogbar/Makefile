@@ -13,4 +13,6 @@ $(OUT):
 	mkdir -p $(OUT)
 
 clean:
-	bash -c "rm -r $(OUT) progressbar_wrap.c _progressbar.so progressbar.py *.pyc > /dev/null 2>&1"
+#	bash -c "rm -r $(OUT) progressbar_wrap.c _progressbar.so progressbar.py *.pyc > /dev/null 2>&1"
+	bash -c "rm -r $(OUT) progressbar_wrap.c _progressbar.so progressbar.py > /dev/null 2>&1"
+
