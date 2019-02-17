@@ -541,13 +541,13 @@ if __name__ == "__main__":
                         help="/path/to/SALSA.cfg that defines the SALSA configuration.")
     parser.add_argument("-b", "--batch-cfg",
                         action="store", dest="batch_cfg_path",
-                        type=str, required=False,
+                        type=str, required=True,
                         help="/path/to/batch_config.cfg that defines the batch measurement.")
-
-    batch_config = make_config_parser(parser.batch_cfg_path if hasattr(parser, "batch_cfg_path") else
-                                      project_file_path("/config/batch-measurement.cfg"))
-    salsa_config = make_config_parser(parser.salsa_cfg_path if hasattr(parser, "salsa_cfg_path") else
-                                      project_file_path("/config/SALSA.cfg"))
+    args=parser.parse_args()
+    batch_config = make_config_parser(args.batch_cfg_path if getattr(args, "batch_cfg_path") != None else 
+				project_file_path("/config/batch-measurement.cfg"))
+    salsa_config = make_config_parser(args.salsa_cfg_path if getattr(args, "salsa_cfg_path") != None else 
+				project_file_path("/config/SALSA.cfg"))
     tle_config = make_config_parser(project_file_path("/config/tle.cfg"))
 
     prgbar = load_progressbar(1)
