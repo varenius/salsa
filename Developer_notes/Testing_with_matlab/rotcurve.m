@@ -11,7 +11,8 @@ R0 = 8.5; % kpc
 V0 = 220; % km/s
 
 % Infile
-fid= fopen('ALLDATA.txt');
+%fid= fopen('ALLDATA.txt');
+fid= fopen('TEST.txt');
 % Outfile
 oid= fopen('ROTVALUES.txt', 'w');
 fprintf(oid,'# R V(R) \n');
