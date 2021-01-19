@@ -8,7 +8,7 @@ import datetime
 import shutil
 
 import getpass # To find current username
-import ConfigParser
+import configparser
 
 
 class TLEephem:

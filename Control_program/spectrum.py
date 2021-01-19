@@ -5,7 +5,7 @@ from scipy import signal as signal
 from astropy.io import fits
 import math, os
 from scipy.constants import c
-import MySQLdb as mdb
+#import MySQLdb as mdb
 from datetime import datetime
 
 
@@ -47,7 +47,7 @@ class SALSA_spectrum:
         self.offset_az = offset_az
 
     def auto_edit_bad_data(self):
-        print "Autoflagging known RFI."
+        print("Autoflagging known RFI.")
         freq_res = self.bandwidth/self.nchans # Hz
         # List known RFI as center-frequency in MHz, and width in Mhz
         # This list contains peaks which are not properly picked by by the MWF filter.
@@ -187,7 +187,7 @@ class SALSA_spectrum:
         self.freq_vlsr_corr = -1*self.rest_freq*self.vlsr_corr/c
 
     def decimate_channels(self, outchans):
-        self.data = signal.decimate(self.data, self.nchans/outchans, axis=0, ftype = 'fir')
+        self.data = signal.decimate(self.data, int(self.nchans/outchans), axis=0, ftype = 'fir')
         self.nchans = outchans
 
     def get_center_freq(self):
@@ -339,4 +339,4 @@ class SALSA_spectrum:
 
     def print_total_power(self):
         #print "SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4))
-        print "SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}, alt={3}, az={4}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4), self.alt, self.az)
+        print("SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}, alt={3}, az={4}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4), self.alt, self.az))

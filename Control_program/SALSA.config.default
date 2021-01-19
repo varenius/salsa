@@ -10,17 +10,13 @@ elevation=2
 
 [RIO]
 # The rotor controller to move telescope.
-# The host is the IP to the RIO controller board.
-host=169.254.212.76
+# The host is the IP to the MD01 controller
+host=192.168.5.10
 # Port 23 is standard telnet.
 port=23
-# The minimum azimuth angle in degrees.
-minaz = -147.25
-# The minimum altitude angle in degrees.
-minal = -8.0
 # Maximum distance in degrees between target 
 # and pointing for UI color indicators.
-close_enough = 1.0 
+close_enough = 0.2
 # Define stow position in horizontal coordinates, in degrees
 # When not snowing, use these
 stowal=90

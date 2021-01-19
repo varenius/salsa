@@ -32,7 +32,7 @@ import sys
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Connect to MD-01 via ethernet interface, using default config (as in manual).
 # Note: IP address may change (depends on your config). Port is normally 23 (not 26).
-sock.connect(("192.168.1.100", 23)) 
+sock.connect(("192.168.5.10", 23)) 
 
 
 def set_azel(taz,tel):
@@ -95,12 +95,17 @@ def get_azel():
     el = V1 * 100 + V2 * 10 + V3 + V4 / 10 -360
     return az, el
 
-set_azel(10, 100)
+set_azel(100, -100)
+time.sleep(1)
+print(get_azel())
+stop()
+time.sleep(1)
+print(get_azel())
 
-while True:
-    # Read Az/El once every second
-    az, el = get_azel()
-    # Print result
-    print("AZ {:2.1f} EL {:2.1f}".format(az,el))
-    # Sleep for 1 sec until next call
-    time.sleep(1)
+#while True:
+#    # Read Az/El once every second
+#    az, el = get_azel()
+#    # Print result
+#    print("AZ {:2.1f} EL {:2.1f}".format(az,el))
+#    # Sleep for 1 sec until next call
+#    time.sleep(1)

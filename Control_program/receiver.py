@@ -10,7 +10,7 @@ from gnuradio import eng_notation
 from gnuradio import fft
 from gnuradio import gr
 from gnuradio import uhd
-from grc_gnuradio import blks2 as grc_blks2
+#from gnuradio import blks2 as grc_blks2
 from gnuradio.eng_option import eng_option
 from gnuradio.fft import window
 from gnuradio.filter import firdes
@@ -70,10 +70,9 @@ class SALSA_Receiver(gr.top_block):
         self.signal_file_sink_2.set_unbuffered(False)
         self.blocks_null_sink = blocks.null_sink(gr.sizeof_float*1)	
 		#Selector for switch
-        self.blks2_selector_0 = grc_blks2.selector(
-            item_size=gr.sizeof_float*1,
-            num_inputs=1,
-            num_outputs=2+1, #+1 for the null sink
+        #self.blks2_selector_0 = grc_blks2.selector(
+        self.blks2_selector_0 = blocks.selector(
+            itemsize=gr.sizeof_float*1,
             input_index=0,
             output_index=0,
         )

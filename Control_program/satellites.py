@@ -1,6 +1,6 @@
 # Functions coping with GNSS tracking for SALSA
 
-import ConfigParser
+import configparser
 import ephem
 import TLEephem
 import os 
@@ -12,7 +12,7 @@ sys.path.append('./')
 # Load the config file
 abspath = os.path.abspath(__file__)
 configfile = os.path.dirname(abspath) + '/SALSA.config'
-config=ConfigParser.ConfigParser()
+config=configparser.ConfigParser()
 config.read(configfile)
 
 # Get site coordinates
