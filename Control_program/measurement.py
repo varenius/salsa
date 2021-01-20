@@ -76,7 +76,7 @@ class Measurement:
                 self.receiver.blks2_selector_0.set_output_index(1) #Switch GNURadio stream to signal file sink (switching just file sinks also works but this functions as extra security)
                 t_end2 = time.time() + self.sig_time
                 start = time.time()
-                print("Signal")
+                print("Measuring signal...")
                 while time.time() <= t_end2 and time.time() <= t_end and self.abort == False: #Continue stream to signal file sink for set signal time
                       continue
                 self.receiver.blks2_selector_0.set_output_index(0) #Switch to null sink for blanking time
@@ -94,7 +94,8 @@ class Measurement:
                 self.receiver.blks2_selector_0.set_output_index(2) #Switch GNURadio stream to reference file sink
                 t_end3 = time.time() + self.ref_time
                 start1 = time.time()
-                print("Reference")
+                print("...done.")
+                print("Measuring reference...")
                 while time.time() <= t_end3 and time.time() <= t_end and self.abort == False:
                       continue
                 self.receiver.blks2_selector_0.set_output_index(0)
@@ -104,6 +105,7 @@ class Measurement:
                 end1 = time.time()
                 self.reference_time += (end1-start1)
                 self.refCount +=1
+                print("...done.")
         
             self.sigList = [] #Init signal file sink list
             self.refList = []
@@ -122,19 +124,16 @@ class Measurement:
             elif os.path.getsize(self.outfile + "_ref" + str(self.refCount-1)) == 0:
                 self.refList.remove(self.outfile + "_ref" + str(self.refCount-1))
 
-            print("Actual Signal time: ")
-            print(self.signal_time)
-            print("Actual Reference time: ")
-            print(self.reference_time   )               
-
-                        #Stack all the data
+            print("Actual Signal time: ", self.signal_time)
+            print("Actual Reference time: ", self.reference_time) 
+            #Stack all the data
             self.sig_spec = self.stack_all_data(self.sigList)
             self.ref_spec = self.stack_all_data(self.refList)
-                
-                        #Calculates mean value for all signal and reference data
-            self.SIG_data = self.mean(self.sig_spec)
-            self.REF_data = self.mean(self.ref_spec)
+               
             if self.abort == False:
+                #Calculates mean value for all signal and reference data
+                self.SIG_data = self.mean(self.sig_spec)
+                self.REF_data = self.mean(self.ref_spec)
                 self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
                 self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
        else:#Unswitched measurement
@@ -152,8 +151,8 @@ class Measurement:
             self.receiver.signal_file_sink_1.close()
             self.receiver.unlock()
                         
-            spec = self.stack_measured_FFTs(self.outfile + "_sig")
             if self.abort == False:
+               spec = self.stack_measured_FFTs(self.outfile + "_sig")
                self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
                
     def stack_all_data(self, files):

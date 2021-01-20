@@ -5,7 +5,7 @@ from scipy import signal as signal
 from astropy.io import fits
 import math, os
 from scipy.constants import c
-#import MySQLdb as mdb
+import MySQLdb as mdb
 from datetime import datetime
 
 
@@ -311,23 +311,22 @@ class SALSA_spectrum:
         # Insert to database
         with con:
             cur = con.cursor()
-            mysqlcmd = "INSERT INTO " + table + " SET file_fits=\'{0}\'".format(con.escape_string(fitsdata)) + ","
-            mysqlcmd = mysqlcmd + "observer=\'" + self.observer + "\',"
+            mysqlcmd = "INSERT INTO ".encode() + table.encode() + " SET file_fits=\'".encode() + con.escape_string(fitsdata) + "\',".encode()
+            mysqlcmd = mysqlcmd + "observer=\'".encode() + self.observer.encode() + "\',".encode()
             pos = ephem.Galactic(self.target)
             glon = str(pos.lon)
             glat = str(pos.lat)
-            mysqlcmd = mysqlcmd + "glon=\'" + con.escape_string(glon) + "\',"
-            mysqlcmd = mysqlcmd + "glat=\'" + con.escape_string(glat) + "\',"
+            mysqlcmd = mysqlcmd + "glon=\'".encode() + con.escape_string(glon) + "\',".encode()
+            mysqlcmd = mysqlcmd + "glat=\'".encode() + con.escape_string(glat) + "\',".encode()
             unixtime_sec = math.floor((self.site.date.datetime() - datetime(1970, 1, 1)).total_seconds())
-            mysqlcmd = mysqlcmd + "obsdate="+ str(unixtime_sec) + ","
-            mysqlcmd = mysqlcmd + "obsfreq=" + str(1e-6*self.obs_freq)+ ","
-            mysqlcmd = mysqlcmd + "bandwidth=" + str(1e-6*self.bandwidth) + ","
-            mysqlcmd = mysqlcmd + "int_time=" + str(self.int_time) + ","
-            mysqlcmd = mysqlcmd + "telescope=\'" + self.site.name + "\',"
-            mysqlcmd = mysqlcmd + "file_png=\'{0}\'".format(con.escape_string(pngdata)) + ","
-            mysqlcmd = mysqlcmd + "file_txt=\'{0}\'".format(con.escape_string(txtdata))
+            mysqlcmd = mysqlcmd + "obsdate=".encode()+ str(unixtime_sec).encode() + ",".encode()
+            mysqlcmd = mysqlcmd + "obsfreq=".encode() + str(1e-6*self.obs_freq).encode()+ ",".encode()
+            mysqlcmd = mysqlcmd + "bandwidth=".encode() + str(1e-6*self.bandwidth).encode() + ",".encode()
+            mysqlcmd = mysqlcmd + "int_time=".encode() + str(self.int_time).encode() + ",".encode()
+            mysqlcmd = mysqlcmd + "telescope=\'".encode() + self.site.name.encode() + "\',".encode()
+            mysqlcmd = mysqlcmd + "file_png=\'".encode() + con.escape_string(pngdata) + "\'".encode() + ",".encode()
+            mysqlcmd = mysqlcmd + "file_txt=\'".encode() + con.escape_string(txtdata) + "\'".encode()
             cur.execute(mysqlcmd)
-        con.close()
         self.uploaded = True
 
     def get_total_power(self):
@@ -339,4 +338,4 @@ class SALSA_spectrum:
 
     def print_total_power(self):
         #print "SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4))
-        print("SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}, alt={3}, az={4}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4), self.alt, self.az))
+        print("SPECTRUM INFO: Offset_alt={:6.1f} deg. Offset_az={:6.1f} deg. Total power = {:10.1f}, alt={:6.1f}, az={:6.1f}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4), self.alt, self.az))

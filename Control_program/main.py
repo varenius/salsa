@@ -198,8 +198,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
     def disable_receiver_controls(self):
         self.FrequencyInput.setReadOnly(True)
         self.RefFreqInput.setReadOnly(True)
-        self.BandwidthInput.setReadOnly(True)
-        self.ChannelsInput.setReadOnly(True)
+        self.BandwidthInput.setEnabled(False)
+        self.ChannelsInput.setEnabled(False)
         self.autoedit_bad_data_checkBox.setEnabled(False)
         self.mode_switched.setEnabled(False)
         self.mode_signal.setEnabled(False)
@@ -215,8 +215,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
     def enable_receiver_controls(self):
         self.FrequencyInput.setReadOnly(False)
         self.RefFreqInput.setReadOnly(False)
-        self.BandwidthInput.setReadOnly(False)
-        self.ChannelsInput.setReadOnly(False)
+        self.BandwidthInput.setEnabled(True)
+        self.ChannelsInput.setEnabled(True)
         self.autoedit_bad_data_checkBox.setEnabled(True)
         self.cycle_checkbox.setEnabled(True)
         self.mode_switched.setEnabled(True)
@@ -402,9 +402,9 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         #if self.noise_checkbox.isChecked():
         #    self.telescope.set_noise_diode(True)
             
-        sig_freq = float(self.FrequencyInput.text())*1e6 # Hz
-        ref_freq = float(self.RefFreqInput.text())*1e6
-        bw = float(self.BandwidthInput.text())*1e6 # Hz
+        sig_freq = float(self.FrequencyInput.value())*1e6 # Hz
+        ref_freq = float(self.RefFreqInput.value())*1e6
+        bw = float(self.BandwidthInput.currentText())*1e6 # Hz
 
         if self.cycle_checkbox.isChecked():
             sig_time = float(self.sig_time_spinbox.text()) # [s]
@@ -435,7 +435,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             print("Reference cycle time per loop: ", ref_time)
             print("Loops: ", loops)
 
-        nchans = int(self.ChannelsInput.text()) # Number of output channels
+        nchans = int(self.ChannelsInput.currentText()) # Number of output channels
         calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
         self.telescope.site.date = ephem.now()
         switched = self.mode_switched.isChecked()
@@ -464,7 +464,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # create an axis
         preephem = time.time()
         # Get the reference frequency
-        referenceFreq=float(self.FrequencyInput.text())
+        referenceFreq=float(self.FrequencyInput.value())
         if (spectpl.vlsr_corr!=0):
             if self.radioButton_velocity.isChecked():
                 x = 1e-3 * (spectpl.get_vels())
@@ -491,25 +491,29 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
                 ax.set_xlabel(labelX)
         #normalize and/or convert to dB
         if self.checkBox_normalized.isChecked() and self.checkBox_dBScale.isChecked(): 
-            ax.set_ylabel('Uncalibrated normalized antenna temperature [dB]')
+            #ax.set_ylabel('Uncalibrated normalized antenna temperature [dB]')
+            ax.set_ylabel('Normalised intensity [dB]')
             # avoid values at the edge of the band
             x=x[5:-5]
             y=y[5:-5]
             y=10*np.log10(np.abs(y/np.max(y)))
         elif self.checkBox_dBScale.isChecked():        
-            ax.set_ylabel('Uncalibrated antenna temperature [dBK]')
+            #ax.set_ylabel('Uncalibrated antenna temperature [dBK]')
+            ax.set_ylabel('Intensity [dB]')
             # avoid values at the edge of the band
             x=x[5:-5]
             y=y[5:-5]
             y=10*np.log10(np.abs(y))
         elif self.checkBox_normalized.isChecked(): 
-            ax.set_ylabel('Uncalibrated normalized antenna temperature [-]')
+            #ax.set_ylabel('Uncalibrated normalized antenna temperature [-]')
+            ax.set_ylabel('Normalised intensity [arbitrary units]')
             # avoid values at the edge of the band
             y=y[5:-5]
             x=x[5:-5]
             y=y/np.max(y)
         else:
-            ax.set_ylabel('Uncalibrated antenna temperature [K]')
+            #ax.set_ylabel('Uncalibrated antenna temperature [K]')
+            ax.set_ylabel('Intensity [arbitrary units]')
         ax.plot(x,y, '-')
         ax.minorticks_on()
         ax.tick_params('both', length=4, width=0.5, which='minor')
@@ -522,15 +526,13 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
                 ax.set_title('Galactic long=' + coord1 + ', lat='+coord2)
         else:
                 # Get azimuth and elevation
-                coord1="{:-6.2f}".format(self.azAtMeasurementTime)
-                coord2="{:-6.2f}".format(self.elAtMeasurementTime)
-                ax.set_title('Azimuth=' + str(coord1) + ', Elevation='+ str(coord2))
-        #ax.autoscale_view('tight')
+                coord1="{:6.1f}".format(self.azAtMeasurementTime)
+                coord2="{:6.1f}".format(self.elAtMeasurementTime)
+                ax.set_title('Azimuth=' + str(coord1) + ', Altitude='+ str(coord2))
         ax.grid(True, color='k', linestyle='-', linewidth=0.5)
+        self.figure.tight_layout(rect=[0.05, 0.05, 0.95, 0.95])
         # refresh canvas
         self.canvas.draw()
-        #self.figure.tight_layout()
-        self.figure.subplots_adjust(bottom=0.15, left = 0.15)
 
     def clear_plot(self):
         self.figure.clf()
@@ -925,7 +927,7 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
             self.ax = self.fig.add_axes([0.1, 0.1, 0.8, 0.8], projection='polar', facecolor='#d5de9c', label="polar")
 
         self.grid=rc('grid', color='green', linewidth=0.5, linestyle='-')
-        self.grid=rc('xtick', labelsize=15)
+        self.grid=rc('xtick', labelsize=10)
         self.grid=rc('ytick', labelsize=10)
 
         self.ax.set_rmax(90)
