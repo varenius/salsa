@@ -13,6 +13,7 @@ class TelescopeController:
         self.host = config.get('MD01', 'host')
         self.port = config.getint('MD01', 'port')
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.settimeout(2)
         self.socket.connect((self.host, self.port))
         self.site = ephem.Observer()
         self.site.date = ephem.now()
@@ -39,17 +40,22 @@ class TelescopeController:
     def reset(self):
         pass
 
+    def md01(self, m):
+        try:
+            # Send message to MD01
+            self.socket.send(m)
+            # Read response from MD01
+            data = self.socket.recv(1024)
+        except socket.timeout:
+            raise TelescopeError('Cannot connect to MD02 control unit.')
+        # Decode bytes to hex
+        return data.hex()
+       
     def stop(self):
         """Stops any movement of the telescope """
         #Format status request message as bytes
         msg = bytes.fromhex("57000000000000000000000F20")
-        # Send message
-        self.socket.send(msg)
-        # Read response from MD-01
-        data = self.socket.recv(1024)
-        # Decode bytes to hex
-        ans = data.hex()
-        #print("STOP", ans)
+        self.md01(msg)
 
     def can_reach(self, al, az):
         """Check if telescope can reach this position. Assuming input in degrees.
@@ -104,12 +110,7 @@ class TelescopeController:
         V3 = "3"+V[2]
         V4 = "3"+V[3]
         msg = bytes.fromhex("57"+H1+H2+H3+H4+"0A"+V1+V2+V3+V4+"0A2F20")
-        # Send message
-        self.socket.send(msg)
-        # Read response from MD-01
-        data = self.socket.recv(1024)
-        # Decode bytes to hex
-        ans = data.hex()
+        self.md01(msg)
     
     def get_stow_alaz(self):
         """Returns the stow altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
@@ -127,12 +128,7 @@ class TelescopeController:
         """Returns the current altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
         #Format status request message as bytes
         msg = bytes.fromhex("57000000000000000000001F20")
-        # Send message
-        self.socket.send(msg)
-        # Read response from MD-01
-        data = self.socket.recv(1024)
-        # Decode bytes to hex
-        ans = data.hex()
+        ans = self.md01(msg)
         # Extract relevant data as floating point numbers
         H1 = float(ans[2:4])
         H2 = float(ans[4:6])
