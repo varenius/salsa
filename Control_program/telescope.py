@@ -29,16 +29,17 @@ class TelescopeController:
 
         self.close_enough_distance = config.getfloat('MD01', 'close_enough')
             
-        self.target_alaz = (45, 45)
         self.minal_deg = config.getfloat('MD01', 'minal')
         self.maxal_deg = config.getfloat('MD01', 'maxal')
-
 
         ## Make sure Noise Diode is turned off until implemented in GUI etc.
         #self.set_noise_diode(False)
 
     def set_noise_diode(self, status):
         pass
+
+    def isreset(self):
+        return True
 
     def reset(self):
         pass
@@ -49,7 +50,19 @@ class TelescopeController:
             self.socket.send(m)
             # Read response from MD01
             data = self.socket.recv(1024)
-        except socket.timeout:
+        except socket.error:
+            print( "Lost MD01 connection. Trying to reconnect..." )
+            connected = False
+            # recreate socket
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.settimeout(2)
+            while not connected:
+                try:
+                    self.socket.connect((self.host, self.port))
+                    connected = True
+                    print( "re-connection successful" )
+                except socket.error:
+                    sleep( 2 )
             raise TelescopeError('Cannot connect to MD02 control unit.')
         # Decode bytes to hex
         return data.hex()
