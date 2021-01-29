@@ -30,6 +30,9 @@ class TelescopeController:
         self.close_enough_distance = config.getfloat('MD01', 'close_enough')
             
         self.target_alaz = (45, 45)
+        self.minal_deg = config.getfloat('MD01', 'minal')
+        self.maxal_deg = config.getfloat('MD01', 'maxal')
+
 
         ## Make sure Noise Diode is turned off until implemented in GUI etc.
         #self.set_noise_diode(False)
@@ -68,11 +71,11 @@ class TelescopeController:
         This function will shift the given coordinates to a local range for doing the
         comparison, since the local azimuth might be negative in the telescope
         configuration."""
-        ## CHECK ALTITUDE
-        #if (al > self.maxal_deg or al < self.minal_deg):
-        #    al = round(al, 2)
-        #    #print 'AL: Sorry, altitude' + str(al) + ' is not reachable by this telescope.'
-        #    return False
+        # CHECK ALTITUDE
+        if (al > self.maxal_deg or al < self.minal_deg):
+            al = round(al, 2)
+            #print 'AL: Sorry, altitude' + str(al) + ' is not reachable by this telescope.'
+            return False
 
         ## CHECK AZIMUTH
         #if (az > self.maxaz_deg):
@@ -121,8 +124,7 @@ class TelescopeController:
         if self.can_reach(al,az):
             self.target_alaz = (round(al,1), round(az,1))
         else: 
-            raise TelescopeError('Cannot reach desired position')
-            #raise TelescopeError('You requested the telescope to move to horizontal coordinates alt=' + str(round(al,2)) + ', az=' + str(round(az,2)) + '. Sorry, but this telescope cannot reach this position. In altitude the telescope cannot reach below ' + str(round(self.minal_deg,2)) + ' or above ' + str(round(self.maxal_deg,2)) + ' degrees. In azimuth, the telescope cannot reach values between ' + str(round(self.maxaz_deg%360,2)) + ' and ' + str(round(self.minaz_deg%360,2)) + ' degrees. If you are trying to reach a moving coordinate, such as the Sun or the galaxy, try later when your object have moved to an observable direction.')
+            raise TelescopeError("Cannot reach desired position. Target outside range " + str(round(self.minal_deg,2)) + " to "+ str(round(self.maxal_deg,2))+" degrees")
     
     def get_current_alaz(self):
         """Returns the current altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""

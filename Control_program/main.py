@@ -521,9 +521,9 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         if not ( target == "GNSS" or target == "Horizontal"):
                 # Get galactic coordinates
                 pos = ephem.Galactic(spectpl.target)
-                coord1 = str(pos.lon)
-                coord2 = str(pos.lat)
-                ax.set_title('Galactic long=' + coord1 + ', lat='+coord2)
+                coord1 = str(round(float(repr(pos.lon))*180/np.pi,1))
+                coord2 = str(round(float(repr(pos.lat))*180/np.pi,1))
+                ax.set_title('Galactic longitude=' + coord1 + ', latitude='+coord2)
         else:
                 # Get azimuth and elevation
                 coord1="{:6.1f}".format(self.azAtMeasurementTime)
@@ -826,10 +826,22 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.disable_movement_controls()
             self.track()
         except Exception as e: 
-            self.show_message(e.message)
+            self.show_message(e)
 
-    def show_message(self, m):
-        QtGui.QMessageBox.about(self, "Message from telescope:", m)
+    def show_message(self, e):
+        # Just print(e) is cleaner and more likely what you want,
+        # but if you insist on printing message specifically whenever possible...
+        if hasattr(e, 'message'):
+            m = e.message
+        else:
+            m = str(e)
+        print(m)
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setText(m)
+        #msg.setInformativeText(m)
+        msg.setWindowTitle("Telescope error")
+        msg.exec_()
 
     def track(self):
         try:
@@ -837,7 +849,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.telescope.set_target_alaz(alt_deg, az_deg)
             self.telescope.move()
         except Exception as e: 
-            print(e.message)
+            self.show_message(e)
             self.stop()
 
     def stop(self):
