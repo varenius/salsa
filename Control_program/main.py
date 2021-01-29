@@ -615,15 +615,15 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         (alt, az) = self.calculate_desired_alaz()
         #leftval = str(ephem.degrees(alt*np.pi/180.0))
         #rightval = str(ephem.degrees(az*np.pi/180.0))
-        leftval = str(round(alt,3))
-        rightval = str(round(az,3))
+        leftval = "{:.3f}".format(alt)
+        rightval = "{:.3f}".format(az)
         self.calc_des_left.setText(leftval)
         self.calc_des_right.setText(rightval)
     
     def update_current_altaz(self):
         (alt, az) = self.telescope.get_current_alaz()
-        leftval = str(round(alt,2))
-        rightval = str(round(az,2))
+        leftval = "{:.1f}".format(alt)
+        rightval = "{:.1f}".format(az)
         self.cur_alt.setText(leftval)
         self.cur_az.setText(rightval)
         # Color coding works, but what about color blind people?
