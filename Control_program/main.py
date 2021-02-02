@@ -110,7 +110,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.resettimer.timeout.connect(self.resettimer_action)
 
         # Initialise buttons and tracking status.
-        self.tracking = False
         self.btn_track.clicked.connect(self.track_or_stop)
         self.btn_reset.clicked.connect(self.reset)
 
@@ -568,7 +567,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         #if ((not self.telescope.is_moving()) and (not self.trackingtimer.isActive())):
         if (not self.trackingtimer.isActive()):
             self.btn_track.setEnabled(True)
-            self.btn_reset.setEnabled(True)
+            #self.btn_reset.setEnabled(True)
+            self.btn_reset.setEnabled(False)
             self.btn_track.setText('Track')
             style = "QWidget {}"
             self.btn_track.setStyleSheet(style)
@@ -628,12 +628,13 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cur_az.setText(rightval)
         # Color coding works, but what about color blind people?
         # Should perhaps use blue and yellow?
-        #if self.telescope.is_close_to_target():
-        #    style = "QWidget {}"
-        #else:
-        #    style = "QWidget { background-color:yellow;}"
-        #self.cur_alt.setStyleSheet(style)
-        #self.cur_az.setStyleSheet(style)
+        if self.trackingtimer.isActive():
+            if self.telescope.is_close_to_target():
+                style = "QLineEdit {font-size: 13pt;}"
+            else:
+                style = "QLineEdit {background-color:yellow; font-size: 13pt;}"
+            self.cur_alt.setStyleSheet(style)
+            self.cur_az.setStyleSheet(style)
     
     def update_coord_labels(self):
         target = self.coordselector.currentText()
