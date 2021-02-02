@@ -21,7 +21,7 @@ import threading
 
 class SALSA_Receiver(gr.top_block):
 
-    def __init__(self, c_freq, int_time, samp_rate, fftsize, username, config):
+    def __init__(self, c_freq, int_time, samp_rate, fftsize, username, config, usrp_gain):
         gr.top_block.__init__(self, "Salsa Receiver")
 
         ##################################################
@@ -30,7 +30,7 @@ class SALSA_Receiver(gr.top_block):
         self.samp_rate = samp_rate
         self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username + ".tmp" #Only used for sink init
         self.int_time = int_time
-        self.gain = gain = config.getfloat('USRP', 'usrp_gain')
+        self.gain = usrp_gain
         self.fftsize = fftsize
         self.c_freq = c_freq
         self.probe_var = probe_var = 0
@@ -53,7 +53,7 @@ class SALSA_Receiver(gr.top_block):
         )
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
         self.uhd_usrp_source_0.set_center_freq(c_freq, 0)
-        self.uhd_usrp_source_0.set_gain(gain, 0)
+        self.uhd_usrp_source_0.set_gain(self.gain, 0)
         
         self.fft_vxx_0 = fft.fft_vcc(fftsize, True, (window.blackmanharris(fftsize)), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, fftsize)

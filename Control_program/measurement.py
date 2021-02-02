@@ -10,7 +10,7 @@ from multiprocessing.pool import ThreadPool as Pool
 
 class Measurement:
 
-    def __init__(self, c_freq, ref_freq, switched, int_time, sig_time, ref_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, calfact):
+    def __init__(self, c_freq, ref_freq, switched, int_time, sig_time, ref_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, usrp_gain):
         # Copy everything to make sure immutable operations
         # do not change the original input objects in case
         # we pass references to this constructor.
@@ -31,9 +31,9 @@ class Measurement:
         self.ref_freq = float(ref_freq)
         self.int_time = int(int_time)
         self.bandwidth = float(bandwidth)
+        self.usrp_gain = float(usrp_gain)
         self.alt = alt
         self.az = az
-        self.calfactor = calfact
         # Copy relevant properties from input site
         self.site = ephem.Observer()
         self.site.lat = site.lat
@@ -56,7 +56,7 @@ class Measurement:
         # Create receiver object to run GNUradio flowgraph.
         # Using both upper and lower sideband, so bandwidth is equal to 
         # sampling rate, not half.
-        self.receiver = SALSA_Receiver(c_freq, int_time, bandwidth, self.fftsize, self.observer, config)
+        self.receiver = SALSA_Receiver(c_freq, int_time, bandwidth, self.fftsize, self.observer, config, self.usrp_gain)
 
     def measure(self):
        self.receiver.start()
@@ -117,7 +117,7 @@ class Measurement:
                 item = self.outfile + "_ref" + str(i)
                 self.refList.append(item)
                         
-                        #Incase loop starts at end of integration time (empty files might occur)
+            #Incase loop starts at end of integration time (empty files might occur)
             if os.path.getsize(self.outfile + "_sig" + str(self.sigCount-1)) == 0:
                 self.sigList.remove(self.outfile + "_sig" + str(self.sigCount-1))
                 self.refList.remove(self.outfile + "_ref" + str(self.refCount-1))                               
@@ -175,11 +175,8 @@ class Measurement:
         spec = signal.reshape((nspec,fftsize))
         spec = spec.sum(axis=0)
         # Normalise power spectrum to be invariant of
-        # integration time and Calibrate intensity
-        # from comparison with LAB survey
-        # TODO: Proper amplitude calibration! For now just single scale factor.
-        # calfactor = 300 # K/USRP input unit with 60dB gain.  
-        spec = self.calfactor * spec/(1.0*nspec)
+        # integration time
+        spec = spec/(1.0*nspec)
         # Clean up temporary object and file
         del signal
         os.remove(infile)

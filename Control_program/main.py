@@ -84,7 +84,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
     def init_Ui(self):
             
         # Set software gain
-        self.gain.setText(self.config.get('USRP', 'software_gain'))
+        self.gain.setText(self.config.get('USRP', 'usrp_gain'))
 
         self.listWidget_spectra.currentItemChanged.connect(self.change_spectra)
 
@@ -335,8 +335,12 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.autoedit_bad_data_checkBox.isChecked():
                     print("Removing RFI from reference...")
                     refspec.auto_edit_bad_data()
-                print("Removing reference from signal...")
-                sigspec.data -= refspec.data
+                #print("Removing reference from signal...")
+                #sigspec.data -= refspec.data
+                print("Removing reference from signal and adjusting level...")
+                # TEST CALIBRATION
+                TSYS = 273 # Kelvin
+                sigspec.data = TSYS*(sigspec.data-refspec.data)/refspec.data
             # Average to desired number of channels
             nchans = self.sigworker.measurement.noutchans
             sigspec.decimate_channels(nchans)
@@ -435,7 +439,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             print("Loops: ", loops)
 
         nchans = int(self.ChannelsInput.currentText()) # Number of output channels
-        calfact = float(self.gain.text()) # Gain for calibrating antenna temperature
+        usrp_gain = float(self.gain.text()) # USRP gain
         self.telescope.site.date = ephem.now()
         switched = self.mode_switched.isChecked()
         # Get ra, dec using radec_of. This function
@@ -448,7 +452,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.sigthread = Thread() # Create thread to run GNURadio in background
         self.sigthread.setTerminationEnabled(True)
         self.sigworker.moveToThread(self.sigthread)
-        self.sigworker.measurement = Measurement(sig_freq, ref_freq, switched, int_time, sig_time, ref_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, calfact)
+        self.sigworker.measurement = Measurement(sig_freq, ref_freq, switched, int_time, sig_time, ref_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, usrp_gain)
 
         self.sigthread.started.connect(self.sigworker.work)
         self.sigworker.finished.connect(self.sigthread.quit)

@@ -20,7 +20,7 @@
       <x>20</x>
       <y>20</y>
       <width>791</width>
-      <height>581</height>
+      <height>591</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -370,7 +370,7 @@
         <x>20</x>
         <y>230</y>
         <width>721</width>
-        <height>311</height>
+        <height>321</height>
        </rect>
       </property>
       <property name="font">
@@ -428,7 +428,7 @@
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>523</width>
+           <width>528</width>
            <height>41</height>
           </rect>
          </property>
@@ -723,23 +723,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>Gain factor</string>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="gain">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>170</y>
-           <width>125</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>930</string>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
+          <string>USRP gain [dB]</string>
          </property>
         </widget>
         <widget class="QWidget" name="layoutWidget">
@@ -747,8 +731,8 @@
           <rect>
            <x>300</x>
            <y>16</y>
-           <width>217</width>
-           <height>89</height>
+           <width>234</width>
+           <height>95</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -781,10 +765,13 @@
           <item>
            <widget class="QCheckBox" name="noise_checkbox">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>Noise diode</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
             </property>
             <property name="checked">
              <bool>false</bool>
@@ -834,7 +821,7 @@
           <double>0.100000000000000</double>
          </property>
          <property name="value">
-          <double>1422.400000000000091</double>
+          <double>1424.000000000000000</double>
          </property>
         </widget>
         <widget class="QComboBox" name="BandwidthInput">
@@ -912,6 +899,22 @@
            <string>4096</string>
           </property>
          </item>
+        </widget>
+        <widget class="QSpinBox" name="gain">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>170</y>
+           <width>71</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>60</number>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
         </widget>
        </widget>
       </widget>
