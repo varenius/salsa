@@ -2,6 +2,8 @@ import socket
 import time
 import ephem
 import numpy as np
+import sys
+from PyQt5 import QtWidgets
 
 class TelescopeController:
     """ Provides functions to communicate with the MD01 telescope driver
@@ -14,7 +16,7 @@ class TelescopeController:
         self.port = config.getint('MD01', 'port')
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.settimeout(2)
-        self.socket.connect((self.host, self.port))
+        self.connect_md01()
         self.site = ephem.Observer()
         self.site.date = ephem.now()
         self.site.lat = ephem.degrees(config.get('SITE', 'latitude'))
@@ -50,22 +52,16 @@ class TelescopeController:
             self.socket.send(m)
             # Read response from MD01
             data = self.socket.recv(1024)
+            # Decode bytes to hex
+            return data.hex()
         except socket.error:
             print( "Lost MD01 connection. Trying to reconnect..." )
             connected = False
-            # recreate socket
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.settimeout(2)
             while not connected:
-                try:
-                    self.socket.connect((self.host, self.port))
-                    connected = True
-                    print( "re-connection successful" )
-                except socket.error:
-                    sleep( 2 )
-            raise TelescopeError('Cannot connect to MD02 control unit.')
-        # Decode bytes to hex
-        return data.hex()
+                self.connect_md01()
+                connected = True
+                print( "re-connection successful" )
+                time.sleep(5)
        
     def stop(self):
         """Stops any movement of the telescope """
@@ -232,8 +228,24 @@ class TelescopeController:
         distance_in_deg = distance_in_rad * 180.0/np.pi
         return distance_in_deg
 
-# Exceptions for this class
-class TelescopeError(Exception):
-    """ Used for telescope errors. """
-    pass
+    def show_message(self, e):
+        # Just print(e) is cleaner and more likely what you want,
+        # but if you insist on printing message specifically whenever possible...
+        if hasattr(e, 'message'):
+            m = e.message
+        else:
+            m = str(e)
+        print(m)
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setText(m)
+        #msg.setInformativeText(m)
+        msg.setWindowTitle("Telescope error")
+        msg.exec_()
 
+    def connect_md01(self):
+        try:
+            self.socket.connect((self.host, self.port))
+        except socket.error as e:
+            self.show_message(e)
+            sys.exit(1)

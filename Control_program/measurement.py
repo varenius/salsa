@@ -127,8 +127,9 @@ class Measurement:
             print("Actual Signal time: ", self.signal_time)
             print("Actual Reference time: ", self.reference_time) 
             #Stack all the data
-            self.sig_spec = self.stack_all_data(self.sigList)
-            self.ref_spec = self.stack_all_data(self.refList)
+            # Multiply with 1000 to get higher raw intensity numbers for printout
+            self.sig_spec = 1000*self.stack_all_data(self.sigList)
+            self.ref_spec = 1000*self.stack_all_data(self.refList)
                
             if self.abort == False:
                 #Calculates mean value for all signal and reference data
@@ -152,8 +153,9 @@ class Measurement:
             self.receiver.unlock()
                         
             if self.abort == False:
-               spec = self.stack_measured_FFTs(self.outfile + "_sig")
-               self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+                # Multiply with 1000 to get higher raw intensity numbers for printout
+                spec = 1000*self.stack_measured_FFTs(self.outfile + "_sig")
+                self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
                
     def stack_all_data(self, files):
         pool = Pool(processes=4)

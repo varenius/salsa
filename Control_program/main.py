@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure,show,rc,ion,draw
 from matplotlib.figure import Figure
 import matplotlib.ticker as mticker
+import urllib.request
+import time
 
 import getpass # To find current username
 import configparser
@@ -84,7 +86,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
     def init_Ui(self):
             
         # Set software gain
-        self.gain.setText(self.config.get('USRP', 'usrp_gain'))
+        self.gain.setValue(int(self.config.get('USRP', 'usrp_gain')))
 
         self.listWidget_spectra.currentItemChanged.connect(self.change_spectra)
 
@@ -195,6 +197,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.progressBar.setValue(int(100*self.lapsedtime/self.expectedtime))
 
     def disable_receiver_controls(self):
+        self.int_time_spinbox.setReadOnly(True)
+        self.gain.setReadOnly(True)
         self.FrequencyInput.setReadOnly(True)
         self.RefFreqInput.setReadOnly(True)
         self.BandwidthInput.setEnabled(False)
@@ -202,7 +206,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.autoedit_bad_data_checkBox.setEnabled(False)
         self.mode_switched.setEnabled(False)
         self.mode_signal.setEnabled(False)
-        #self.LNA_checkbox.setEnabled(False)
         self.noise_checkbox.setEnabled(False)
         self.cycle_checkbox.setEnabled(False)
         self.vlsr_checkbox.setEnabled(False)
@@ -212,6 +215,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ref_time_spinBox.setEnabled(False)
     
     def enable_receiver_controls(self):
+        self.int_time_spinbox.setReadOnly(False)
+        self.gain.setReadOnly(False)
         self.FrequencyInput.setReadOnly(False)
         self.RefFreqInput.setReadOnly(False)
         self.BandwidthInput.setEnabled(True)
@@ -220,7 +225,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cycle_checkbox.setEnabled(True)
         self.mode_switched.setEnabled(True)
         self.mode_signal.setEnabled(True)
-        #self.LNA_checkbox.setEnabled(True)
         self.noise_checkbox.setEnabled(True)
         self.vlsr_checkbox.setEnabled(True)
         self.btn_observe.setEnabled(True)
@@ -338,8 +342,21 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
                 #print("Removing reference from signal...")
                 #sigspec.data -= refspec.data
                 print("Removing reference from signal and adjusting level...")
-                # TEST CALIBRATION
-                TSYS = 273 # Kelvin
+                # Get current outside temperature, max 60 seconds ago
+                with urllib.request.urlopen('https://www.oso.chalmers.se/weather/onsala.txt') as response:
+                    html = response.read().decode().split()
+                    tdata = int(html[0])
+                    temp = float(html[1])
+                    now = time.time()
+                    dt = now - tdata
+                    if (dt < 120) and (temp > -30) and (temp < 50):
+                        # We have data max 2 minutes ago, which is good.
+                        # And reasonable temperature in Celsius. Convert to Kelvin
+                        temp = temp + 273
+                    else:
+                        # No good temperature data. Assume static temp for now
+                        temp = 285
+                    TSYS = temp + 50 # Empirical addition to account for non-ambient noise sources
                 sigspec.data = TSYS*(sigspec.data-refspec.data)/refspec.data
             # Average to desired number of channels
             nchans = self.sigworker.measurement.noutchans

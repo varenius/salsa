@@ -48,6 +48,10 @@ class SALSA_spectrum:
 
     def auto_edit_bad_data(self):
         print("Autoflagging known RFI.")
+        # Remove spikes at end channels
+        self.data[0] = self.data[1]
+        self.data[-1] = self.data[-3]
+        self.data[-2] = self.data[-3]
         freq_res = self.bandwidth/self.nchans # Hz
         # List known RFI as center-frequency in MHz, and width in Mhz
         # This list contains peaks which are not properly picked by by the MWF filter.
@@ -76,11 +80,6 @@ class SALSA_spectrum:
                 pass
         # Filter away rest of RFI with median window filter, assuming 4096 channels for 2MHz bandwidth
         self.data = signal.medfilt(self.data, kernel_size = 7)
-        
-        # In the future, remove receiver end dip. But now switch away instead
-        #print np.shape(self.data)
-        #print np.where(self.data<50)
-        #self.data[0:10]=self.data[10] # Remove receiver dip
 
     # NOT USED ANYMORE, replaced by median window filter function
     #def auto_edit_bad_data_OLD(self):
@@ -338,4 +337,4 @@ class SALSA_spectrum:
 
     def print_total_power(self):
         #print "SPECTRUM INFO: Offset_alt={0} deg. Offset_az={1} deg. Total power = {2}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4))
-        print("SPECTRUM INFO: Offset_alt={:6.1f} deg. Offset_az={:6.1f} deg. Total power = {:10.1f}, alt={:6.1f}, az={:6.1f}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4), self.alt, self.az))
+        print("SPECTRUM INFO: Offset_alt={:6.1f} deg. Offset_az={:6.1f} deg. Total power = {:10.3f}, alt={:6.1f}, az={:6.1f}".format(self.offset_alt, self.offset_az, round(self.get_total_power(),4), self.alt, self.az))

@@ -92,7 +92,7 @@ class SALSA_Receiver(gr.top_block):
         self.connect((self.blks2_selector_0, 1), (self.signal_file_sink_1, 0))
         self.connect((self.blks2_selector_0, 2), (self.signal_file_sink_2, 0))
 		
-		#Null sink connection
+    	#Null sink connection
         self.connect((self.blks2_selector_0, 0), (self.blocks_null_sink, 0))
 
 # QT sink close method reimplementation
