@@ -49,9 +49,8 @@ class SALSA_spectrum:
     def auto_edit_bad_data(self):
         print("Autoflagging known RFI.")
         # Remove spikes at end channels
-        self.data[0] = self.data[1]
-        self.data[-1] = self.data[-3]
-        self.data[-2] = self.data[-3]
+        self.data[0:1] = self.data[2]
+        self.data[-2:] = self.data[-3]
         freq_res = self.bandwidth/self.nchans # Hz
         # List known RFI as center-frequency in MHz, and width in Mhz
         # This list contains peaks which are not properly picked by by the MWF filter.
