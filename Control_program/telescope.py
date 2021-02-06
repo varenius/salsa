@@ -133,7 +133,7 @@ class TelescopeController:
         if self.can_reach(al,az):
             self.target_alaz = (round(al,1), round(az,1))
         else: 
-            raise TelescopeError("Cannot reach desired position. Target outside range " + str(round(self.minal_deg,2)) + " to "+ str(round(self.maxal_deg,2))+" degrees")
+            raise ValueError("Cannot reach desired position. Target outside altitude range " + str(round(self.minal_deg,2)) + " to "+ str(round(self.maxal_deg,2))+" degrees. Please adjust your desired position.")
     
     def get_current_alaz(self):
         """Returns the current altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
