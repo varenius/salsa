@@ -278,7 +278,7 @@ class Ui_MainWindow(object):
         self.FrequencyLabel.setGeometry(QtCore.QRect(21, 15, 141, 16))
         self.FrequencyLabel.setObjectName("FrequencyLabel")
         self.label_mode = QtWidgets.QLabel(self.receiver_tab_advanced)
-        self.label_mode.setGeometry(QtCore.QRect(21, 108, 35, 16))
+        self.label_mode.setGeometry(QtCore.QRect(21, 108, 51, 16))
         self.label_mode.setObjectName("label_mode")
         self.BandwidthLabel = QtWidgets.QLabel(self.receiver_tab_advanced)
         self.BandwidthLabel.setGeometry(QtCore.QRect(21, 46, 141, 16))
