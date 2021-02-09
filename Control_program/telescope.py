@@ -30,7 +30,10 @@ class TelescopeController:
         self.stowaz_deg = config.getfloat('MD01', 'stowaz')
 
         self.close_enough_distance = config.getfloat('MD01', 'close_enough')
-            
+
+        self.offset_az_deg = config.getfloat('MD01', 'offset_az_deg')
+        self.offset_al_deg = config.getfloat('MD01', 'offset_al_deg')
+        
         self.minal_deg = config.getfloat('MD01', 'minal')
         self.maxal_deg = config.getfloat('MD01', 'maxal')
 
@@ -80,6 +83,7 @@ class TelescopeController:
         This function will shift the given coordinates to a local range for doing the
         comparison, since the local azimuth might be negative in the telescope
         configuration."""
+        (al, az) = self.pcor(al,az)
         # CHECK ALTITUDE
         if (al > self.maxal_deg or al < self.minal_deg):
             al = round(al, 2)
@@ -109,6 +113,7 @@ class TelescopeController:
 
     def move(self):
         tel, taz = self.target_alaz
+        tel, taz = self.pcor(tel, taz)
         PH = 10 # Pulses per degree, 0A in hex
         PV = 10 # Pulses per degree, 0A in hex
         H = str(int(PH * (360+taz)))
@@ -152,7 +157,13 @@ class TelescopeController:
         # Calculate angles for Az/El
         az = H1 * 100 + H2 * 10 + H3 + H4 / 10 -360
         el = V1 * 100 + V2 * 10 + V3 + V4 / 10 -360
-        return (el, az)
+        return self.invpcor(el, az)
+
+    def invpcor(self, al,az):
+        return (al-self.offset_al_deg, az-self.offset_az_deg)
+    
+    def pcor(self, al,az):
+        return (al+self.offset_al_deg, az+self.offset_az_deg)
 
     def is_close_to_target(self):
         """Returns true if telescope is close enough to observe, else False."""
