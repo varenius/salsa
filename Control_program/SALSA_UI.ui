@@ -120,7 +120,7 @@
           <item>
            <widget class="QLineEdit" name="inputleftcoord">
             <property name="text">
-             <string>120</string>
+             <string>80</string>
             </property>
            </widget>
           </item>
@@ -821,7 +821,7 @@
           <double>0.100000000000000</double>
          </property>
          <property name="value">
-          <double>1424.000000000000000</double>
+          <double>1417.500000000000000</double>
          </property>
         </widget>
         <widget class="QComboBox" name="BandwidthInput">
@@ -833,9 +833,17 @@
            <height>24</height>
           </rect>
          </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
          <property name="modelColumn">
           <number>0</number>
          </property>
+         <item>
+          <property name="text">
+           <string>1.0</string>
+          </property>
+         </item>
          <item>
           <property name="text">
            <string>2.5</string>

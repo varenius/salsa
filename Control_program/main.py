@@ -908,7 +908,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.telescope.isreset():
             self.resettimer.stop()
             # Set default values for input fields
-            self.inputleftcoord.setText("140.0")
+            self.inputleftcoord.setText("80.0")
             self.inputrightcoord.setText("0.0")
             self.enable_movement_controls()
             self.enable_receiver_controls()
