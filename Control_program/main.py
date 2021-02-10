@@ -484,7 +484,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # create an axis
         preephem = time.time()
         # Get the reference frequency
-        referenceFreq=float(self.FrequencyInput.value())
+        referenceFreq=float(spectpl.obs_freq/1.0e6)
         if (spectpl.vlsr_corr!=0):
             if self.radioButton_velocity.isChecked():
                 x = 1e-3 * (spectpl.get_vels())
