@@ -142,9 +142,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Plotting and saving
         self.btn_upload.clicked.connect(self.send_to_webarchive)
-        # store position of the telescope during measurements; used for plotting
-        self.azAtMeasurementTime=0.0
-        self.elAtMeasurementTime=0.0
         # ADD MATPLOTLIB CANVAS, based on:
         # http://stackoverflow.com/questions/12459811/how-to-embed-matplotib-in-pyqt-for-dummies
         # a figure instance to plot on
@@ -370,7 +367,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.spectra[date] = sigspec
             item = QtWidgets.QListWidgetItem(date, self.listWidget_spectra)
             self.listWidget_spectra.setCurrentItem(item)
-        (self.elAtMeasurementTime,self.azAtMeasurementTime) =self.telescope.get_current_alaz()
         self.aborting = False
         self.progresstimer.stop()
         self.clear_progressbar()
@@ -545,10 +541,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
                 coord2 = str(round(float(repr(pos.lat))*180/np.pi,1))
                 ax.set_title('Galactic longitude=' + coord1 + ', latitude='+coord2)
         else:
-                # Get azimuth and elevation
-                coord1="{:6.1f}".format(self.azAtMeasurementTime)
-                coord2="{:6.1f}".format(self.elAtMeasurementTime)
-                ax.set_title('Azimuth=' + str(coord1) + ', Altitude='+ str(coord2))
+                ax.set_title('Altitude={:6.1f}, Azimuth={:6.1f}'.format(spectpl.alt, spectpl.az))
         ax.grid(True, color='k', linestyle='-', linewidth=0.5)
         self.figure.tight_layout(rect=[0.05, 0.05, 0.95, 0.95])
         # refresh canvas
