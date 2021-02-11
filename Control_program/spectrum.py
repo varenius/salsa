@@ -10,7 +10,7 @@ from datetime import datetime
 
 
 class SALSA_spectrum:
-    def __init__(self, data, bandwidth, nchans, cfreq, site, alt, az, int_time, username, config, offset_alt, offset_az):
+    def __init__(self, data, bandwidth, nchans, cfreq, site, alt, az, int_time, username, config, offset_alt, offset_az, coordsys, satellite = ""):
         # All units shall be S.I. (Hz, etc. not MHz)
         self.rest_freq = 1420.40575177e6 # Hz, from Wiki.
         self.obs_freq = float(cfreq)
@@ -31,13 +31,31 @@ class SALSA_spectrum:
         alt_rad = self.alt*np.pi/180.0
         az_rad = self.az*np.pi/180.0
         (ra, dec) = self.site.radec_of(az_rad, alt_rad)
-        pointing = ephem.FixedBody()
-        pointing._ra = ra
-        pointing._dec = dec
-        pointing._epoch = ephem.now()
-        pointing.compute(self.site)
+        self.pointing = ephem.FixedBody()
+        self.pointing._ra = ra
+        self.pointing._dec = dec
+        self.pointing._epoch = ephem.now()
         # NOTE: This will not be true for a long measurement
-        self.target = ephem.Galactic(pointing)
+        self.pointing.compute(self.site)
+        pos = ephem.Galactic(self.pointing)
+        self.glon = pos.lon
+        self.glat = pos.lat
+        # Check what we are observing
+        if coordsys == "Galactic":
+            coord1 = str(round(float(repr(self.glon))*180/np.pi,1))
+            coord2 = str(round(float(repr(self.glat))*180/np.pi,1))
+            self.target = 'Galactic long=' + coord1 + ', lat=' + coord2
+        elif coordsys == "GNSS":
+            self.target = 'GNSS ' + satellite + '(alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
+        elif coordsys == "The Sun":
+            self.target = 'The Sun (alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
+        elif coordsys == "The Moon":
+            self.target = 'The Moon (alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
+        elif coordsys == "Cas A":
+            self.target = 'Cas A (alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
+        else:
+            self.target = 'Obs. at alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
+
         self.observer = username
         self.uploaded = False
         self.freq_vlsr_corr = 0
@@ -140,7 +158,7 @@ class SALSA_spectrum:
 
     def shift_to_vlsr_frame(self):
         # From http://web.mit.edu/8.13/www/nsrt_software/documentation/vlsr.pdf
-        ep_target = ephem.Equatorial(self.target)
+        ep_target = ephem.Equatorial(self.pointing)
         # Sun velocity apex is at 18 hr, 30 deg; convert to x, y, z
         # geocentric celestial for dot product with source, multiply by speed
         x0 = 20.0 * math.cos(18.0 * np.pi / 12.0) * math.cos(30.0 * np.pi / 180.0)
@@ -214,8 +232,8 @@ class SALSA_spectrum:
             date = YYYY.zfill(4)+'-'+MM.zfill(2)+'-'+DD.zfill(2)+'T'+hh.zfill(2)+':'+mm.zfill(2)+':'+ss.zfill(4)
             text_file.write("# DATE=" + date + "\n")
             text_file.write("# GLON and GLAT given in degrees\n")
-            text_file.write("# GLON={0}\n".format(float(self.target.lon)*180/np.pi)) # Degrees
-            text_file.write("# GLAT={0}\n".format(float(self.target.lat)*180/np.pi)) # Degrees
+            text_file.write("# GLON={0}\n".format(float(self.glon)*180/np.pi)) # Degrees
+            text_file.write("# GLAT={0}\n".format(float(self.glat)*180/np.pi)) # Degrees
             text_file.write("# DATA in two columns below. Col. 1 is velocity relative to LSR [km/s]. Col. 2 is uncalibrated antenna temperature [K].\n")
             text_file.write("# ENDHEADER\n")
             for i, datum in enumerate(data):
@@ -227,8 +245,8 @@ class SALSA_spectrum:
         hdu = fits.PrimaryHDU()
         datamin = np.min(self.data)
         datamax = np.max(self.data)
-        glon = float(self.target.lon)*180/np.pi # degrees
-        glat = float(self.target.lat)*180/np.pi # degrees
+        glon = float(self.glon)*180/np.pi # degrees
+        glat = float(self.glat)*180/np.pi # degrees
 
         #Since using  int16 as datatype we use bscale and bzero to keep dynamic range. 
         # SalsaJ cannot read bitpix correctly except 16 bit. If SalsaJ could read bitpix, we could just have BITPIX -64 and skip Bscale, Bzero, i.e. just remove 
@@ -311,9 +329,8 @@ class SALSA_spectrum:
             cur = con.cursor()
             mysqlcmd = "INSERT INTO ".encode() + table.encode() + " SET file_fits=\'".encode() + con.escape_string(fitsdata) + "\',".encode()
             mysqlcmd = mysqlcmd + "observer=\'".encode() + self.observer.encode() + "\',".encode()
-            pos = ephem.Galactic(self.target)
-            glon = str(pos.lon)
-            glat = str(pos.lat)
+            glon = str(self.glon)
+            glat = str(self.glat)
             mysqlcmd = mysqlcmd + "glon=\'".encode() + con.escape_string(glon) + "\',".encode()
             mysqlcmd = mysqlcmd + "glat=\'".encode() + con.escape_string(glat) + "\',".encode()
             unixtime_sec = math.floor((self.site.date.datetime() - datetime(1970, 1, 1)).total_seconds())

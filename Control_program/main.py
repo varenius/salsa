@@ -453,6 +453,11 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         nchans = int(self.ChannelsInput.currentText()) # Number of output channels
         usrp_gain = float(self.gain.text()) # USRP gain
+        coordsys = self.coordselector.currentText()
+        if coordsys == "GNSS":
+            satellite = self.GNSSselector.currentText()
+        else:
+            satellite = ""
         self.telescope.site.date = ephem.now()
         switched = self.mode_switched.isChecked()
         # Get ra, dec using radec_of. This function
@@ -465,7 +470,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.sigthread = Thread() # Create thread to run GNURadio in background
         self.sigthread.setTerminationEnabled(True)
         self.sigworker.moveToThread(self.sigthread)
-        self.sigworker.measurement = Measurement(sig_freq, ref_freq, switched, int_time, sig_time, ref_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, usrp_gain)
+        self.sigworker.measurement = Measurement(sig_freq, ref_freq, switched, int_time, sig_time, ref_time, bw, calt_deg, caz_deg, self.telescope.site, nchans, self.observer, self.config, coff_alt, coff_az, usrp_gain, coordsys, satellite)
 
         self.sigthread.started.connect(self.sigworker.work)
         self.sigworker.finished.connect(self.sigthread.quit)
@@ -475,35 +480,31 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
     def plot(self, spectpl):
         plt.clf()
         ax = self.figure.add_subplot(111)
-        # Get the target type from the coordselector
-        target = self.coordselector.currentText()
-        # create an axis
-        preephem = time.time()
-        # Get the reference frequency
-        referenceFreq=float(spectpl.obs_freq/1.0e6)
+        # Get the obs frequency
+        obsFreq=float(spectpl.obs_freq/1.0e6)
         if (spectpl.vlsr_corr!=0):
             if self.radioButton_velocity.isChecked():
                 x = 1e-3 * (spectpl.get_vels())
             else:
-                x = 1e-6*(spectpl.get_freqs() )-referenceFreq
+                x = 1e-6*(spectpl.get_freqs() )-obsFreq
         else:
             if self.radioButton_velocity.isChecked():
                 x = 1e-3 * (spectpl.get_vels() - spectpl.vlsr_corr)
             else:
-                x = 1e-6*(spectpl.get_freqs() - spectpl.freq_vlsr_corr )-referenceFreq
+                x = 1e-6*(spectpl.get_freqs() - spectpl.freq_vlsr_corr )-obsFreq
         y = spectpl.data
 
         if (spectpl.vlsr_corr!=0):
             if self.radioButton_velocity.isChecked():
                 ax.set_xlabel('Velocity shifted to LSR [km/s]')
             else:
-                labelX='Freq. shifted to LSR -'+ str("{:6.1f}".format(referenceFreq)) +'[MHz]'
+                labelX='Freq. shifted to LSR -'+ str("{:6.1f}".format(obsFreq)) +'[MHz]'
                 ax.set_xlabel(labelX)
         else:
             if self.radioButton_velocity.isChecked():
                 ax.set_xlabel('Velocity relative to observer [km/s]')
             else:
-                labelX='Measured freq.-'+ str("{:6.1f}".format(referenceFreq))+' [MHz]'
+                labelX='Measured freq.-'+ str("{:6.1f}".format(obsFreq))+' [MHz]'
                 ax.set_xlabel(labelX)
         #normalize and/or convert to dB
         if self.checkBox_normalized.isChecked() and self.checkBox_dBScale.isChecked(): 
@@ -534,16 +535,9 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         ax.minorticks_on()
         ax.tick_params('both', length=4, width=0.5, which='minor')
         
-        if not ( target == "GNSS" or target == "Horizontal"):
-                # Get galactic coordinates
-                pos = ephem.Galactic(spectpl.target)
-                coord1 = str(round(float(repr(pos.lon))*180/np.pi,1))
-                coord2 = str(round(float(repr(pos.lat))*180/np.pi,1))
-                ax.set_title('Galactic longitude=' + coord1 + ', latitude='+coord2)
-        else:
-                ax.set_title('Altitude={:6.1f}, Azimuth={:6.1f}'.format(spectpl.alt, spectpl.az))
+        ax.set_title(spectpl.target)
         ax.grid(True, color='k', linestyle='-', linewidth=0.5)
-        self.figure.tight_layout(rect=[0.05, 0.05, 0.95, 0.95])
+        #self.figure.tight_layout(rect=[0.05, 0.05, 0.95, 0.95])
         # refresh canvas
         self.canvas.draw()
 

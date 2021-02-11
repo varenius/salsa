@@ -10,7 +10,7 @@ from multiprocessing.pool import ThreadPool as Pool
 
 class Measurement:
 
-    def __init__(self, c_freq, ref_freq, switched, int_time, sig_time, ref_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, usrp_gain):
+    def __init__(self, c_freq, ref_freq, switched, int_time, sig_time, ref_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, usrp_gain, coordsys, satellite = ""):
         # Copy everything to make sure immutable operations
         # do not change the original input objects in case
         # we pass references to this constructor.
@@ -49,6 +49,8 @@ class Measurement:
         self.switched = switched
         self.sig_time = sig_time
         self.ref_time = ref_time
+        self.coordsys = coordsys
+        self.satellite = satellite
         self.abort = False
 
         self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username
@@ -135,8 +137,8 @@ class Measurement:
                 #Calculates mean value for all signal and reference data
                 self.SIG_data = self.mean(self.sig_spec)
                 self.REF_data = self.mean(self.ref_spec)
-                self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
-                self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+                self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az, self.coordsys, self.satellite)
+                self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az, self.coordsys, self.satellite)
        else:#Unswitched measurement
             self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
             time.sleep(10e-3)
@@ -155,7 +157,7 @@ class Measurement:
             if self.abort == False:
                 # Multiply with 1000 to get higher raw intensity numbers for printout
                 spec = 1000*self.stack_measured_FFTs(self.outfile + "_sig")
-                self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+                self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az, self.coordsys, self.satellite)
                
     def stack_all_data(self, files):
         pool = Pool(processes=4)
