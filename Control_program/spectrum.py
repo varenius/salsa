@@ -54,7 +54,7 @@ class SALSA_spectrum:
         elif coordsys == "Cas A":
             self.target = 'Cas A (alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
         else:
-            self.target = 'Obs. at alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
+            self.target = 'Obs. at alt={:6.1f}, az={:6.1f}'.format(self.alt, self.az)
 
         self.observer = username
         self.uploaded = False
