@@ -1,26 +1,30 @@
-
 [SITE]
 # Name of telescope, e.g. vale, brage etc.
-name=Vale
+name=Brage
+#name=Vale
 # Location of telescope, DEG:ARCMIN:ARCSEC
 latitude=57:23:36.4
 longitude=11:55:07.5
 # Elevation is relative to sea level, in meters.
 elevation=2
 
-[RIO]
+[MD01]
 # The rotor controller to move telescope.
-# The host is the IP to the RIO controller board.
-host=169.254.212.76
+# The host is the IP to the MD01 controller
+# .10=Brage, .11 =Vale
+host=192.168.5.10
 # Port 23 is standard telnet.
 port=23
-# The minimum azimuth angle in degrees.
-minaz = -147.25
-# The minimum altitude angle in degrees.
-minal = -8.0
 # Maximum distance in degrees between target 
 # and pointing for UI color indicators.
-close_enough = 1.0 
+close_enough=0.2
+# The minimum azimuth angle in degrees.
+maxal = 175
+# The minimum altitude angle in degrees.
+minal =10
+# offsets, software adjustments until MD01 can be changed
+offset_az_deg = 0.0
+offset_al_deg = 0.0
 # Define stow position in horizontal coordinates, in degrees
 # When not snowing, use these
 stowal=90
@@ -31,11 +35,10 @@ stowaz=260
 
 [USRP]
 # The sampler to record data
-host=192.168.10.2
+#.32 = Brage, .31 = Vale (to be changed)
+host=192.168.5.32
 # USRP gain in dB
-usrp_gain=20
-# Software gain calibration factor (multiplying the measured spectrum)
-software_gain = 800
+usrp_gain=40
 # Directory for tempfiles during measurement
 tmpdir=/tmp
 
@@ -49,8 +52,8 @@ tleoutfile_name=TLE_
 
 [ARCHIVE]
 # Credentials to connect to online archive for data upload
-host=localhost
+host=vale.oso.chalmers.se
 user=salsa_archive
-password=PASSWORD
+password=FILLHERE
 database=salsa_drupal
 table=salsa_archive

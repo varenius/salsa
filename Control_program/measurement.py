@@ -10,7 +10,7 @@ from multiprocessing.pool import ThreadPool as Pool
 
 class Measurement:
 
-    def __init__(self, c_freq, ref_freq, switched, int_time, sig_time, ref_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, calfact):
+    def __init__(self, c_freq, ref_freq, switched, int_time, sig_time, ref_time, bandwidth, alt, az, site, noutchans, username, config, offset_alt, offset_az, usrp_gain, coordsys, satellite = ""):
         # Copy everything to make sure immutable operations
         # do not change the original input objects in case
         # we pass references to this constructor.
@@ -31,9 +31,9 @@ class Measurement:
         self.ref_freq = float(ref_freq)
         self.int_time = int(int_time)
         self.bandwidth = float(bandwidth)
+        self.usrp_gain = float(usrp_gain)
         self.alt = alt
         self.az = az
-        self.calfactor = calfact
         # Copy relevant properties from input site
         self.site = ephem.Observer()
         self.site.lat = site.lat
@@ -49,6 +49,8 @@ class Measurement:
         self.switched = switched
         self.sig_time = sig_time
         self.ref_time = ref_time
+        self.coordsys = coordsys
+        self.satellite = satellite
         self.abort = False
 
         self.outfile = outfile =  config.get('USRP', 'tmpdir') + "/SALSA_" + username
@@ -56,7 +58,7 @@ class Measurement:
         # Create receiver object to run GNUradio flowgraph.
         # Using both upper and lower sideband, so bandwidth is equal to 
         # sampling rate, not half.
-        self.receiver = SALSA_Receiver(c_freq, int_time, bandwidth, self.fftsize, self.observer, config)
+        self.receiver = SALSA_Receiver(c_freq, int_time, bandwidth, self.fftsize, self.observer, config, self.usrp_gain)
 
     def measure(self):
        self.receiver.start()
@@ -65,7 +67,7 @@ class Measurement:
             self.refCount = 0
             self.signal_time = 0 #Actual signal time
             self.reference_time = 0
-			
+                        
             t_end = time.time() + self.int_time #Run loop for total observation time
             while time.time() <= t_end and self.abort == False:
                 self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0) #Switch to signal frequency
@@ -76,7 +78,7 @@ class Measurement:
                 self.receiver.blks2_selector_0.set_output_index(1) #Switch GNURadio stream to signal file sink (switching just file sinks also works but this functions as extra security)
                 t_end2 = time.time() + self.sig_time
                 start = time.time()
-                print "Signal"
+                print("Measuring signal...")
                 while time.time() <= t_end2 and time.time() <= t_end and self.abort == False: #Continue stream to signal file sink for set signal time
                       continue
                 self.receiver.blks2_selector_0.set_output_index(0) #Switch to null sink for blanking time
@@ -94,7 +96,8 @@ class Measurement:
                 self.receiver.blks2_selector_0.set_output_index(2) #Switch GNURadio stream to reference file sink
                 t_end3 = time.time() + self.ref_time
                 start1 = time.time()
-                print "Reference"
+                print("...done.")
+                print("Measuring reference...")
                 while time.time() <= t_end3 and time.time() <= t_end and self.abort == False:
                       continue
                 self.receiver.blks2_selector_0.set_output_index(0)
@@ -104,6 +107,7 @@ class Measurement:
                 end1 = time.time()
                 self.reference_time += (end1-start1)
                 self.refCount +=1
+                print("...done.")
         
             self.sigList = [] #Init signal file sink list
             self.refList = []
@@ -114,29 +118,27 @@ class Measurement:
             for i in range(self.refCount):
                 item = self.outfile + "_ref" + str(i)
                 self.refList.append(item)
-			
-			#Incase loop starts at end of integration time (empty files might occur)
+                        
+            #Incase loop starts at end of integration time (empty files might occur)
             if os.path.getsize(self.outfile + "_sig" + str(self.sigCount-1)) == 0:
                 self.sigList.remove(self.outfile + "_sig" + str(self.sigCount-1))
-                self.refList.remove(self.outfile + "_ref" + str(self.refCount-1))				
+                self.refList.remove(self.outfile + "_ref" + str(self.refCount-1))                               
             elif os.path.getsize(self.outfile + "_ref" + str(self.refCount-1)) == 0:
                 self.refList.remove(self.outfile + "_ref" + str(self.refCount-1))
 
-            print "Actual Signal time: "
-            print self.signal_time
-            print "Actual Reference time: "
-            print self.reference_time			
-
-			#Stack all the data
-            self.sig_spec = self.stack_all_data(self.sigList)
-            self.ref_spec = self.stack_all_data(self.refList)
-		
-			#Calculates mean value for all signal and reference data
-            self.SIG_data = self.mean(self.sig_spec)
-            self.REF_data = self.mean(self.ref_spec)
+            print("Actual Signal time: ", self.signal_time)
+            print("Actual Reference time: ", self.reference_time) 
+            #Stack all the data
+            # Multiply with 1000 to get higher raw intensity numbers for printout
+            self.sig_spec = 1000*self.stack_all_data(self.sigList)
+            self.ref_spec = 1000*self.stack_all_data(self.refList)
+               
             if self.abort == False:
-                self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
-                self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+                #Calculates mean value for all signal and reference data
+                self.SIG_data = self.mean(self.sig_spec)
+                self.REF_data = self.mean(self.ref_spec)
+                self.signal_spec = SALSA_spectrum(self.SIG_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az, self.coordsys, self.satellite)
+                self.reference_spec = SALSA_spectrum(self.REF_data, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.ref_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az, self.coordsys, self.satellite)
        else:#Unswitched measurement
             self.receiver.uhd_usrp_source_0.set_center_freq(self.sig_freq, 0)
             time.sleep(10e-3)
@@ -151,10 +153,11 @@ class Measurement:
             self.receiver.lock()
             self.receiver.signal_file_sink_1.close()
             self.receiver.unlock()
-			
-            spec = self.stack_measured_FFTs(self.outfile + "_sig")
+                        
             if self.abort == False:
-               self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az)
+                # Multiply with 1000 to get higher raw intensity numbers for printout
+                spec = 1000*self.stack_measured_FFTs(self.outfile + "_sig")
+                self.signal_spec = SALSA_spectrum(spec, self.receiver.get_samp_rate(), self.receiver.get_fftsize(), self.sig_freq, self.site, self.alt, self.az, self.int_time, self.observer, self.config, self.offset_alt, self.offset_az, self.coordsys, self.satellite)
                
     def stack_all_data(self, files):
         pool = Pool(processes=4)
@@ -176,17 +179,14 @@ class Measurement:
         spec = signal.reshape((nspec,fftsize))
         spec = spec.sum(axis=0)
         # Normalise power spectrum to be invariant of
-        # integration time and Calibrate intensity
-        # from comparison with LAB survey
-        # TODO: Proper amplitude calibration! For now just single scale factor.
-        # calfactor = 300 # K/USRP input unit with 60dB gain.  
-        spec = self.calfactor * spec/(1.0*nspec)
+        # integration time
+        spec = spec/(1.0*nspec)
         # Clean up temporary object and file
         del signal
         os.remove(infile)
         return spec
         
     def mean(self, spectra):
-		sum_spec = np.sum(spectra, axis=0, dtype = np.float32)
-		return sum_spec/float(len(spectra))
+                sum_spec = np.sum(spectra, axis=0, dtype = np.float32)
+                return sum_spec/float(len(spectra))
 

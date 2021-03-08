@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>835</width>
-    <height>640</height>
+    <width>829</width>
+    <height>632</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <x>20</x>
       <y>20</y>
       <width>791</width>
-      <height>581</height>
+      <height>591</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -36,7 +36,7 @@
         <x>20</x>
         <y>30</y>
         <width>721</width>
-        <height>191</height>
+        <height>201</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -44,6 +44,11 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
       </property>
       <property name="title">
        <string>Telescope movement control</string>
@@ -54,13 +59,101 @@
          <x>17</x>
          <y>30</y>
          <width>691</width>
-         <height>151</height>
+         <height>167</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_currentaltaz">
+          <property name="text">
+           <string>Current horizontal</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_cur_alt">
+            <property name="text">
+             <string>Alt:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="cur_alt">
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_currentpointing">
+          <property name="text">
+           <string>Calc. target horizontal</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QComboBox" name="GNSSselector">
+            <property name="visible">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="coordlabel_left">
+            <property name="text">
+             <string>Longitude</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="inputleftcoord">
+            <property name="text">
+             <string>80</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="btn_track">
+          <property name="text">
+           <string>Track</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QLabel" name="label_cur_alt_2">
+            <property name="text">
+             <string>Alt:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="calc_des_left">
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
         <item row="0" column="2">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
@@ -201,44 +294,12 @@
           </item>
          </layout>
         </item>
-        <item row="0" column="3">
-         <widget class="QPushButton" name="btn_track">
+        <item row="4" column="3">
+         <widget class="QPushButton" name="btn_reset">
           <property name="text">
-           <string>Track</string>
+           <string>Reset</string>
           </property>
          </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_currentaltaz">
-          <property name="text">
-           <string>Current horizontal</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QComboBox" name="GNSSselector">
-            <property name="visible">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="coordlabel_left">
-            <property name="text">
-             <string>Longitude</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="inputleftcoord">
-            <property name="text">
-             <string>120</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
         <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -300,62 +361,6 @@
           </item>
          </layout>
         </item>
-        <item row="4" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QLabel" name="label_cur_alt">
-            <property name="text">
-             <string>Alt:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="cur_alt">
-            <property name="text">
-             <string>0</string>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_currentpointing">
-          <property name="text">
-           <string>Calc. target horizontal</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
-          <item>
-           <widget class="QLabel" name="label_cur_alt_2">
-            <property name="text">
-             <string>Alt:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="calc_des_left">
-            <property name="text">
-             <string>0</string>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="4" column="3">
-         <widget class="QPushButton" name="btn_reset">
-          <property name="text">
-           <string>Reset</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
      </widget>
@@ -365,8 +370,13 @@
         <x>20</x>
         <y>230</y>
         <width>721</width>
-        <height>311</height>
+        <height>321</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
       </property>
       <property name="title">
        <string>Receiver control</string>
@@ -374,9 +384,9 @@
       <widget class="QTabWidget" name="tabWidget_2">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>701</width>
+         <x>20</x>
+         <y>30</y>
+         <width>691</width>
          <height>281</height>
         </rect>
        </property>
@@ -418,15 +428,18 @@
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>501</width>
+           <width>528</width>
            <height>41</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="1">
            <widget class="QSpinBox" name="int_time_spinbox">
+            <property name="minimum">
+             <number>1</number>
+            </property>
             <property name="maximum">
-             <number>100000000</number>
+             <number>3600</number>
             </property>
             <property name="value">
              <number>10</number>
@@ -464,261 +477,453 @@
         <attribute name="title">
          <string>Advanced</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0" colspan="7">
-          <layout class="QGridLayout" name="gridLayout_2">
-           <item row="8" column="0">
-            <widget class="QLabel" name="label_mode">
-             <property name="text">
-              <string>Mode</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="1">
-            <layout class="QGridLayout" name="gridLayout_3">
-             <item row="0" column="0" colspan="2">
-              <widget class="QGroupBox" name="groupBox">
-               <property name="title">
-                <string/>
-               </property>
-               <widget class="QWidget" name="layoutWidget_3">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>0</y>
-                  <width>171</width>
-                  <height>27</height>
-                 </rect>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <item>
-                  <widget class="QRadioButton" name="mode_signal">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>15</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Signal</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QRadioButton" name="mode_switched">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>15</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>Switched</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="BandwidthLabel">
-             <property name="text">
-              <string>Bandwidth [MHz]</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLineEdit" name="ChannelsInput">
-             <property name="text">
-              <string>256</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLineEdit" name="BandwidthInput">
-             <property name="text">
-              <string>2.5</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="ChannelsLabel">
-             <property name="text">
-              <string>Channels [#]</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="0">
-            <widget class="QLabel" name="RefFreqLabel">
-             <property name="text">
-              <string>Reference freq. [MHz]</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="1">
-            <widget class="QLineEdit" name="RefFreqInput">
-             <property name="text">
-              <string>1422.9</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="FrequencyLabel">
-             <property name="text">
-              <string>Frequency [MHz]</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="FrequencyInput">
-             <property name="text">
-              <string>1420.4</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QCheckBox" name="vlsr_checkbox">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>Translate to VLSR frame</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2">
-            <widget class="QCheckBox" name="autoedit_bad_data_checkBox">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>Remove RFI</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="2">
-            <widget class="QCheckBox" name="LNA_checkbox">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>LNA</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="2">
-            <widget class="QCheckBox" name="noise_checkbox">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>Noise diode</string>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_14">
-             <item>
-              <widget class="QLabel" name="label_gain">
-               <property name="text">
-                <string>Gain factor</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="gain">
-               <property name="text">
-                <string>930</string>
-               </property>
-               <property name="readOnly">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
+        <widget class="QCheckBox" name="cycle_checkbox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>18</x>
+           <y>192</y>
+           <width>271</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Manually specify cycle times</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="signal_time_label_3">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>218</y>
+           <width>91</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Signal time [s]:</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="sig_time_spinbox">
+         <property name="geometry">
+          <rect>
+           <x>119</x>
+           <y>218</y>
+           <width>48</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="value">
+          <number>10</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="ref_time_label_3">
+         <property name="geometry">
+          <rect>
+           <x>177</x>
+           <y>218</y>
+           <width>116</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Reference time [s]:</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="ref_time_spinBox">
+         <property name="geometry">
+          <rect>
+           <x>303</x>
+           <y>218</y>
+           <width>48</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>10</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="loops_label_3">
+         <property name="geometry">
+          <rect>
+           <x>361</x>
+           <y>218</y>
+           <width>105</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Number of loops:</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="loops_spinbox">
+         <property name="geometry">
+          <rect>
+           <x>476</x>
+           <y>218</y>
+           <width>86</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="maximum">
+          <number>1000000</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="ChannelsLabel">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>77</y>
+           <width>131</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Channels [#]</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="RefFreqLabel">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>140</y>
+           <width>136</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Ref. freq. [MHz]</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FrequencyLabel">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>15</y>
+           <width>141</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Frequency [MHz]</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_mode">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>108</y>
+           <width>51</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Mode</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="BandwidthLabel">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>46</y>
+           <width>141</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Bandwidth [MHz]</string>
+         </property>
+        </widget>
+        <widget class="QSplitter" name="splitter">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>110</y>
+           <width>201</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <widget class="QRadioButton" name="mode_signal">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>15</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Signal</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="mode_switched">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>15</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Switched</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QLabel" name="label_gain">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>170</y>
+           <width>131</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>USRP gain [dB]</string>
+         </property>
+        </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>300</x>
+           <y>16</y>
+           <width>234</width>
+           <height>95</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QCheckBox" name="vlsr_checkbox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Translate to VLSR frame</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="autoedit_bad_data_checkBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Remove RFI</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="noise_checkbox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Noise diode</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QDoubleSpinBox" name="FrequencyInput">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>10</y>
+           <width>121</width>
+           <height>26</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <double>800.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>2300.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="value">
+          <double>1420.400000000000091</double>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="RefFreqInput">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>140</y>
+           <width>111</width>
+           <height>26</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <double>800.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>2300.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="value">
+          <double>1417.500000000000000</double>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="BandwidthInput">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>40</y>
+           <width>121</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <property name="modelColumn">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>1.0</string>
+          </property>
          </item>
-         <item row="1" column="0" colspan="3">
-          <widget class="QCheckBox" name="cycle_checkbox">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Manually specify cycle times</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
+         <item>
+          <property name="text">
+           <string>2.5</string>
+          </property>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="signal_time_label_3">
-           <property name="text">
-            <string>Signal time [s]:</string>
-           </property>
-          </widget>
+         <item>
+          <property name="text">
+           <string>5.0</string>
+          </property>
          </item>
-         <item row="2" column="1">
-          <widget class="QSpinBox" name="sig_time_spinbox">
-           <property name="value">
-            <number>10</number>
-           </property>
-          </widget>
+         <item>
+          <property name="text">
+           <string>10.0</string>
+          </property>
          </item>
-         <item row="2" column="2">
-          <widget class="QLabel" name="ref_time_label_3">
-           <property name="text">
-            <string>Reference time [s]:</string>
-           </property>
-          </widget>
+         <item>
+          <property name="text">
+           <string>25.0</string>
+          </property>
          </item>
-         <item row="2" column="3">
-          <widget class="QSpinBox" name="ref_time_spinBox">
-           <property name="singleStep">
-            <number>1</number>
-           </property>
-           <property name="value">
-            <number>10</number>
-           </property>
-          </widget>
+        </widget>
+        <widget class="QComboBox" name="ChannelsInput">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>70</y>
+           <width>121</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>128</string>
+          </property>
          </item>
-         <item row="2" column="4">
-          <widget class="QLabel" name="loops_label_3">
-           <property name="text">
-            <string>Number of loops:</string>
-           </property>
-          </widget>
+         <item>
+          <property name="text">
+           <string>256</string>
+          </property>
          </item>
-         <item row="2" column="5">
-          <widget class="QSpinBox" name="loops_spinbox">
-           <property name="maximum">
-            <number>1000000</number>
-           </property>
-           <property name="value">
-            <number>1</number>
-           </property>
-          </widget>
+         <item>
+          <property name="text">
+           <string>512</string>
+          </property>
          </item>
-        </layout>
+         <item>
+          <property name="text">
+           <string>1024</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2048</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>4096</string>
+          </property>
+         </item>
+        </widget>
+        <widget class="QSpinBox" name="gain">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>170</y>
+           <width>71</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>60</number>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
+        </widget>
        </widget>
       </widget>
      </widget>
@@ -891,16 +1096,6 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_12"/>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>835</width>
-     <height>25</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
