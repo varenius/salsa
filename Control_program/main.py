@@ -28,8 +28,8 @@ from tendo import singleton
 me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
 ##### SET CONFIG FILE #######
-abspath = os.path.abspath(__file__)
-configfile = os.path.dirname(abspath) + '/SALSA.config'
+scriptpath = os.path.dirname(os.path.abspath(__file__))
+configfile = scriptpath + '/SALSA.config'
 #############################
 
 # Customize NavigatinoToolBarcalsss
@@ -72,6 +72,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.config = configparser.ConfigParser()
         self.config.read(configfile)
         # Initialise telescope and UI
+        self.translator = QtCore.QTranslator(self)
         self.telescope = TelescopeController(self.config)
         self.setupUi(self)
         self.init_Ui()
@@ -195,7 +196,22 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         plotwinlayout_ez.addWidget(self.canvas_ez)
         plotwinlayout_ez.addWidget(self.toolbar_ez)
         self.groupBox_spectrum_ez.setLayout(plotwinlayout_ez)
-        #
+
+        # Language
+        self.languageselector.currentIndexChanged.connect(self.change_language)
+
+    def change_language(self):
+        app = QtWidgets.QApplication.instance()
+        l = self.languageselector.currentText()
+        if l == "Svenska":
+            #Set Swedish locale
+            QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.Swedish, QtCore.QLocale.Sweden))
+            # Load Swedish translation
+            load = self.translator.load(scriptpath + "/translations/sv.qm")
+            app.installTranslator(self.translator)
+        else:
+            app.removeTranslator(self.translator)
+        self.retranslateUi(self)
 
     def change_spectra(self):
         # Plot spectra of currently selected item
@@ -1288,6 +1304,7 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
         """
         QtGui.QMessageBox.about(self, "GNSS Az-El view", msg.strip())
 
+
 def main():
     app = QtWidgets.QApplication(sys.argv)
     parser = argparse.ArgumentParser(description='SALSA control program')
@@ -1299,7 +1316,9 @@ def main():
     #app.setStyle(QtGui.QStyleFactory.create("plastique"))
     # Do not use default GTK, strange low level warnings. Others see this as well.
     app.setStyle(QtWidgets.QStyleFactory.create("cleanlooks"))
+
     window = main_window()
+    window.retranslateUi(window)
     window.show()
     sys.exit(app.exec_())
 
