@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>829</width>
-    <height>632</height>
+    <width>838</width>
+    <height>625</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,7 @@
     </property>
     <widget class="QWidget" name="tab_Observe">
      <attribute name="title">
-      <string>Observe</string>
+      <string>Simple</string>
      </attribute>
      <widget class="QLabel" name="label_4">
       <property name="geometry">
@@ -45,14 +45,14 @@
        </rect>
       </property>
       <property name="text">
-       <string>Please: When finished, choose Desired=Stow and press &quot;Track&quot; to put telescope in stow position. </string>
+       <string>Please: When finished, choose Target=Stow and press &quot;GO&quot; to put telescope in stow position. </string>
       </property>
      </widget>
      <widget class="QGroupBox" name="groupBox">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>40</y>
+        <y>30</y>
         <width>741</width>
         <height>111</height>
        </rect>
@@ -63,9 +63,9 @@
       <widget class="QComboBox" name="objectselector">
        <property name="geometry">
         <rect>
-         <x>90</x>
+         <x>80</x>
          <y>30</y>
-         <width>91</width>
+         <width>161</width>
          <height>31</height>
         </rect>
        </property>
@@ -75,24 +75,29 @@
         </font>
        </property>
        <property name="editable">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="currentText">
-        <string>The Sun</string>
+        <string>Galactic (100,0)</string>
        </property>
+       <item>
+        <property name="text">
+         <string>Galactic (100,0)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Galactic (140,0)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Satellite C05</string>
+        </property>
+       </item>
        <item>
         <property name="text">
          <string>The Sun</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Satelite A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Galactic A</string>
         </property>
        </item>
        <item>
@@ -116,15 +121,15 @@
         </font>
        </property>
        <property name="text">
-        <string>Tracking</string>
+        <string>Target:</string>
        </property>
       </widget>
       <widget class="QPushButton" name="btn_GO">
        <property name="geometry">
         <rect>
-         <x>190</x>
+         <x>250</x>
          <y>30</y>
-         <width>61</width>
+         <width>81</width>
          <height>31</height>
         </rect>
        </property>
@@ -135,19 +140,6 @@
        </property>
        <property name="text">
         <string>GO</string>
-       </property>
-      </widget>
-      <widget class="QProgressBar" name="track_progress_ez">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>70</y>
-         <width>241</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="value">
-        <number>0</number>
        </property>
       </widget>
       <widget class="QLabel" name="cam_link">
@@ -196,25 +188,12 @@
         <string>Access live webcam </string>
        </property>
       </widget>
-     </widget>
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>160</y>
-        <width>741</width>
-        <height>381</height>
-       </rect>
-      </property>
-      <property name="title">
-       <string>GroupBox</string>
-      </property>
-      <widget class="QLabel" name="label_14">
+      <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>30</y>
-         <width>161</width>
+         <y>70</y>
+         <width>251</width>
          <height>31</height>
         </rect>
        </property>
@@ -224,15 +203,59 @@
         </font>
        </property>
        <property name="text">
-        <string>Observing time (s)</string>
+        <string>Distance to go [degrees]:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="distance">
+       <property name="geometry">
+        <rect>
+         <x>250</x>
+         <y>70</y>
+         <width>81</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>140</y>
+        <width>741</width>
+        <height>411</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Measurement</string>
+      </property>
+      <widget class="QLabel" name="label_14">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>171</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>13</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Observing time [s]:</string>
        </property>
       </widget>
       <widget class="QSpinBox" name="obs_time_ez">
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>30</y>
-         <width>77</width>
+         <x>186</x>
+         <y>20</y>
+         <width>61</width>
          <height>30</height>
         </rect>
        </property>
@@ -250,7 +273,7 @@
        <property name="geometry">
         <rect>
          <x>250</x>
-         <y>30</y>
+         <y>20</y>
          <width>51</width>
          <height>31</height>
         </rect>
@@ -259,11 +282,11 @@
         <string>Start</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="stop_obs_ez">
+      <widget class="QPushButton" name="btn_stop_obs_ez">
        <property name="geometry">
         <rect>
          <x>310</x>
-         <y>30</y>
+         <y>20</y>
          <width>51</width>
          <height>31</height>
         </rect>
@@ -275,55 +298,29 @@
       <widget class="QGroupBox" name="groupBox_spectrum_ez">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>70</y>
-         <width>531</width>
-         <height>301</height>
+         <x>10</x>
+         <y>60</y>
+         <width>721</width>
+         <height>341</height>
         </rect>
        </property>
        <property name="title">
         <string>Spectrum</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_plot_ez">
+      <widget class="QProgressBar" name="progressBar_ez">
        <property name="geometry">
         <rect>
-         <x>650</x>
-         <y>100</y>
-         <width>41</width>
-         <height>21</height>
+         <x>369</x>
+         <y>20</y>
+         <width>361</width>
+         <height>31</height>
         </rect>
        </property>
-       <property name="text">
-        <string>plot</string>
+       <property name="value">
+        <number>0</number>
        </property>
       </widget>
-     </widget>
-     <widget class="QPushButton" name="pushButton">
-      <property name="geometry">
-       <rect>
-        <x>670</x>
-        <y>10</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Eng</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_sve">
-      <property name="geometry">
-       <rect>
-        <x>720</x>
-        <y>10</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Sve</string>
-      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="tab">
@@ -425,7 +422,7 @@
           <item>
            <widget class="QLineEdit" name="inputleftcoord">
             <property name="text">
-             <string>120</string>
+             <string>100</string>
             </property>
            </widget>
           </item>
@@ -1028,23 +1025,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>Gain factor</string>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="gain">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>170</y>
-           <width>125</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>930</string>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
+          <string>USRP gain [dB]</string>
          </property>
         </widget>
         <widget class="QWidget" name="layoutWidget">
@@ -1052,7 +1033,7 @@
           <rect>
            <x>300</x>
            <y>16</y>
-           <width>232</width>
+           <width>234</width>
            <height>95</height>
           </rect>
          </property>
@@ -1086,10 +1067,13 @@
           <item>
            <widget class="QCheckBox" name="noise_checkbox">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>Noise diode</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
             </property>
             <property name="checked">
              <bool>false</bool>
@@ -1139,7 +1123,7 @@
           <double>0.100000000000000</double>
          </property>
          <property name="value">
-          <double>1422.400000000000091</double>
+          <double>1417.500000000000000</double>
          </property>
         </widget>
         <widget class="QComboBox" name="BandwidthInput">
@@ -1151,9 +1135,17 @@
            <height>24</height>
           </rect>
          </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
          <property name="modelColumn">
           <number>0</number>
          </property>
+         <item>
+          <property name="text">
+           <string>1.0</string>
+          </property>
+         </item>
          <item>
           <property name="text">
            <string>2.5</string>
@@ -1217,6 +1209,22 @@
            <string>4096</string>
           </property>
          </item>
+        </widget>
+        <widget class="QSpinBox" name="gain">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>170</y>
+           <width>71</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>60</number>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
         </widget>
        </widget>
       </widget>
@@ -1291,10 +1299,10 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>590</x>
+        <x>596</x>
         <y>0</y>
-        <width>277</width>
-        <height>32</height>
+        <width>171</width>
+        <height>31</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="vel_or_freq_group">
@@ -1332,10 +1340,10 @@
      <widget class="QWidget" name="layoutWidget_2">
       <property name="geometry">
        <rect>
-        <x>380</x>
+        <x>400</x>
         <y>0</y>
-        <width>297</width>
-        <height>37</height>
+        <width>181</width>
+        <height>31</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="log_and_norm_group">
@@ -1389,6 +1397,32 @@
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_12"/>
+   </widget>
+   <widget class="QLineEdit" name="clock">
+    <property name="geometry">
+     <rect>
+      <x>622</x>
+      <y>20</y>
+      <width>171</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_clock">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>20</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Clock:</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
