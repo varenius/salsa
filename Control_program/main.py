@@ -706,7 +706,10 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         cal, caz = self.telescope.get_current_alaz()
         tal, taz = self.calculate_desired_alaz()
         dist = self.telescope._get_angular_distance(cal, caz, tal, taz)
-        self.distance.setText("{0:4.2f}".format(dist))
+        if (dist<0.2 and self.trackingtimer.isActive()):
+            self.distance.setText("TRACKING")
+        else:
+            self.distance.setText("{0:4.2f}".format(dist))
 
         #if ((not self.telescope.is_moving()) and (not self.trackingtimer.isActive())):
         if (not self.trackingtimer.isActive()):
@@ -1321,7 +1324,6 @@ def main():
     app.setStyle(QtWidgets.QStyleFactory.create("cleanlooks"))
 
     window = main_window()
-    window.retranslateUi(window)
     window.show()
     sys.exit(app.exec_())
 

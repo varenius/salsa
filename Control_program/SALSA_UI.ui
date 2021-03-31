@@ -209,9 +209,9 @@
       <widget class="QLineEdit" name="distance">
        <property name="geometry">
         <rect>
-         <x>250</x>
+         <x>230</x>
          <y>70</y>
-         <width>81</width>
+         <width>101</width>
          <height>31</height>
         </rect>
        </property>

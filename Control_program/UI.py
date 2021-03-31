@@ -79,7 +79,7 @@ class Ui_MainWindow(object):
         self.label_6.setFont(font)
         self.label_6.setObjectName("label_6")
         self.distance = QtWidgets.QLineEdit(self.groupBox)
-        self.distance.setGeometry(QtCore.QRect(250, 70, 81, 31))
+        self.distance.setGeometry(QtCore.QRect(230, 70, 101, 31))
         self.distance.setReadOnly(True)
         self.distance.setObjectName("distance")
         self.groupBox_2 = QtWidgets.QGroupBox(self.tab_Observe)

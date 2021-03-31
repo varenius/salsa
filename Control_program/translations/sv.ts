@@ -186,37 +186,37 @@
     <message>
         <location filename="SALSA_UI.ui" line="619"/>
         <source>Galactic</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="624"/>
         <source>Horizontal</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="629"/>
         <source>Eq. J2000</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="634"/>
         <source>Eq. B1950</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="644"/>
         <source>The Moon</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="649"/>
         <source>Cas. A</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="654"/>
         <source>GNSS</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="684"/>
