@@ -426,7 +426,22 @@
     <message>
         <location filename="SALSA_UI.ui" line="1424"/>
         <source>Clock:</source>
-        <translation>Klocka</translation>
+        <translation>Klocka:</translation>
+    </message>
+    <message>
+        <location filename="../SALSA_UI.ui" line="1438"/>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../SALSA_UI.ui" line="1443"/>
+        <source>Svenska</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../SALSA_UI.ui" line="1457"/>
+        <source>Language:</source>
+        <translation>Språk:</translation>
     </message>
 </context>
 </TS>
