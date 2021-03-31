@@ -12,6 +12,11 @@ sys.path.append('./')
 # Load the config file
 abspath = os.path.abspath(__file__)
 configfile = os.path.dirname(abspath) + '/SALSA.config'
+if not os.path.exists(configfile):
+    print("Config file not found at" + configfile)
+    print("Exiting...")
+    sys.exit(1)
+
 config=configparser.ConfigParser()
 config.read(configfile)
 

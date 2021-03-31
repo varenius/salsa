@@ -46,7 +46,7 @@ class SALSA_spectrum:
             coord2 = str(round(float(repr(self.glat))*180/np.pi,1))
             self.target = 'Galactic long=' + coord1 + ', lat=' + coord2
         elif coordsys == "GNSS":
-            self.target = 'GNSS ' + satellite + '(alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
+            self.target = 'GNSS ' + satellite + ' (alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
         elif coordsys == "The Sun":
             self.target = 'The Sun (alt={:6.1f}, az={:6.1f})'.format(self.alt, self.az)
         elif coordsys == "The Moon":

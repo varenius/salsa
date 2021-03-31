@@ -18,6 +18,8 @@ import matplotlib.ticker as mticker
 import urllib.request
 import time
 
+import argparse
+
 import getpass # To find current username
 import configparser
 
@@ -26,8 +28,8 @@ from tendo import singleton
 me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
 ##### SET CONFIG FILE #######
-abspath = os.path.abspath(__file__)
-configfile = os.path.dirname(abspath) + '/SALSA.config'
+scriptpath = os.path.dirname(os.path.abspath(__file__))
+configfile = scriptpath + '/SALSA.config'
 #############################
 
 # Customize NavigatinoToolBarcalsss
@@ -70,6 +72,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.config = configparser.ConfigParser()
         self.config.read(configfile)
         # Initialise telescope and UI
+        self.translator = QtCore.QTranslator(self)
         self.telescope = TelescopeController(self.config)
         self.setupUi(self)
         self.init_Ui()
@@ -82,9 +85,9 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         #    self.show_message(msg)
         #else:
         #    self.reset_needed()
-    
+
     def init_Ui(self):
-            
+
         # Set software gain
         self.gain.setValue(int(self.config.get('USRP', 'usrp_gain')))
 
@@ -103,8 +106,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Create timer used to toggle (and update) tracking
         # Do not start this, started by user on Track button.
         self.trackingtimer = QtCore.QTimer()
-        self.trackingtimer.timeout.connect(self.track) 
-        
+        self.trackingtimer.timeout.connect(self.track)
+
         # Reset needs its own timer to be able
         # to check if reset position has been reached
         # and then, only then, enable GUI input again.
@@ -113,6 +116,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Initialise buttons and tracking status.
         self.btn_track.clicked.connect(self.track_or_stop)
+        self.btn_GO.clicked.connect(self.track_or_stop)
         self.btn_reset.clicked.connect(self.reset)
 
         # Make sure Ui is updated when changing target
@@ -120,16 +124,21 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Make sure special targets like "The Sun" are handled correctly.
         self.coordselector.currentIndexChanged.connect(self.update_desired_target)
 
+        # Make sure Ui is updated when changing target
+        self.objectselector.currentIndexChanged.connect(self.update_Ui)
+        # Make sure special targets like "The Sun" are handled correctly.
+        self.objectselector.currentIndexChanged.connect(self.update_desired_object)
+
+
         # Set the GNSS-related parts of GUI to non-visible
         self.GNSS_GUI_visible(False)
         # Set the current GNSStarget to none
         self.currentGNSStarget="none"
         # Connect the activated signal on the coordselector to our handler which turns on/off the GNSS-related parts of GUI
-        #self.connect(self.coordselector, QtCore.SIGNAL('activated(QString)'), self.coordselector_chosen)
-        self.coordselector.activated.connect(self.coordselector_chosen)
+        self.coordselector.currentIndexChanged.connect(self.coordselector_chosen)
         # Connect the activated signal on the GNSSselector to our handler which sets the currentGNSStarget
-        #self.connect(self.GNSSselector, QtCore.SIGNAL('activated(QString)'), self.GNSSselector_chosen)
         self.GNSSselector.activated.connect(self.GNSSselector_chosen)
+        self.GNSSselector.currentIndexChanged.connect(self.GNSSselector_chosen)
 
         # opens GNSS AzEl window after clicking the btn_GNSS_lh button
         self.btn_GNSS_lh.clicked.connect(self.open_GNSSAzEl)
@@ -139,6 +148,13 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_observe.clicked.connect(self.disable_receiver_controls)
         self.btn_abort.clicked.connect(self.abort_obs)
         self.btn_abort.setEnabled(False)
+
+        #RECEIVER CONTROL EZ
+        self.btn_start_obs_ez.clicked.connect(self.observe_ez)
+        self.btn_start_obs_ez.clicked.connect(self.disable_receiver_controls)
+        self.btn_stop_obs_ez.clicked.connect(self.abort_obs)
+        self.btn_stop_obs_ez.setEnabled(False)
+
 
         # Plotting and saving
         self.btn_upload.clicked.connect(self.send_to_webarchive)
@@ -163,7 +179,40 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.radioButton_frequency.toggled.connect(self.change_spectra)
         self.checkBox_dBScale.toggled.connect(self.change_spectra)
         self.checkBox_normalized.toggled.connect(self.change_spectra)
- 
+        '''
+        For Easy "ez" basic plotting on first tab
+        '''
+        self.figure_ez = plt.figure()
+        self.figure_ez.patch.set_facecolor('white')
+        # this is the Canvas Widget that displays the `figure`
+        # it takes the `figure` instance as a parameter to __init__
+        self.canvas_ez = FigureCanvas(self.figure_ez)
+        self.canvas_ez.setParent(self.groupBox_spectrum_ez)
+        # this is the Navigation widget
+        # it takes the Canvas widget and a parent
+        self.toolbar_ez = NavigationToolbar(self.canvas_ez, self.groupBox_spectrum_ez)
+        #set ez layout
+        plotwinlayout_ez = QtWidgets.QVBoxLayout()
+        plotwinlayout_ez.addWidget(self.canvas_ez)
+        plotwinlayout_ez.addWidget(self.toolbar_ez)
+        self.groupBox_spectrum_ez.setLayout(plotwinlayout_ez)
+
+        # Language
+        self.languageselector.currentIndexChanged.connect(self.change_language)
+
+    def change_language(self):
+        app = QtWidgets.QApplication.instance()
+        l = self.languageselector.currentText()
+        if l == "Svenska":
+            #Set Swedish locale
+            QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.Swedish, QtCore.QLocale.Sweden))
+            # Load Swedish translation
+            load = self.translator.load(scriptpath + "/translations/sv.qm")
+            app.installTranslator(self.translator)
+        else:
+            app.removeTranslator(self.translator)
+        self.retranslateUi(self)
+
     def change_spectra(self):
         # Plot spectra of currently selected item
         if self.listWidget_spectra.count() >0 :
@@ -181,17 +230,19 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             sig_time = int(self.sig_time_spinbox.text()) # [s]
             ref_time = int(self.ref_time_spinBox.text()) # [s]
             loops = int(self.loops_spinbox.text())
-            target = int((sig_time+ref_time)*loops) 
+            target = int((sig_time+ref_time)*loops)
         else:
             target = int(self.int_time_spinbox.text())
         overhead = int(0.1*target) # Calculate extra time for processing, stacking etc.
         target +=  max(1.5,overhead) #Add extra time, at least 2 second
         self.expectedtime = target
         self.progressBar.setValue(int(100*self.lapsedtime/self.expectedtime))
+        self.progressBar_ez.setValue(int(100*self.lapsedtime/self.expectedtime))
 
     def update_progressbar(self):
         self.lapsedtime += 1
         self.progressBar.setValue(int(100*self.lapsedtime/self.expectedtime))
+        self.progressBar_ez.setValue(int(100*self.lapsedtime/self.expectedtime))
 
     def disable_receiver_controls(self):
         self.int_time_spinbox.setReadOnly(True)
@@ -210,7 +261,11 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_abort.setEnabled(True)
         self.sig_time_spinbox.setEnabled(False)
         self.ref_time_spinBox.setEnabled(False)
-    
+        # Simple tab
+        self.obs_time_ez.setReadOnly(True)
+        self.btn_start_obs_ez.setEnabled(False)
+        self.btn_stop_obs_ez.setEnabled(True)
+
     def enable_receiver_controls(self):
         self.int_time_spinbox.setReadOnly(False)
         self.gain.setReadOnly(False)
@@ -228,6 +283,10 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_abort.setEnabled(False)
         self.sig_time_spinbox.setEnabled(True)
         self.ref_time_spinBox.setEnabled(True)
+        # Simple tab
+        self.obs_time_ez.setReadOnly(False)
+        self.btn_start_obs_ez.setEnabled(True)
+        self.btn_stop_obs_ez.setEnabled(False)
 
     def coordselector_chosen(self):
         """
@@ -259,7 +318,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.GNSSselector.setVisible(False)
             self.btn_GNSS_lh.setVisible(False)
             self.GNSS_hide_guiobjects(False)
-            self.GNSS_clearCombobox() 
+            self.GNSS_clearCombobox()
             self.close_GNSSAzEl()
 
     def GNSS_hide_guiobjects(self,visibility):
@@ -367,6 +426,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.spectra[date] = sigspec
             item = QtWidgets.QListWidgetItem(date, self.listWidget_spectra)
             self.listWidget_spectra.setCurrentItem(item)
+            # Create simple plot on first page
+            self.plot_ez(self.spectra[date])
         self.aborting = False
         self.progresstimer.stop()
         self.clear_progressbar()
@@ -403,21 +464,25 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.sigthread.quit()
         # TODO: clean up temp data file.
         self.enable_receiver_controls()
-    
+
+    def observe_ez(self):
+        self.int_time_spinbox.setValue(self.obs_time_ez.value())
+        self.observe()
+
     def observe(self):
         self.aborting = False
         self.btn_abort.setEnabled(True)
         self.btn_observe.setEnabled(False)
         self.clear_progressbar()
         self.progresstimer.start(1000) # ms
-        
+
         ## Use LNA if selected
         #if self.LNA_checkbox.isChecked():
         #    self.telescope.set_LNA(True)
         ## Use noise diode if selected
         #if self.noise_checkbox.isChecked():
         #    self.telescope.set_noise_diode(True)
-            
+
         sig_freq = float(self.FrequencyInput.value())*1e6 # Hz
         ref_freq = float(self.RefFreqInput.value())*1e6
         bw = float(self.BandwidthInput.currentText())*1e6 # Hz
@@ -430,7 +495,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             if self.mode_switched.isChecked():
                 sig_time = float(self.int_time_spinbox.text())/2
-                #print 'sig_time', sig_time 
+                #print 'sig_time', sig_time
                 ref_time = float(self.int_time_spinbox.text())/2
                 loops = 1;
                 while sig_time > 20:
@@ -465,7 +530,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Then, make ephem object to pass to measurement
         (calt_deg, caz_deg) = self.telescope.get_current_alaz()
         (coff_alt, coff_az) = self.get_desired_alaz_offset()
-        
+
         self.sigworker = Worker()
         self.sigthread = Thread() # Create thread to run GNURadio in background
         self.sigthread.setTerminationEnabled(True)
@@ -476,9 +541,75 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.sigworker.finished.connect(self.sigthread.quit)
         self.sigworker.finished.connect(self.observation_finished)
         self.sigthread.start()
-        
+    
+    def plot_ez(self, spectpl):
+        self.figure_ez.clear()
+        ax = self.figure_ez.add_subplot(111)
+        # Get the obs frequency
+        obsFreq=float(spectpl.obs_freq/1.0e6)
+        if (spectpl.vlsr_corr!=0):
+            if self.radioButton_velocity.isChecked():
+                x = 1e-3 * (spectpl.get_vels())
+            else:
+                x = 1e-6*(spectpl.get_freqs() )-obsFreq
+        else:
+            if self.radioButton_velocity.isChecked():
+                x = 1e-3 * (spectpl.get_vels() - spectpl.vlsr_corr)
+            else:
+                x = 1e-6*(spectpl.get_freqs() - spectpl.freq_vlsr_corr )-obsFreq
+        y = spectpl.data
+
+        if (spectpl.vlsr_corr!=0):
+            if self.radioButton_velocity.isChecked():
+                ax.set_xlabel('Velocity shifted to LSR [km/s]')
+            else:
+                labelX='Freq. shifted to LSR -'+ str("{:6.1f}".format(obsFreq)) +'[MHz]'
+                ax.set_xlabel(labelX)
+        else:
+            if self.radioButton_velocity.isChecked():
+                ax.set_xlabel('Velocity relative to observer [km/s]')
+            else:
+                labelX='Measured freq.-'+ str("{:6.1f}".format(obsFreq))+' [MHz]'
+                ax.set_xlabel(labelX)
+        #normalize and/or convert to dB
+        if self.checkBox_normalized.isChecked() and self.checkBox_dBScale.isChecked():
+            #ax.set_ylabel('Uncalibrated normalized antenna temperature [dB]')
+            ax.set_ylabel('Normalised intensity [dB]')
+            # avoid values at the edge of the band
+            x=x[5:-5]
+            y=y[5:-5]
+            y=10*np.log10(np.abs(y/np.max(y)))
+        elif self.checkBox_dBScale.isChecked():
+            #ax.set_ylabel('Uncalibrated antenna temperature [dBK]')
+            ax.set_ylabel('Intensity [dB]')
+            # avoid values at the edge of the band
+            x=x[5:-5]
+            y=y[5:-5]
+            y=10*np.log10(np.abs(y))
+        elif self.checkBox_normalized.isChecked():
+            #ax.set_ylabel('Uncalibrated normalized antenna temperature [-]')
+            ax.set_ylabel('Normalised intensity [arbitrary units]')
+            # avoid values at the edge of the band
+            y=y[5:-5]
+            x=x[5:-5]
+            y=y/np.max(y)
+        else:
+            #ax.set_ylabel('Uncalibrated antenna temperature [K]')
+            ax.set_ylabel('Intensity [arbitrary units]')
+        ax.plot(x,y, '-')
+        ax.minorticks_on()
+        ax.tick_params('both', length=4, width=0.5, which='minor')
+
+        self.groupBox_spectrum_ez.setTitle("Spectrum taken " + str(spectpl.site.date).replace("/", "-") + " UTC:")
+        ax.set_title(spectpl.target)
+        ax.grid(True, color='k', linestyle='-', linewidth=0.5)
+        #self.figure.tight_layout(rect=[0.05, 0.05, 0.95, 0.95])
+        # refresh canvas
+        self.figure_ez.subplots_adjust(bottom=0.2)
+        self.canvas_ez.draw()
+
     def plot(self, spectpl):
-        plt.clf()
+        self.figure.clear()
         ax = self.figure.add_subplot(111)
         # Get the obs frequency
         obsFreq=float(spectpl.obs_freq/1.0e6)
@@ -507,21 +638,21 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
                 labelX='Measured freq.-'+ str("{:6.1f}".format(obsFreq))+' [MHz]'
                 ax.set_xlabel(labelX)
         #normalize and/or convert to dB
-        if self.checkBox_normalized.isChecked() and self.checkBox_dBScale.isChecked(): 
+        if self.checkBox_normalized.isChecked() and self.checkBox_dBScale.isChecked():
             #ax.set_ylabel('Uncalibrated normalized antenna temperature [dB]')
             ax.set_ylabel('Normalised intensity [dB]')
             # avoid values at the edge of the band
             x=x[5:-5]
             y=y[5:-5]
             y=10*np.log10(np.abs(y/np.max(y)))
-        elif self.checkBox_dBScale.isChecked():        
+        elif self.checkBox_dBScale.isChecked():
             #ax.set_ylabel('Uncalibrated antenna temperature [dBK]')
             ax.set_ylabel('Intensity [dB]')
             # avoid values at the edge of the band
             x=x[5:-5]
             y=y[5:-5]
             y=10*np.log10(np.abs(y))
-        elif self.checkBox_normalized.isChecked(): 
+        elif self.checkBox_normalized.isChecked():
             #ax.set_ylabel('Uncalibrated normalized antenna temperature [-]')
             ax.set_ylabel('Normalised intensity [arbitrary units]')
             # avoid values at the edge of the band
@@ -534,17 +665,16 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         ax.plot(x,y, '-')
         ax.minorticks_on()
         ax.tick_params('both', length=4, width=0.5, which='minor')
-        
+
         ax.set_title(spectpl.target)
         ax.grid(True, color='k', linestyle='-', linewidth=0.5)
         #self.figure.tight_layout(rect=[0.05, 0.05, 0.95, 0.95])
         # refresh canvas
         self.canvas.draw()
 
-    def clear_plot(self):
-        self.figure.clf()
-
     def update_Ui(self):
+        UTCnow = QtCore.QDateTime.currentDateTime().toUTC().toString(QtCore.Qt.ISODate)
+        self.clock.setText(UTCnow[:-1].replace("T", " ") + " UTC") # Skip T and Z for clarity here
         self.update_desired_altaz()
         self.update_current_altaz()
         self.update_coord_labels()
@@ -572,14 +702,108 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.loops_spinbox.setEnabled(False)
             self.int_time_spinbox.setEnabled(True)
 
+        # Update simple UI distance value
+        cal, caz = self.telescope.get_current_alaz()
+        tal, taz = self.calculate_desired_alaz()
+        dist = self.telescope._get_angular_distance(cal, caz, tal, taz)
+        if (dist<0.2 and self.trackingtimer.isActive()):
+            self.distance.setText("TRACKING")
+        else:
+            self.distance.setText("{0:4.3f}".format(dist))
+
         #if ((not self.telescope.is_moving()) and (not self.trackingtimer.isActive())):
         if (not self.trackingtimer.isActive()):
             self.btn_track.setEnabled(True)
             #self.btn_reset.setEnabled(True)
             self.btn_reset.setEnabled(False)
             self.btn_track.setText('Track')
+            self.btn_GO.setText('GO')
             style = "QWidget {}"
             self.btn_track.setStyleSheet(style)
+            self.btn_GO.setStyleSheet(style)
+
+    def update_desired_object(self):
+        target = self.objectselector.currentText()
+        if target == 'The Sun':
+            # get index of item in coordselector list, used to set as current
+            cind = self.coordselector.findText("The Sun", QtCore.Qt.MatchFixedString)
+            self.coordselector.setCurrentIndex(cind)
+            # set other things
+            bind = self.BandwidthInput.findText("2.5", QtCore.Qt.MatchFixedString)
+            self.BandwidthInput.setCurrentIndex(bind)
+            self.FrequencyInput.setValue(1410)
+            self.mode_switched.setChecked(False)
+            self.mode_signal.setChecked(True)
+            self.vlsr_checkbox.setChecked(False)
+            self.radioButton_frequency.setChecked(True)
+            self.radioButton_velocity.setChecked(False)
+            self.checkBox_normalized.setChecked(False)
+            self.checkBox_dBScale.setChecked(False)
+            self.obs_time_ez.setValue(2)
+        elif target == 'Satellite C05':
+            # get index of item in coordselector list, used to set as current
+            cind = self.coordselector.findText("GNSS", QtCore.Qt.MatchFixedString)
+            self.coordselector.setCurrentIndex(cind)
+            # set other things
+            # Get index of item in GNSSselector list, used to set as current
+            gind = self.GNSSselector.findText("BEIDOU 11 (C05)", QtCore.Qt.MatchFixedString)
+            # Set current index
+            self.GNSSselector.setCurrentIndex(gind)
+            bind = self.BandwidthInput.findText("25.0", QtCore.Qt.MatchFixedString)
+            self.BandwidthInput.setCurrentIndex(bind)
+            self.FrequencyInput.setValue(1207.14)
+            self.mode_switched.setChecked(False)
+            self.mode_signal.setChecked(True)
+            self.vlsr_checkbox.setChecked(False)
+            self.radioButton_frequency.setChecked(True)
+            self.radioButton_velocity.setChecked(False)
+            self.checkBox_normalized.setChecked(False)
+            self.checkBox_dBScale.setChecked(True)
+            self.obs_time_ez.setValue(1)
+        elif target == 'Galactic (100,0)':
+            cind = self.coordselector.findText("Galactic", QtCore.Qt.MatchFixedString)
+            self.coordselector.setCurrentIndex(cind)
+            # set other things
+            self.inputleftcoord.setReadOnly(True)
+            self.inputrightcoord.setReadOnly(True)
+            self.inputleftcoord.setText('120.0')
+            self.inputrightcoord.setText('0.0')
+            bind = self.BandwidthInput.findText("2.5", QtCore.Qt.MatchFixedString)
+            self.BandwidthInput.setCurrentIndex(bind)
+            self.FrequencyInput.setValue(1420.4)
+            self.mode_switched.setChecked(True)
+            self.mode_signal.setChecked(False)
+            self.vlsr_checkbox.setChecked(True)
+            self.radioButton_frequency.setChecked(False)
+            self.radioButton_velocity.setChecked(True)
+            self.checkBox_normalized.setChecked(False)
+            self.checkBox_dBScale.setChecked(False)
+            self.obs_time_ez.setValue(10)
+        elif target == 'Galactic (140,0)':
+            cind = self.coordselector.findText("Galactic", QtCore.Qt.MatchFixedString)
+            self.coordselector.setCurrentIndex(cind)
+            # set other things
+            self.inputleftcoord.setReadOnly(True)
+            self.inputrightcoord.setReadOnly(True)
+            self.inputleftcoord.setText('140.0')
+            self.inputrightcoord.setText('0.0')
+            bind = self.BandwidthInput.findText("2.5", QtCore.Qt.MatchFixedString)
+            self.BandwidthInput.setCurrentIndex(bind)
+            self.FrequencyInput.setValue(1420.4)
+            self.mode_switched.setChecked(True)
+            self.mode_signal.setChecked(False)
+            self.vlsr_checkbox.setChecked(True)
+            self.radioButton_frequency.setChecked(False)
+            self.radioButton_velocity.setChecked(True)
+            self.checkBox_normalized.setChecked(False)
+            self.checkBox_dBScale.setChecked(False)
+            self.obs_time_ez.setValue(10)
+        elif target == 'Stow':
+            cind = self.coordselector.findText("Stow", QtCore.Qt.MatchFixedString)
+            self.coordselector.setCurrentIndex(cind)
+            # set other things
+            self.inputleftcoord.setReadOnly(True)
+            self.inputrightcoord.setReadOnly(True)
 
     def update_desired_target(self):
         target = self.coordselector.currentText()
@@ -627,7 +851,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         rightval = "{:.3f}".format(az)
         self.calc_des_left.setText(leftval)
         self.calc_des_right.setText(rightval)
-    
+
     def update_current_altaz(self):
         (alt, az) = self.telescope.get_current_alaz()
         leftval = "{:.1f}".format(alt)
@@ -636,14 +860,14 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cur_az.setText(rightval)
         # Color coding works, but what about color blind people?
         # Should perhaps use blue and yellow?
-        if self.trackingtimer.isActive():
-            if self.telescope.is_close_to_target():
-                style = "QLineEdit {font-size: 13pt;}"
-            else:
-                style = "QLineEdit {background-color:yellow; font-size: 13pt;}"
-            self.cur_alt.setStyleSheet(style)
-            self.cur_az.setStyleSheet(style)
-    
+        if self.trackingtimer.isActive() and self.telescope.is_close_to_target():
+            style = "QLineEdit {background-color:green; font-size: 13pt;}"
+        else:
+            style = "QLineEdit {background-color:yellow; font-size: 13pt;}"
+        self.cur_alt.setStyleSheet(style)
+        self.cur_az.setStyleSheet(style)
+        self.distance.setStyleSheet(style)
+
     def update_coord_labels(self):
         target = self.coordselector.currentText()
         if target == 'Horizontal':
@@ -670,7 +894,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         except ValueError:
             offset_alt_deg = 0.0
             offset_az_deg = 0.0
-       
+
         return (offset_alt_deg, offset_az_deg)
 
     def calculate_desired_alaz(self):
@@ -680,12 +904,12 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Convert from QString to String to not confuse ephem
         leftcoord = str(self.inputleftcoord.text())
         rightcoord= str(self.inputrightcoord.text())
-        
+
         # Get current offset
         (offset_alt_deg, offset_az_deg) = self.get_desired_alaz_offset()
 
         # Reset values in case they are "The Sun"
-        # since otherwise errors appear when switchin from "The Sun"-mode 
+        # since otherwise errors appear when switchin from "The Sun"-mode
         # to something else
         try:
             ephem.degrees(leftcoord)
@@ -750,7 +974,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             az = fixedbody.az
             alt_deg = float(alt)*180.0/np.pi
             az_deg = float(az)*180.0/np.pi
-        
+
         # Include possible offset, e.g. for beam observations on the Sun
         fin_alt_deg = alt_deg + offset_alt_deg
         fin_az_deg = az_deg + offset_az_deg
@@ -766,8 +990,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             flip_alt_deg = 180-fin_alt_deg
             flip_az_deg = (fin_az_deg+180)%360
             # Check if directions are reachable
-            finreach = self.telescope.can_reach(fin_alt_deg, fin_az_deg) 
-            flipreach = self.telescope.can_reach(flip_alt_deg, flip_az_deg) 
+            finreach = self.telescope.can_reach(fin_alt_deg, fin_az_deg)
+            flipreach = self.telescope.can_reach(flip_alt_deg, flip_az_deg)
             # If flip direction cannot be reached, return original one.
             # (even if this one may not be reached)
             if not flipreach:
@@ -780,7 +1004,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             # If both directions are valid, which is the most common case,
             # then we find the closest one (in azimuth driving, not in angular distance)
             # to the current pointing
-            elif flipreach and finreach: 
+            elif flipreach and finreach:
                 (calt_deg, caz_deg) = self.telescope.get_current_alaz()
                 flipd = self.telescope.get_azimuth_distance(caz_deg, flip_az_deg)
                 find = self.telescope.get_azimuth_distance(caz_deg, fin_az_deg)
@@ -795,18 +1019,23 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.stop()
         else:
             self.start_tracking()
-    
+
     def disable_movement_controls(self):
         self.inputleftcoord.setReadOnly(True)
         self.inputrightcoord.setReadOnly(True)
         self.offset_left.setReadOnly(True)
         self.offset_right.setReadOnly(True)
         self.btn_reset.setEnabled(False)
+        self.objectselector.setEnabled(False)
         self.coordselector.setEnabled(False)
         self.GNSSselector.setEnabled(False)
         self.btn_track.setText('Stop')
+        self.btn_GO.setText('STOP')
         style = "QWidget { background-color:red;}"
         self.btn_track.setStyleSheet(style)
+        self.btn_GO.setStyleSheet(style)
+        # Language, since changing will reset selector list
+        self.languageselector.setEnabled(False)
 
     def enable_movement_controls(self):
         self.inputleftcoord.setReadOnly(False)
@@ -815,12 +1044,15 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.offset_right.setReadOnly(False)
         self.trackingtimer.stop()
         #Tracking button text is handeled by the update_UI-function to check that the telescope is still before offering new track position
+        self.objectselector.setEnabled(True)
         self.coordselector.setEnabled(True)
         self.GNSSselector.setEnabled(True)
-        self.btn_track.setText('Stopping...')
+        #self.btn_track.setText('Stopping...')
         style = "QWidget { background-color:orange;}"
         self.btn_track.setStyleSheet(style)
-        self.btn_track.setEnabled(False)
+        self.btn_GO.setStyleSheet(style)
+        # Language, since changing will reset selector list
+        self.languageselector.setEnabled(True)
 
     def start_tracking(self):
         try:
@@ -830,11 +1062,11 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.update_desired_altaz()
             # Toggle tracking on
             self.trackingtimer.start(1000) # ms
-            # Do not wait for tracking timer first time, 
+            # Do not wait for tracking timer first time,
             # start tracking directly.
             self.disable_movement_controls()
             self.track()
-        except Exception as e: 
+        except Exception as e:
             self.show_message(e)
 
     def show_message(self, e):
@@ -857,7 +1089,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             (alt_deg, az_deg) = self.calculate_desired_alaz()
             self.telescope.set_target_alaz(alt_deg, az_deg)
             self.telescope.move()
-        except Exception as e: 
+        except Exception as e:
             self.show_message(e)
             self.stop()
 
@@ -872,7 +1104,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_observe.setEnabled(False)
         msg = "Dear user. The telescope is lost, this may happen when there is a power cut. A reset is needed for SALSA to know where it is pointing. Please press reset and wait until reset is finished."
         self.show_message(msg)
- 
+
     def reset(self):
         # Show a message box
         qmsg = "You have asked for a system reset. This process may take a few minutes if the telescope is far from its starting position so please be patient. Do you really want to reset the telescope?"
@@ -912,7 +1144,7 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
         super(GNSSAzEl_window, self).__init__()
         self.setupUi(self)
         self.init_Ui()
- 
+
     def init_Ui(self):
 
         self.create_menuActions()
@@ -923,7 +1155,7 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
         self.fig.patch.set_facecolor('none')
         self.canvas = FigureCanvas(self.fig)
         # Position as left, top, width, height
-        self.canvas.setGeometry(QtCore.QRect(40,60, 600, 600))  
+        self.canvas.setGeometry(QtCore.QRect(40,60, 600, 600))
         self.canvas.setParent(self)
         self.drawAzElPlt()
 
@@ -937,13 +1169,13 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
         self.refreshtimer.timeout.connect(self.refreshAzElPlt)
 
         self.btn_close.clicked.connect(self.refreshtimer.stop)
-            
+
     def drawAzElPlt(self):
         """
         Draws the GNSS Az-El plot.
 
         """
- 
+
         if not hasattr(self, 'ax'):
             self.ax = self.fig.add_axes([0.1, 0.1, 0.8, 0.8], projection='polar', facecolor='#d5de9c', label="polar")
 
@@ -1005,28 +1237,28 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
         self.ax.clear()
         self.drawAzElPlt()
 
-        
+
     def create_menuActions(self):
         """
         Creates actions for the menubar of the GNSS Az-El window.
         :return: Nothing
         """
         save_file_action = self.create_action("&Save current view",
-            shortcut="Ctrl+S", slot=self.save_AzElPlot, 
+            shortcut="Ctrl+S", slot=self.save_AzElPlot,
             tip="Saves current Azimuth-Elevation view as an image.")
 
-        quit_action = self.create_action("&Quit", slot=self.close, 
+        quit_action = self.create_action("&Quit", slot=self.close,
             shortcut="Ctrl+Q", tip="Closes current window")
 
-        about_action = self.create_action("&About", 
-            shortcut='F1', slot=self.on_about, 
+        about_action = self.create_action("&About",
+            shortcut='F1', slot=self.on_about,
             tip='Displays additional information.')
 
-        self.add_actions(self.file_menu, 
+        self.add_actions(self.file_menu,
             (save_file_action, None, quit_action))
-        
+
         self.add_actions(self.help_menu, (about_action,))
-        
+
     def add_actions(self, target, actions):
 
         for action in actions:
@@ -1035,7 +1267,7 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
             else:
                 target.addAction(action)
 
-    def create_action(  self, text, slot=None, shortcut=None, 
+    def create_action(  self, text, slot=None, shortcut=None,
                         icon=None, tip=None, checkable=False
                         ):
                         #signal="triggered()"):
@@ -1061,8 +1293,8 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
         """
         file_choices = "PNG (*.png)|*.png"
 
-        path = unicode(QtGui.QFileDialog.getSaveFileName(self, 
-                        'Save file', '', 
+        path = unicode(QtGui.QFileDialog.getSaveFileName(self,
+                        'Save file', '',
                         file_choices))
         if path:
             self.canvas.print_figure(path, dpi=self.dpi)
@@ -1078,14 +1310,22 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
         """
         QtGui.QMessageBox.about(self, "GNSS Az-El view", msg.strip())
 
+
 def main():
     app = QtWidgets.QApplication(sys.argv)
+    parser = argparse.ArgumentParser(description='SALSA control program')
+    parser.add_argument('--local', '-l',
+                        default='False',
+                        type = bool,
+                        help='set local run ')
+    args = parser.parse_args()
     #app.setStyle(QtGui.QStyleFactory.create("plastique"))
     # Do not use default GTK, strange low level warnings. Others see this as well.
     app.setStyle(QtWidgets.QStyleFactory.create("cleanlooks"))
+
     window = main_window()
     window.show()
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    main()    
+    main()
