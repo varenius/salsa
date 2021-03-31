@@ -1031,6 +1031,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         style = "QWidget { background-color:red;}"
         self.btn_track.setStyleSheet(style)
         self.btn_GO.setStyleSheet(style)
+        # Language, since changing will reset selector list
+        self.languageselector.setEnabled(False)
 
     def enable_movement_controls(self):
         self.inputleftcoord.setReadOnly(False)
@@ -1046,7 +1048,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         style = "QWidget { background-color:orange;}"
         self.btn_track.setStyleSheet(style)
         self.btn_GO.setStyleSheet(style)
-        #self.btn_track.setEnabled(False)
+        # Language, since changing will reset selector list
+        self.languageselector.setEnabled(True)
 
     def start_tracking(self):
         try:
