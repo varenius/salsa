@@ -709,7 +709,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         if (dist<0.2 and self.trackingtimer.isActive()):
             self.distance.setText("TRACKING")
         else:
-            self.distance.setText("{0:4.2f}".format(dist))
+            self.distance.setText("{0:4.3f}".format(dist))
 
         #if ((not self.telescope.is_moving()) and (not self.trackingtimer.isActive())):
         if (not self.trackingtimer.isActive()):
