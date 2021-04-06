@@ -146,7 +146,7 @@
     <message>
         <location filename="SALSA_UI.ui" line="467"/>
         <source>GNSS Az-El View</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="474"/>
