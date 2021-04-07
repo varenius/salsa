@@ -29,7 +29,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_Observe">
      <attribute name="title">
@@ -730,7 +730,7 @@
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>528</width>
+           <width>554</width>
            <height>41</height>
           </rect>
          </property>
@@ -956,7 +956,7 @@
           <rect>
            <x>21</x>
            <y>108</y>
-           <width>35</width>
+           <width>131</width>
            <height>16</height>
           </rect>
          </property>
@@ -1033,8 +1033,8 @@
           <rect>
            <x>300</x>
            <y>16</y>
-           <width>234</width>
-           <height>95</height>
+           <width>247</width>
+           <height>98</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">

@@ -276,7 +276,7 @@
     <message>
         <location filename="SALSA_UI.ui" line="938"/>
         <source>Ref. freq. [MHz]</source>
-        <translation></translation>
+        <translation>Ref. frek. [MHz]</translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="951"/>
@@ -296,12 +296,12 @@
     <message>
         <location filename="SALSA_UI.ui" line="1000"/>
         <source>Signal</source>
-        <translation></translation>
+        <translation>Signal</translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="1011"/>
         <source>Switched</source>
-        <translation></translation>
+        <translation>Switchad</translation>
     </message>
     <message>
         <location filename="SALSA_UI.ui" line="1028"/>
