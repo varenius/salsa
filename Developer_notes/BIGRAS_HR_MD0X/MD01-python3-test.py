@@ -32,7 +32,7 @@ import sys
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Connect to MD-01 via ethernet interface, using default config (as in manual).
 # Note: IP address may change (depends on your config). Port is normally 23 (not 26).
-sock.connect(("192.168.5.11", 23)) 
+sock.connect(("192.168.5.10", 23)) 
 
 
 def set_azel(taz,tel):
@@ -57,6 +57,42 @@ def set_azel(taz,tel):
     # Decode bytes to hex
     ans = data.hex()
     print("SET", ans)
+
+def calibrate(taz,tel):
+    PH = 10 # Pulses per degree, 0A in hex
+    PV = 10 # Pulses per degree, 0A in hex
+    H = str(int(PH * (360+taz)))
+    H1 = "3"+H[0]
+    H2 = "3"+H[1]
+    H3 = "3"+H[2]
+    H4 = "3"+H[3]
+    V = str(int(PV * (360+tel)))
+    V1 = "3"+V[0]
+    V2 = "3"+V[1]
+    V3 = "3"+V[2]
+    V4 = "3"+V[3]
+    msg = bytes.fromhex("57"+H1+H2+H3+H4+"0A"+V1+V2+V3+V4+"0AF920")
+    print("SETMSG", msg.hex())
+    # Send message
+    sock.send(msg)
+    # Read response from MD-01
+    data = sock.recv(1024)
+    # Decode bytes to hex
+    ans = data.hex()
+    print("CALIBRATE", taz, tel, ans)
+
+def reset():
+    # Set az/el to 0
+    #Format status request message as bytes
+    #Content taken from the XLS files supplied by RF HAM DESIGN
+    msg = bytes.fromhex("5700000000000000000000F820")
+    # Send message
+    sock.send(msg)
+    # Read response from MD-01
+    data = sock.recv(1024)
+    # Decode bytes to hex
+    ans = data.hex()
+    print("RESET", ans)
 
 def stop():
     #Format status request message as bytes
@@ -95,12 +131,27 @@ def get_azel():
     el = V1 * 100 + V2 * 10 + V3 + V4 / 10 -360
     return az, el
 
+def get_config():
+    #Format status request message as bytes
+    #Content taken from the XLS files supplied by RF HAM DESIGN
+    msg = bytes.fromhex("57000000000000000000004F20")
+    # Send message
+    sock.send(msg)
+    # Read response from MD-01
+    data = sock.recv(1024)
+    # Decode bytes to hex
+    ans = data.hex()
+    print("GETCONF",ans)
+
 #set_azel(100, -100)
 #time.sleep(1)
 print(get_azel())
-stop()
-time.sleep(1)
-print(get_azel())
+#stop()
+get_config()
+#reset()
+#calibrate(250,90)
+#time.sleep(1)
+#print(get_azel())
 
 #while True:
 #    # Read Az/El once every second
