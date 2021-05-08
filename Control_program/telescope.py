@@ -107,7 +107,7 @@ class TelescopeController:
 
     def _move(self):
         tel, taz = self.target_alaz
-        print("Moving to (pointing corrected) alt,az ",tel, taz)
+        #print("Moving to (pointing corrected) alt,az ",tel, taz)
         PH = 10 # Pulses per degree, 0A in hex
         PV = 10 # Pulses per degree, 0A in hex
         H = str(int(PH * (360+taz)))
@@ -132,7 +132,7 @@ class TelescopeController:
         tal, taz = self.pcor(al, az)
         if self.can_reach(tal,taz):
             new_target_alaz = (round(tal,1), round(taz,1))
-            print("old target", self.target_alaz, "new target", new_target_alaz, "current", self.current_alaz)
+            #print("old target", self.target_alaz, "new target", new_target_alaz, "current", self.current_alaz)
             if not new_target_alaz==self.target_alaz:
                 self.target_alaz=new_target_alaz
                 self.action="MOVE"
