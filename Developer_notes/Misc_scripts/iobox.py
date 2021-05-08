@@ -23,7 +23,7 @@ def poll():
     # Send message
     sock.sendall(msg.encode("ascii"))
     # Wait to generate answer
-    time.sleep(0.01)
+    time.sleep(0.1)
     # Read response
     ans = sock.recv(8192).decode("ascii").strip()
     print(datetime.datetime.now(), ans[-1])
