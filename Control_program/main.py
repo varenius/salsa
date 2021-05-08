@@ -17,6 +17,7 @@ from matplotlib.figure import Figure
 import matplotlib.ticker as mticker
 import urllib.request
 import time
+import webbrowser
 
 import argparse
 
@@ -113,6 +114,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Initialise buttons and tracking status.
         self.btn_track.clicked.connect(self.track_or_stop)
         self.btn_GO.clicked.connect(self.track_or_stop)
+        self.btn_webcam.clicked.connect(lambda: webbrowser.open('http://129.16.208.83/view/#view'))
         self.btn_reset.clicked.connect(self.reset)
 
         # Make sure Ui is updated when changing target
@@ -704,7 +706,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         cal, caz = self.telescope.get_current_alaz()
         tal, taz = self.calculate_desired_alaz()
         dist = self.telescope._get_angular_distance(cal, caz, tal, taz)
-        if (dist<0.25):
+        if (dist<0.25 and self.btn_track.text()=="Stop"):
             self.distance.setText("TRACKING")
         else:
             self.distance.setText("{0:4.3f}".format(dist))
