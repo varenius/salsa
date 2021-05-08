@@ -3,7 +3,7 @@ import time
 import ephem
 import numpy as np
 import sys
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
 class TelescopeController:
     """ Provides functions to communicate with the MD01 telescope driver
@@ -37,6 +37,14 @@ class TelescopeController:
         self.minal_deg = config.getfloat('MD01', 'minal')
         self.maxal_deg = config.getfloat('MD01', 'maxal')
 
+        # Create timer used to toggle (and update) tracking
+        self.trackingtimer = QtCore.QTimer()
+        self.trackingtimer.timeout.connect(self.do_action)
+        self.trackingtimer.start(1000) # ms
+        self.action = ""
+        self.target_alaz = (0,0)
+        self.current_alaz = (0,0)
+
         ## Make sure Noise Diode is turned off until implemented in GUI etc.
         #self.set_noise_diode(False)
 
@@ -49,24 +57,29 @@ class TelescopeController:
     def reset(self):
         pass
 
+    def do_action(self):
+        if self.action=="MOVE":
+            self._move()
+        elif self.action=="STOP":
+            self._stop()
+        elif self.action=="RESET":
+            self._reset()
+        else:
+            self._get_current_alaz()
+        self.action=""
+
     def md01(self, m):
-        try:
-            # Send message to MD01
-            self.socket.send(m)
-            # Read response from MD01
-            data = self.socket.recv(1024)
-            # Decode bytes to hex
-            return data.hex()
-        except socket.error:
-            print( "Lost MD01 connection. Trying to reconnect..." )
-            connected = False
-            while not connected:
-                self.connect_md01()
-                connected = True
-                print( "re-connection successful" )
-                time.sleep(5)
+        # Send message to MD01
+        self.socket.send(m)
+        # Read response from MD01
+        data = self.socket.recv(1024)
+        # Decode bytes to hex
+        return data.hex()
        
     def stop(self):
+        self.action="STOP"
+
+    def _stop(self):
         """Stops any movement of the telescope """
         #Format status request message as bytes
         msg = bytes.fromhex("57000000000000000000000F20")
@@ -90,30 +103,11 @@ class TelescopeController:
             #print 'AL: Sorry, altitude' + str(al) + ' is not reachable by this telescope.'
             return False
 
-        ## CHECK AZIMUTH
-        #if (az > self.maxaz_deg):
-        #    # This assumes that azimuth is always given in range 0 to 360,
-        #    # something assured by the high-level system. But, here we need to
-        #    # account for the fact that the telescope works in a range which
-        #    # might be negative (for practical programming reasons).
-        #    az = az-360.0
-        ## If just comparing min_az with requested az, we get silly error for
-        ## example that the minimum az itself is not allowed, since comparision
-        ## of decimal numbers very close is tricky (floating point math...) So,
-        ## instead check if difference (with right sign) is larger than the
-        ## minimum error. Since the mininum error in the telescope will be
-        ## larger than the floating point error, this comparison should work.
-        #if (self.minaz_deg-az)>self.get_min_azerror_deg():
-        #    az = round(az,2)
-        #    #print 'AZ: Sorry, azimuth ' + str(az) + ' is not reachable by this telescope.'
-        #    return False
-        # 
-        # All checks passed, so return True
         return True
 
-    def move(self):
+    def _move(self):
         tel, taz = self.target_alaz
-        tel, taz = self.pcor(tel, taz)
+        print("Moving to (pointing corrected) alt,az ",tel, taz)
         PH = 10 # Pulses per degree, 0A in hex
         PV = 10 # Pulses per degree, 0A in hex
         H = str(int(PH * (360+taz)))
@@ -135,12 +129,17 @@ class TelescopeController:
 
     def set_target_alaz(self, al, az):
         """Set the target altitude and azimuth of the telescope. Arguments in degrees."""
-        if self.can_reach(al,az):
-            self.target_alaz = (round(al,1), round(az,1))
+        tal, taz = self.pcor(al, az)
+        if self.can_reach(tal,taz):
+            new_target_alaz = (round(tal,1), round(taz,1))
+            print("old target", self.target_alaz, "new target", new_target_alaz, "current", self.current_alaz)
+            if not new_target_alaz==self.target_alaz:
+                self.target_alaz=new_target_alaz
+                self.action="MOVE"
         else: 
             raise ValueError("Cannot reach desired position. Target outside altitude range " + str(round(self.minal_deg,2)) + " to "+ str(round(self.maxal_deg,2))+" degrees. Please adjust your desired position.")
     
-    def get_current_alaz(self):
+    def _get_current_alaz(self):
         """Returns the current altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
         #Format status request message as bytes
         msg = bytes.fromhex("57000000000000000000001F20")
@@ -157,7 +156,10 @@ class TelescopeController:
         # Calculate angles for Az/El
         az = H1 * 100 + H2 * 10 + H3 + H4 / 10 -360
         el = V1 * 100 + V2 * 10 + V3 + V4 / 10 -360
-        return self.invpcor(el, az)
+        self.current_alaz = (el, az)
+
+    def get_current_alaz(self):
+        return self.invpcor(*self.current_alaz)
 
     def invpcor(self, al,az):
         return (al-self.offset_al_deg, az-self.offset_az_deg)
@@ -165,9 +167,9 @@ class TelescopeController:
     def pcor(self, al,az):
         return (al+self.offset_al_deg, az+self.offset_az_deg)
 
-    def is_close_to_target(self):
+    def is_tracking(self):
         """Returns true if telescope is close enough to observe, else False."""
-        cal, caz = self.get_current_alaz()
+        cal, caz = self.current_alaz
         tal, taz = self.target_alaz
         dist = self._get_angular_distance(cal, caz, tal, taz)
         if dist< self.close_enough_distance:
@@ -179,24 +181,7 @@ class TelescopeController:
         """ This function calculates the distance needed to move in azimuth to between two angles. This takes into account that the 
         telescope may need to go 'the other way around' to reach some positions, i.e. the distance to travel can be much larger than the 
         simple angular distance. This assumes that both azimuth positions are valid, something which can be checked first with the can_reach function."""
-        
-        ## CHECK AZIMUTH
-        ## This assumes that azimuth is always given in range 0 to 360,
-        ## something assured by the high-level system. But, here we need to
-        ## account for the fact that the telescope works in a range which
-        ## might be negative (for practical programming reasons).
-        # if (az1 > self.maxaz_deg):
-        #     az1 = az1-360.0
-        # elif (az1 < self.minaz_deg):
-        #     az1 = az1+360.0
-        # # Second position
-        # if (az2 > self.maxaz_deg):
-        #     az2 = az2-360.0
-        # elif (az2 < self.minaz_deg):
-        #     az2 = az2+360.0
-        # # Now return the distance needed to travel in degrees
         return np.abs(az1-az2)
-
 
     # Takes angular coordinates of two points and calculates the 
     # angular distance between them by converting to cartesian unit vectors and taking the dot product.

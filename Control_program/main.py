@@ -103,10 +103,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.uitimer.timeout.connect(self.update_Ui)
         self.uitimer.start(250) #ms
 
-        # Create timer used to toggle (and update) tracking
-        # Do not start this, started by user on Track button.
-        self.trackingtimer = QtCore.QTimer()
-        self.trackingtimer.timeout.connect(self.track)
 
         # Reset needs its own timer to be able
         # to check if reset position has been reached
@@ -701,26 +697,18 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.ref_time_spinBox.setEnabled(False)
             self.loops_spinbox.setEnabled(False)
             self.int_time_spinbox.setEnabled(True)
+        if self.btn_track.text()=="Stop":
+            self.track()
 
         # Update simple UI distance value
         cal, caz = self.telescope.get_current_alaz()
         tal, taz = self.calculate_desired_alaz()
         dist = self.telescope._get_angular_distance(cal, caz, tal, taz)
-        if (dist<0.2 and self.trackingtimer.isActive()):
+        if (dist<0.25):
             self.distance.setText("TRACKING")
         else:
             self.distance.setText("{0:4.3f}".format(dist))
 
-        #if ((not self.telescope.is_moving()) and (not self.trackingtimer.isActive())):
-        if (not self.trackingtimer.isActive()):
-            self.btn_track.setEnabled(True)
-            #self.btn_reset.setEnabled(True)
-            self.btn_reset.setEnabled(False)
-            self.btn_track.setText('Track')
-            self.btn_GO.setText('GO')
-            style = "QWidget {}"
-            self.btn_track.setStyleSheet(style)
-            self.btn_GO.setStyleSheet(style)
 
     def update_desired_object(self):
         target = self.objectselector.currentText()
@@ -839,7 +827,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.inputleftcoord.setText('0.0')
                 self.inputrightcoord.setText('0.0')
             # Unlock input if not in Sun/Cas A mode.
-            if not self.trackingtimer.isActive():
+            if self.btn_track.text()=="Track":
                 self.inputleftcoord.setReadOnly(False)
                 self.inputrightcoord.setReadOnly(False)
 
@@ -860,7 +848,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cur_az.setText(rightval)
         # Color coding works, but what about color blind people?
         # Should perhaps use blue and yellow?
-        if self.trackingtimer.isActive() and self.telescope.is_close_to_target():
+        if self.telescope.is_tracking() and self.btn_track.text()=="Stop":
             style = "QLineEdit {background-color:green; font-size: 13pt;}"
         else:
             style = "QLineEdit {background-color:yellow; font-size: 13pt;}"
@@ -871,11 +859,11 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
     def update_coord_labels(self):
         target = self.coordselector.currentText()
         if target == 'Horizontal':
-            leftval = 'Altitude [deg]'
-            rightval = 'Azimuth [deg]'
+            leftval = 'Altitude [deg]:'
+            rightval = 'Azimuth [deg]:'
         elif (target == 'Galactic' or target == 'Ecliptic'):
-            leftval = 'Longitude [deg]'
-            rightval = 'Latitude [deg]'
+            leftval = 'Long. [deg]:'
+            rightval = 'Lat. [deg]:'
         elif (target == 'Eq. J2000' or target == 'Eq. B1950'):
             leftval = 'R.A. [H:M:S]'
             rightval = 'Dec. [D:\':\"]'
@@ -1015,10 +1003,10 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def track_or_stop(self):
-        if self.trackingtimer.isActive():
+        if self.btn_track.text()=="Stop":
             self.stop()
         else:
-            self.start_tracking()
+            self.track()
 
     def disable_movement_controls(self):
         self.inputleftcoord.setReadOnly(True)
@@ -1038,35 +1026,35 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.languageselector.setEnabled(False)
 
     def enable_movement_controls(self):
+        self.btn_track.setEnabled(True)
+        self.btn_reset.setEnabled(False)
+        self.btn_track.setText('Track')
+        self.btn_GO.setText('GO')
+        style = "QWidget {}"
+        self.btn_track.setStyleSheet(style)
+        self.btn_GO.setStyleSheet(style)
         self.inputleftcoord.setReadOnly(False)
         self.inputrightcoord.setReadOnly(False)
         self.offset_left.setReadOnly(False)
         self.offset_right.setReadOnly(False)
-        self.trackingtimer.stop()
-        #Tracking button text is handeled by the update_UI-function to check that the telescope is still before offering new track position
         self.objectselector.setEnabled(True)
         self.coordselector.setEnabled(True)
         self.GNSSselector.setEnabled(True)
-        #self.btn_track.setText('Stopping...')
-        style = "QWidget { background-color:orange;}"
-        self.btn_track.setStyleSheet(style)
-        self.btn_GO.setStyleSheet(style)
+        #style = "QWidget { background-color:orange;}"
+        #self.btn_track.setStyleSheet(style)
+        #self.btn_GO.setStyleSheet(style)
         # Language, since changing will reset selector list
         self.languageselector.setEnabled(True)
 
-    def start_tracking(self):
+    def track(self):
         try:
             # This includes a check if position is reachable
             (alt_deg, az_deg) = self.calculate_desired_alaz()
             self.telescope.set_target_alaz(alt_deg, az_deg)
             self.update_desired_altaz()
-            # Toggle tracking on
-            self.trackingtimer.start(1000) # ms
-            # Do not wait for tracking timer first time,
-            # start tracking directly.
             self.disable_movement_controls()
-            self.track()
         except Exception as e:
+            self.stop()
             self.show_message(e)
 
     def show_message(self, e):
@@ -1083,15 +1071,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         #msg.setInformativeText(m)
         msg.setWindowTitle("Telescope error")
         msg.exec_()
-
-    def track(self):
-        try:
-            (alt_deg, az_deg) = self.calculate_desired_alaz()
-            self.telescope.set_target_alaz(alt_deg, az_deg)
-            self.telescope.move()
-        except Exception as e:
-            self.show_message(e)
-            self.stop()
 
     def stop(self):
         self.telescope.stop()
