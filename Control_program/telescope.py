@@ -84,6 +84,8 @@ class TelescopeController:
         #Format status request message as bytes
         msg = bytes.fromhex("57000000000000000000000F20")
         self.md01(msg)
+        # Remove local memory of previous target position, else we cannot stop and restart slew to same position.
+        self.target_alaz = (-1,-1)
 
     def can_reach(self, al, az):
         """Check if telescope can reach this position. Assuming input in degrees.
