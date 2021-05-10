@@ -19,7 +19,8 @@ def conid():
     #print(ans.strip())
 
 def poll():
-    msg = "read:ttl:2?\n"
+    msg = "read:ttl:1?\n" # brage
+    #msg = "read:ttl:2?\n" # vale
     # Send message
     sock.sendall(msg.encode("ascii"))
     # Wait to generate answer
