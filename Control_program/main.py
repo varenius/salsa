@@ -449,7 +449,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             fitsfile = tmpfile + '.fits'
             spectrum.save_to_fits(fitsfile)
             pngfile = tmpfile + '.png'
-            plt.savefig(pngfile) # current item
+            self.figure.savefig(pngfile) # current item
             spectrum.upload_to_archive(fitsfile, pngfile, txtfile)
             self.btn_upload.setEnabled(False)
 
