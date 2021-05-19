@@ -1005,7 +1005,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def track_or_stop(self):
-        if self.btn_track.text()=="Stop":
+        if self.btn_track.text()=="Stop" or self.btn_GO.text()=="STOP":
             self.stop()
         else:
             self.track()
