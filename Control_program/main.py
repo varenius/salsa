@@ -754,9 +754,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             cind = self.coordselector.findText("Galactic", QtCore.Qt.MatchFixedString)
             self.coordselector.setCurrentIndex(cind)
             # set other things
-            self.inputleftcoord.setReadOnly(True)
-            self.inputrightcoord.setReadOnly(True)
-            self.inputleftcoord.setText('120.0')
+            self.inputleftcoord.setText('100.0')
             self.inputrightcoord.setText('0.0')
             bind = self.BandwidthInput.findText("2.5", QtCore.Qt.MatchFixedString)
             self.BandwidthInput.setCurrentIndex(bind)
@@ -773,8 +771,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             cind = self.coordselector.findText("Galactic", QtCore.Qt.MatchFixedString)
             self.coordselector.setCurrentIndex(cind)
             # set other things
-            self.inputleftcoord.setReadOnly(True)
-            self.inputrightcoord.setReadOnly(True)
             self.inputleftcoord.setText('140.0')
             self.inputrightcoord.setText('0.0')
             bind = self.BandwidthInput.findText("2.5", QtCore.Qt.MatchFixedString)
@@ -794,6 +790,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             # set other things
             self.inputleftcoord.setReadOnly(True)
             self.inputrightcoord.setReadOnly(True)
+            self.inputleftcoord.setText('Stow')
+            self.inputrightcoord.setText('Stow')
 
     def update_desired_target(self):
         target = self.coordselector.currentText()
