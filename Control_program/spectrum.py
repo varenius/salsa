@@ -74,6 +74,7 @@ class SALSA_spectrum:
         # This list contains peaks which are not properly picked by by the MWF filter.
         known_RFI = [[1420.4+4.595, 0.02],
                      [1420.4-0.392, 0.02],
+                     [1420.4+0.022, 0.02],
                      ]
         for item in known_RFI:
             RFI_freq = item[0] *1e6 
