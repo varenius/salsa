@@ -40,7 +40,7 @@ class TelescopeController:
         # Create timer used to toggle (and update) tracking
         self.trackingtimer = QtCore.QTimer()
         self.trackingtimer.timeout.connect(self.do_action)
-        self.trackingtimer.start(1000) # ms
+        self.trackingtimer.start(1000) # ms. VERY IMPORTANT: Never go quicker than once per second, else PULS TIMEOUT errors.
         self.action = ""
         self.target_alaz = (0,0)
         self.current_alaz = (0,0)
@@ -71,6 +71,7 @@ class TelescopeController:
     def md01(self, m):
         # Send message to MD01
         self.socket.send(m)
+        time.sleep(0.01) # Seconds, to ensure message is ready, just in case
         # Read response from MD01
         data = self.socket.recv(1024)
         # Decode bytes to hex
