@@ -410,7 +410,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
                     else:
                         # No good temperature data. Assume static temp for now
                         temp = 285
-                    TSYS = temp + 50 # Empirical addition to account for non-ambient noise sources
+                    trec = 0 # Empirical addition to account for non-ambient noise sources
+                    TSYS = temp + trec
                 sigspec.data = TSYS*(sigspec.data-refspec.data)/refspec.data
             # Average to desired number of channels
             nchans = self.sigworker.measurement.noutchans
