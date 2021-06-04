@@ -35,11 +35,18 @@ def getdata(tobs, conf, tel, alt, az):
     # Average to desired number of channels
     nchans = measurement.noutchans
     sigspec.decimate_channels(nchans)
-    res = "RESULT at {} : Power={:6.1f}, alt={:6.1f}, az={:6.1f}".format(ephem.now(), round(sigspec.get_total_power(),4), alt, az)
+    global reflevel
+    if reflevel <0:
+        reflevel = sigspec.get_total_power()
+        res = "REF at {} : Power={:6.1f} alt={:6.1f} az={:6.1f}".format(ephem.now(), reflevel, alt, az)
+    else:
+        fglevel = sigspec.get_total_power()
+        res = "SUN at {} : Power={:6.1f} alt={:6.1f} az={:6.1f} REF(az-10)={:6.1f}".format(ephem.now(), fglevel, alt, az, reflevel)
+        reflevel = -1
+        of = open(outfile,"a")
+        of.write(res+"\n")
+        of.close()
     print(res)
-    of = open(outfile,"a")
-    of.write(res+"\n")
-    of.close()
 
 def getsun(tel):
     tel.site.date = ephem.now()
@@ -60,12 +67,18 @@ def getsun(tel):
 def trackormeasure():
     tal, taz = getsun(telescope)
     cal, caz = telescope.get_current_alaz()
+    if reflevel <0:
+        tar = "Ref"
+        #Measure background level, offset by 10 degrees
+        taz = taz - 10
+    else:
+        tar = "The Sun"
     dist = telescope._get_angular_distance(cal, caz, tal, taz)
     if dist<0.2:
-        print("Taking data at alt ", round(cal,1), " az ", round(caz,1))
+        print("Taking data at ", tar, ": alt ", round(cal,1), " az ", round(caz,1))
         getdata(2, config, telescope, cal, caz)
     else:
-        print("SLEWING to : alt ", round(tal,1), " az ", round(taz,1), ". ", round(dist,1), " deg to go...")
+        print("SLEWING to ", tar, ": alt ", round(tal,1), " az ", round(taz,1), ". ", round(dist,1), " deg to go...")
         telescope.set_target_alaz(tal, taz)
 
 if not len(sys.argv)==2:
@@ -82,6 +95,7 @@ configfile = '/opt/salsa/controller/SALSA.config'
 config = configparser.ConfigParser()
 config.read(configfile)
 telescope = TelescopeController(config)
+reflevel = -1
 
 print("... loaded. Will track Sun and write output data to specified file ", outfile)
 print("NOTE: Press CTRL-C to stop!")
