@@ -26,18 +26,16 @@ def getdata(tobs, conf, tel, alt, az):
     usrp_gain = int(conf.get('USRP', 'usrp_gain'))
     coordsys =  "The Sun"
     satellite = ""
-    print("started meas")
     measurement = Measurement(sig_freq, ref_freq, switched, int_time, sig_time, ref_time, bw, calt_deg, caz_deg, site, nchans, observer, conf, coff_alt, coff_az, usrp_gain, coordsys, satellite)
     measurement.measure()
     #time.sleep(sig_time + 2)
-    print("finished")
 
     sigspec = measurement.signal_spec
     sigspec.auto_edit_bad_data()
     # Average to desired number of channels
     nchans = measurement.noutchans
     sigspec.decimate_channels(nchans)
-    res = "{} : {:10.3f}, alt={:6.1f}, az={:6.1f}".format(ephem.now(), round(sigspec.get_total_power(),4), alt, az)
+    res = "RESULT at {} : Power={:6.1f}, alt={:6.1f}, az={:6.1f}".format(ephem.now(), round(sigspec.get_total_power(),4), alt, az)
     print(res)
     of = open(outfile,"a")
     of.write(res+"\n")
@@ -60,18 +58,20 @@ def getsun(tel):
     return alt_deg, az_deg
     
 def trackormeasure():
-        tal, taz = getsun(telescope)
-        cal, caz = telescope.get_current_alaz()
-        dist = telescope._get_angular_distance(cal, caz, tal, taz)
-        if dist<0.2:
-            getdata(2, config, telescope, cal, caz)
-        else:
-            print("SLEWING to : ",tal, taz, " ... ", round(dist,1), " deg to go...")
-            telescope.set_target_alaz(tal, taz)
+    tal, taz = getsun(telescope)
+    cal, caz = telescope.get_current_alaz()
+    dist = telescope._get_angular_distance(cal, caz, tal, taz)
+    if dist<0.2:
+        print("Taking data at alt ", round(cal,1), " az ", round(caz,1))
+        getdata(2, config, telescope, cal, caz)
+    else:
+        print("SLEWING to : alt ", round(tal,1), " az ", round(taz,1), ". ", round(dist,1), " deg to go...")
+        telescope.set_target_alaz(tal, taz)
 
 if not len(sys.argv)==2:
     print("Please give outfile to store data as 'script.py OUTFILE'")
     sys.exit()
+print("Starting SALSA Sun logging software...")
 outfile = sys.argv[1]
 app = QtWidgets.QApplication(sys.argv)
 ##### SET CONFIG FILE #######
@@ -83,6 +83,8 @@ config = configparser.ConfigParser()
 config.read(configfile)
 telescope = TelescopeController(config)
 
+print("... loaded. Will track Sun and write output data to specified file ", outfile)
+print("NOTE: Press CTRL-C to stop!")
 # Create timer used to check tracking and do measurements
 clock = QtCore.QTimer()
 clock.timeout.connect(trackormeasure)
