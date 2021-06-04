@@ -58,7 +58,7 @@ class TelescopeController:
         pass
 
     def do_action(self):
-        print(self.action)
+        #print(self.action)
         if self.action=="MOVE":
             # If we are going to move to new position, first stop
             self._stop()
