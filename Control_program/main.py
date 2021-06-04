@@ -29,7 +29,7 @@ from tendo import singleton
 me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
 ##### SET CONFIG FILE #######
-scriptpath = os.path.dirname(os.path.abspath(__file__))
+scriptpath = os.path.dirname(os.path.realpath(__file__))
 configfile = scriptpath + '/SALSA.config'
 #############################
 
