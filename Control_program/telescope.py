@@ -58,15 +58,26 @@ class TelescopeController:
         pass
 
     def do_action(self):
+        print(self.action)
         if self.action=="MOVE":
-            self._move()
+            # If we are going to move to new position, first stop
+            self._stop()
+            # Then tell us to move as next action
+            self.action="START"
+        elif self.action=="START":
+            self._start()
+            self.action=""
         elif self.action=="STOP":
             self._stop()
+            self.action=""
+            # Remove local memory of previous target position, else we cannot stop and restart slew to same position.
+            self.target_alaz = (-1,-1)
         elif self.action=="RESET":
             self._reset()
+            self.action=""
         else:
             self._get_current_alaz()
-        self.action=""
+            self.action=""
 
     def md01(self, m):
         # Send message to MD01
@@ -85,8 +96,6 @@ class TelescopeController:
         #Format status request message as bytes
         msg = bytes.fromhex("57000000000000000000000F20")
         self.md01(msg)
-        # Remove local memory of previous target position, else we cannot stop and restart slew to same position.
-        self.target_alaz = (-1,-1)
 
     def can_reach(self, al, az):
         """Check if telescope can reach this position. Assuming input in degrees.
@@ -108,7 +117,7 @@ class TelescopeController:
 
         return True
 
-    def _move(self):
+    def _start(self):
         tel, taz = self.target_alaz
         #print("Moving to (pointing corrected) alt,az ",tel, taz)
         PH = 10 # Pulses per degree, 0A in hex
