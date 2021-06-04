@@ -6,8 +6,14 @@ import datetime
 import time
 
 def on_press(event):
-    plot(inf)
+    sys.stdout.flush()
+    if event.key == 'r':
+        plot(inf)
+    elif event.key == 'q':
+        sys.exit(0)
+
 def plot(infile):
+    plt.close("all")
     data = []
     for l in open(infile):
         ls = l.split()
@@ -31,16 +37,12 @@ def plot(infile):
     ax[0].plot(data[:,0],data[:,1])
     ax[1].plot(data[:,0],data[:,2])
     ax[2].plot(data[:,0],data[:,3])
-
-inf = sys.argv[1]
-plt.ion()
-plt.show()
-
-while True:
-    plt.close("all")
-    plot(inf)
+    f.suptitle("Press 'r' key to re-load latest data, 'q' to quit")
     plt.draw()
     plt.pause(0.001)
-    ans = input("Press [enter] to redraw the plot with new data, or type 'quit' and press enter to exit plotting: ")
-    if ans.lower()=="quit":
-        sys.exit(1)
+
+# Get infile supplied as argument
+inf = sys.argv[1]
+# Plot the data, awaiting key-press events
+plot(inf)
+plt.show()
