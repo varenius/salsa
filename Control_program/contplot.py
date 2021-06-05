@@ -37,12 +37,12 @@ def plot(infile):
     ax[3].set_ylabel("Alt")
     ax[4].set_ylabel("Az")
     ax[4].set_xlabel("UTC Time")
-
-    ax[0].plot(data[:,0],data[:,1]-data[:,4], label="The Sun - Ref")
-    ax[1].plot(data[:,0],data[:,1], label="The Sun (inc. ref)")
-    ax[2].plot(data[:,0],data[:,4], label="Reference")
-    ax[3].plot(data[:,0],data[:,2])
-    ax[4].plot(data[:,0],data[:,3])
+    ms = 1 # Markersize
+    ax[0].plot(data[:,0],data[:,1]-data[:,4], linestyle="none", markersize=ms, marker='o', label="The Sun - Ref")
+    ax[1].plot(data[:,0],data[:,1], linestyle="none", markersize=ms, marker='o', label="The Sun (inc. ref)")
+    ax[2].plot(data[:,0],data[:,4], linestyle="none", markersize=ms, marker='o', label="Reference")
+    ax[3].plot(data[:,0],data[:,2], linestyle="none", markersize=ms, marker='o')
+    ax[4].plot(data[:,0],data[:,3], linestyle="none", markersize=ms, marker='o')
     f.suptitle("Press 'r' key to re-load latest data, 'q' to quit")
     plt.draw()
     plt.pause(0.001)
