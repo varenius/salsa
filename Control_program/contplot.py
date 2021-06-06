@@ -4,6 +4,7 @@ import numpy as np
 import sys
 import datetime
 import time
+from scipy.signal import savgol_filter
 
 def on_press(event):
     sys.stdout.flush()
@@ -38,7 +39,12 @@ def plot(infile):
     ax[4].set_ylabel("Az")
     ax[4].set_xlabel("UTC Time")
     ms = 1 # Markersize
-    ax[0].plot(data[:,0],data[:,1]-data[:,4], linestyle="none", markersize=ms, marker='o', label="The Sun - Ref")
+    refamp = min(data[:,4])
+    corr = refamp/data[:,4]
+    diff = data[:,1]*corr-refamp
+    diff_smooth = savgol_filter(diff, 101, 3) # window size 51, polynomial order 3
+    ax[0].plot(data[:,0],diff, linestyle="none", markersize=ms, marker='o', label="The Sun - Ref")
+    ax[0].plot(data[:,0],diff_smooth, linestyle="--", markersize=ms, marker='o', label="The Sun - Ref")
     ax[1].plot(data[:,0],data[:,1], linestyle="none", markersize=ms, marker='o', label="The Sun (inc. ref)")
     ax[2].plot(data[:,0],data[:,4], linestyle="none", markersize=ms, marker='o', label="Reference")
     ax[3].plot(data[:,0],data[:,2], linestyle="none", markersize=ms, marker='o')
