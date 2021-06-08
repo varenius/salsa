@@ -32,9 +32,9 @@ def plot(infile):
     data = np.array(data)
     f,ax = plt.subplots(5, sharex=True)
     f.canvas.mpl_connect('key_press_event', on_press)
-    ax[0].set_ylabel("Sun")
-    ax[1].set_ylabel("Total")
-    ax[2].set_ylabel("Ref")
+    ax[0].set_ylabel("Total")
+    ax[1].set_ylabel("Ref")
+    ax[2].set_ylabel("Diff")
     ax[3].set_ylabel("Alt")
     ax[4].set_ylabel("Az")
     ax[4].set_xlabel("UTC Time")
@@ -46,10 +46,10 @@ def plot(infile):
     if ndata % 2 ==0:
         ndata = ndata -1
     diff_smooth = savgol_filter(diff, min(ndata,101), 3) # window size , polynomial order
-    ax[0].plot(data[:,0],diff, linestyle="none", markersize=ms, marker='o', label="The Sun - Ref")
-    ax[0].plot(data[:,0],diff_smooth, linestyle="--", markersize=ms, marker='o', label="The Sun - Ref")
-    ax[1].plot(data[:,0],data[:,1], linestyle="none", markersize=ms, marker='o', label="The Sun (inc. ref)")
-    ax[2].plot(data[:,0],data[:,4], linestyle="none", markersize=ms, marker='o', label="Reference")
+    ax[0].plot(data[:,0],data[:,1], linestyle="none", markersize=ms, marker='o') # Total
+    ax[1].plot(data[:,0],data[:,4], linestyle="none", markersize=ms, marker='o') # Ref
+    ax[2].plot(data[:,0],diff, linestyle="none", markersize=ms, marker='o') # Diff
+    ax[2].plot(data[:,0],diff_smooth, linestyle="--", markersize=ms, marker='o') # Diff, smoothed
     ax[3].plot(data[:,0],data[:,2], linestyle="none", markersize=ms, marker='o')
     ax[4].plot(data[:,0],data[:,3], linestyle="none", markersize=ms, marker='o')
     f.suptitle("Press 'r' key to re-load latest data, 'q' to quit")
