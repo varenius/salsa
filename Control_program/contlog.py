@@ -69,8 +69,8 @@ def trackormeasure():
     cal, caz = telescope.get_current_alaz()
     if reflevel <0:
         tar = "Ref"
-        #Measure background level, offset by 10 degrees
-        taz = taz - 10
+        #Measure background level, offset by 8 degrees
+        taz = taz - 8
     else:
         tar = "The Sun"
     dist = telescope._get_angular_distance(cal, caz, tal, taz)
