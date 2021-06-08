@@ -147,7 +147,8 @@ class TelescopeController:
             #print("old target", self.target_alaz, "new target", new_target_alaz, "current", self.current_alaz)
             if not new_target_alaz==self.target_alaz:
                 self.target_alaz=new_target_alaz
-                self.action="MOVE"
+                #self.action="MOVE"
+                self.action="START"
         else: 
             raise ValueError("Cannot reach desired position. Target outside altitude range " + str(round(self.minal_deg,2)) + " to "+ str(round(self.maxal_deg,2))+" degrees. Please adjust your desired position.")
     
