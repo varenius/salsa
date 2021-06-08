@@ -32,6 +32,9 @@ stowaz=260
 # When snowing, use these:
 #stowal=0
 #stowaz=220
+# Positions used for automatic alignment
+resetaz=181
+resetal=0
 
 [I/O]
 host=192.168.5.72
