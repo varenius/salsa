@@ -1028,7 +1028,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def enable_movement_controls(self):
         self.btn_track.setEnabled(True)
-        self.btn_reset.setEnabled(False)
+        self.btn_reset.setEnabled(True)
         self.btn_track.setText('Track')
         self.btn_GO.setText('GO')
         style = "QWidget {}"
@@ -1067,23 +1067,23 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             m = str(e)
         print(m)
         msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setText(m)
         #msg.setInformativeText(m)
-        msg.setWindowTitle("Telescope error")
+        msg.setWindowTitle("Telescope message:")
         msg.exec_()
 
     def stop(self):
         self.telescope.stop()
         self.enable_movement_controls()
 
-    def reset_needed(self):
-        # Telescope must apparently be resetted
-        self.btn_track.setEnabled(False)
-        self.btn_reset.setEnabled(True)
-        self.btn_observe.setEnabled(False)
-        msg = "Dear user. The telescope is lost, this may happen when there is a power cut. A reset is needed for SALSA to know where it is pointing. Please press reset and wait until reset is finished."
-        self.show_message(msg)
+    #def reset_needed(self):
+    #    # Telescope must apparently be resetted
+    #    self.btn_track.setEnabled(False)
+    #    self.btn_reset.setEnabled(True)
+    #    self.btn_observe.setEnabled(False)
+    #    msg = "Dear user. The telescope is lost, this may happen when there is a power cut. A reset is needed for SALSA to know where it is pointing. Please press reset and wait until reset is finished."
+    #    self.show_message(msg)
 
     def reset(self):
         # Show a message box
@@ -1104,17 +1104,19 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.disable_receiver_controls()
         self.btn_abort.setEnabled(False)
 
-        if self.telescope.isreset():
+        if not self.telescope.isresetting:
             self.resettimer.stop()
             # Set default values for input fields
-            self.inputleftcoord.setText("80.0")
+            self.inputleftcoord.setText("100.0")
             self.inputrightcoord.setText("0.0")
             self.enable_movement_controls()
             self.enable_receiver_controls()
             # Make sure labels are properly updated again, will change input values for fixed objects like the Sun etc.
             self.update_desired_target()
-            self.telescope.set_pos_ok() # Know we know where we are
-            msg = "Dear user: The telescope has been reset and now knows its position. Thank you for your patience."
+            if self.telescope.azresetok and self.telescope.alresetok:
+                msg = "Dear user: The telescope has been reset and now knows its position. Thank you for your patience."
+            else:
+                msg = "ERROR: Reset failed! Please contact SALSA support."
             self.show_message(msg)
 
 

@@ -4,8 +4,138 @@ import ephem
 import numpy as np
 import sys
 from PyQt5 import QtWidgets, QtCore
+import threading
 
-class TelescopeController:
+class resetThread(threading.Thread):
+    """ Class used to run the reset algorithm in a separate thread, otherwise time.sleep will block main excecution."""
+
+    def __init__(self, tel):
+        threading.Thread.__init__(self)
+        self.tel = tel
+
+    def run(self):
+        self._reset_az()
+        self._reset_al()
+        self.tel.isresetting = False # Done with resetting
+
+    def _reset_az(self):
+        # RESET AZ
+        self.tel.stop()
+        resetaz = self.tel.resetaz_deg
+        search = 3 # Search region for reset region, degrees
+        step = 0.5 # Stepsize to find reset region, degrees
+        naz = 10 # Number of reset enlargments. First try +-search, then from +-(2*search to search), then...
+                   # So example: First -3 to +3 deg, then -6 to -3 and +3 to +6, then -9 to -6 and +6 to +9...
+        azfound = False
+        for i in range(naz): 
+            # Define points to check in first half of reset region
+            s1 = np.arange(i*search,(i+1)*search+step, step)
+            # Second half is just the negated range (will double count 0 for i=0, but that's OK)
+            s2 = -1*s1
+            # Create one range of azimuth angles to check, relative to resetaz
+            az2check = np.sort(np.concatenate((s1,s2))) + resetaz
+            print("RESET: Checking azimuth angles {0} ...".format(az2check))
+            ral = 45 # Use altitude during azimuth checks
+            for raz in az2check:
+                self.tel.set_target_alaz(ral, raz)
+                cal, caz = self.tel.get_current_alaz()
+                time.sleep(2) # Allow for some slewing for small angles
+                while not self.tel.is_tracking():
+                    print("RESET: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(raz,ral,caz,cal))
+                    cal, caz = self.tel.get_current_alaz()
+                    time.sleep(2)
+                # Arrived at desired position. Check for reset signal
+                if self.tel._readio()==1:
+                    print("RESET: Found az region! Searching for edge ...")
+                    # Found reset region. Now find edge from negative direction
+                    while self.tel._readio()==1:
+                        cal, caz = self.tel.get_current_alaz()
+                        # Go in negative az until io signal lost
+                        tal = cal
+                        taz = caz-step
+                        self.tel.set_target_alaz(tal, taz) 
+                        time.sleep(2) # Allow for some slewing for small angles
+                        while not self.tel.is_tracking():
+                            cal, caz = self.tel.get_current_alaz()
+                            print("RESET: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(taz,tal,caz,cal))
+                            time.sleep(2)
+                    print("RESET: Found edge, refining...")
+                    while self.tel._readio()==0:
+                        cal, caz = self.tel.get_current_alaz()
+                        # Go in pos az until io signal found again
+                        tal = cal
+                        taz = taz+0.1 # 
+                        self.tel.set_target_alaz(tal, taz) 
+                        time.sleep(2) # Allow for some slewing for small angles
+                        while not self.tel.is_tracking():
+                            print("RESET: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(taz,tal,caz,cal))
+                            cal, caz = self.tel.get_current_alaz()
+                            time.sleep(2)
+                    # We should now be at the proper azimuth reference place!
+                    azfound = True
+                    break
+            if azfound:
+                self.tel.stop()
+                time.sleep(2) # Wait for variables to settle to new state
+                cal, caz = self.tel.get_current_alaz()
+                self.tel.azresetok = True
+                print("RESET: Found reset signal edge at {0}, while resetaz is {1}, so diff {2}".format(caz,resetaz, resetaz-caz))
+                self.tel._set_current_azel(resetaz,cal)
+                time.sleep(2) # Wait for variables to settle to new state
+                print("RESET: Current az position has been set to resetaz.")
+                break
+        if not azfound:
+            self.tel.azresetok = False #
+            print("RESET: AZIMUTH RESET FAILED!")
+
+    def _reset_al(self):
+        # RESET AL
+        resetal = self.tel.resetal_deg
+        alfound = False
+        # First go to 45 deg altitude to prepare that we always do the same movement
+        cal, caz = self.tel.get_current_alaz()
+        tal = 45
+        taz = caz
+        self.tel.set_target_alaz(tal, taz) 
+        time.sleep(2) # Allow for some slewing for small angles
+        while not self.tel.is_tracking():
+            cal, caz = self.tel.get_current_alaz()
+            print(self.tel.target_alaz, self.tel.current_alaz)
+            print("RESET: AL: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(taz,tal,caz,cal))
+            time.sleep(2)
+        # Initialise position memory to see if we are stuck
+        oldal, oldaz = self.tel.get_current_alaz()
+        # Now, go until we hit the limits in al
+        tal = -5
+        self.tel.set_target_alaz(tal, caz)
+        time.sleep(2) # Allow for some slewing to make sure we start moving
+        # Keep counting for how long we have been stuck
+        stuckcount = 0
+        while not self.tel.is_tracking():
+            cal, caz = self.tel.get_current_alaz()
+            if round(cal,1) == round(oldal,1):
+                stuckcount +=1
+            else:
+                stuckcount = 0
+            print("RESET: AL: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(taz,tal,caz,cal))
+            print("RESET: AL: Stuckcount at ", stuckcount)
+            if stuckcount >5:
+                alfound = True
+                # Important to stop, otherwise we get PULS TIMEOUT lock and need to reboot MD01
+                self.tel.stop()
+                break
+            # If no limit, continue
+            oldal, oldaz = self.tel.get_current_alaz()
+            time.sleep(1)
+        if alfound:
+            self.tel.alresetok = True #
+            self.tel._set_current_azel(caz,resetal)
+            print("RESET: Current al position has been set to resetal.", resetal)
+        else:
+            self.tel.alresetok = False #
+            print("RESET: ALTITUDE RESET FAILED!")
+
+class TelescopeController():
     """ Provides functions to communicate with the MD01 telescope driver
     device. Communication via telnet using python socket. """
 
@@ -28,6 +158,9 @@ class TelescopeController:
         # Read stow position from config file
         self.stowal_deg = config.getfloat('MD01', 'stowal')
         self.stowaz_deg = config.getfloat('MD01', 'stowaz')
+        # Read reset position from config file
+        self.resetaz_deg = config.getfloat('MD01', 'resetaz')
+        self.resetal_deg = config.getfloat('MD01', 'resetal')
 
         self.close_enough_distance = config.getfloat('MD01', 'close_enough')
 
@@ -36,6 +169,9 @@ class TelescopeController:
         
         self.minal_deg = config.getfloat('MD01', 'minal')
         self.maxal_deg = config.getfloat('MD01', 'maxal')
+        self.io_host = config.get('I/O', 'host')
+        self.io_port = config.getint('I/O', 'port')
+        self.io_azport = config.getint('I/O', 'azport')
 
         # Create timer used to toggle (and update) tracking
         self.trackingtimer = QtCore.QTimer()
@@ -45,17 +181,36 @@ class TelescopeController:
         self.target_alaz = (0,0)
         self.current_alaz = (0,0)
 
+        self.isresetting = False
+        self.alresetok = False
+        self.azresetok = False
+
         ## Make sure Noise Diode is turned off until implemented in GUI etc.
         #self.set_noise_diode(False)
 
     def set_noise_diode(self, status):
         pass
 
-    def isreset(self):
-        return True
+    def _readio(self):
+        # Create connection object
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((self.io_host, self.io_port)) 
+        msg = "read:ttl:{}?\n".format(self.io_azport)
+        # Send message
+        sock.sendall(msg.encode("ascii"))
+        # Wait to for I/O box to generate answer
+        time.sleep(0.1)
+        # Read response
+        ans = sock.recv(8192).decode("ascii").strip()
+        print("IO reply: ", ans)
+        return int(ans[-1])
 
     def reset(self):
-        pass
+        self.isresetting = True
+        self.alresetok = False
+        self.azresetok = False
+        self.thread = resetThread(self)
+        self.thread.start()
 
     def do_action(self):
         #print(self.action)
@@ -73,7 +228,7 @@ class TelescopeController:
             # Remove local memory of previous target position, else we cannot stop and restart slew to same position.
             self.target_alaz = (-1,-1)
         elif self.action=="RESET":
-            self._reset()
+            self.reset()
             self.action=""
         else:
             self._get_current_alaz()
@@ -87,6 +242,23 @@ class TelescopeController:
         data = self.socket.recv(1024)
         # Decode bytes to hex
         return data.hex()
+    
+    def _set_current_azel(self,taz,tel):
+        """ Set the current az el position of MD01 to the given values. NOTE: This is the actual current position reading, not the target pos.!"""
+        PH = 10 # Pulses per degree, 0A in hex
+        PV = 10 # Pulses per degree, 0A in hex
+        H = str(int(PH * (360+taz)))
+        H1 = "3"+H[0]
+        H2 = "3"+H[1]
+        H3 = "3"+H[2]
+        H4 = "3"+H[3]
+        V = str(int(PV * (360+tel)))
+        V1 = "3"+V[0]
+        V2 = "3"+V[1]
+        V3 = "3"+V[2]
+        V4 = "3"+V[3]
+        msg = bytes.fromhex("57"+H1+H2+H3+H4+"0A"+V1+V2+V3+V4+"0AF920")
+        self.md01(msg)
        
     def stop(self):
         self.action="STOP"
@@ -109,12 +281,12 @@ class TelescopeController:
         comparison, since the local azimuth might be negative in the telescope
         configuration."""
         (al, az) = self.pcor(al,az)
-        # CHECK ALTITUDE
-        if (al > self.maxal_deg or al < self.minal_deg):
-            al = round(al, 2)
-            #print 'AL: Sorry, altitude' + str(al) + ' is not reachable by this telescope.'
-            return False
-
+        # CHECK ALTITUDE, if not resetting
+        if not self.isresetting:
+            if (al > self.maxal_deg or al < self.minal_deg):
+                al = round(al, 2)
+                #print 'AL: Sorry, altitude' + str(al) + ' is not reachable by this telescope.'
+                return False
         return True
 
     def _start(self):
@@ -151,7 +323,7 @@ class TelescopeController:
                 self.action="START"
         else: 
             raise ValueError("Cannot reach desired position. Target outside altitude range " + str(round(self.minal_deg,2)) + " to "+ str(round(self.maxal_deg,2))+" degrees. Please adjust your desired position.")
-    
+        
     def _get_current_alaz(self):
         """Returns the current altitude and azimuth of the telescope as a tuple of decimal numbers [degrees]."""
         #Format status request message as bytes
@@ -246,10 +418,10 @@ class TelescopeController:
             m = str(e)
         print(m)
         msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setText(m)
         #msg.setInformativeText(m)
-        msg.setWindowTitle("Telescope error")
+        msg.setWindowTitle("Telescope message:")
         msg.exec_()
 
     def connect_md01(self):
