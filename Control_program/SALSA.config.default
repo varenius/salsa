@@ -33,6 +33,12 @@ stowaz=260
 #stowal=0
 #stowaz=220
 
+[I/O]
+host=192.168.5.72
+port=23
+# I/O port to read for azimuth sensor. Currently 1 for Brage, 2 for Vale
+azport=1
+
 [USRP]
 # The sampler to record data
 #.32 = Brage, .31 = Vale (to be changed)
