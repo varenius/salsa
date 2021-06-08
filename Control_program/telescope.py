@@ -16,11 +16,12 @@ class resetThread(threading.Thread):
     def run(self):
         self._reset_az()
         self._reset_al()
-        self.tel.isresetting = False # Done with resetting
+        self.tel.action="RESET"
 
     def _reset_az(self):
         # RESET AZ
         self.tel.stop()
+        time.sleep(3) # Ensure we have stopped properly
         resetaz = self.tel.resetaz_deg
         search = 3 # Search region for reset region, degrees
         step = 0.5 # Stepsize to find reset region, degrees
@@ -38,11 +39,11 @@ class resetThread(threading.Thread):
             ral = 45 # Use altitude during azimuth checks
             for raz in az2check:
                 self.tel.set_target_alaz(ral, raz)
-                cal, caz = self.tel.get_current_alaz()
                 time.sleep(2) # Allow for some slewing for small angles
                 while not self.tel.is_tracking():
-                    print("RESET: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(raz,ral,caz,cal))
                     cal, caz = self.tel.get_current_alaz()
+                    print("RESET: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(raz,ral,caz,cal))
+                    self.tel.set_target_alaz(ral, raz)
                     time.sleep(2)
                 # Arrived at desired position. Check for reset signal
                 if self.tel._readio()==1:
@@ -58,6 +59,7 @@ class resetThread(threading.Thread):
                         while not self.tel.is_tracking():
                             cal, caz = self.tel.get_current_alaz()
                             print("RESET: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(taz,tal,caz,cal))
+                            self.tel.set_target_alaz(tal, taz) 
                             time.sleep(2)
                     print("RESET: Found edge, refining...")
                     while self.tel._readio()==0:
@@ -70,19 +72,17 @@ class resetThread(threading.Thread):
                         while not self.tel.is_tracking():
                             print("RESET: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(taz,tal,caz,cal))
                             cal, caz = self.tel.get_current_alaz()
+                            self.tel.set_target_alaz(tal, taz) 
                             time.sleep(2)
                     # We should now be at the proper azimuth reference place!
                     azfound = True
                     break
             if azfound:
-                self.tel.stop()
                 time.sleep(2) # Wait for variables to settle to new state
                 cal, caz = self.tel.get_current_alaz()
                 self.tel.azresetok = True
-                print("RESET: Found reset signal edge at {0}, while resetaz is {1}, so diff {2}".format(caz,resetaz, resetaz-caz))
-                self.tel._set_current_azel(resetaz,cal)
+                print("RESET: Found reset signal edge at {0:5.1f}, while resetaz is {1:5.1f}, so diff {2:5.1f}".format(caz,resetaz, resetaz-caz))
                 time.sleep(2) # Wait for variables to settle to new state
-                print("RESET: Current az position has been set to resetaz.")
                 break
         if not azfound:
             self.tel.azresetok = False #
@@ -90,7 +90,6 @@ class resetThread(threading.Thread):
 
     def _reset_al(self):
         # RESET AL
-        resetal = self.tel.resetal_deg
         alfound = False
         # First go to 45 deg altitude to prepare that we always do the same movement
         cal, caz = self.tel.get_current_alaz()
@@ -100,8 +99,9 @@ class resetThread(threading.Thread):
         time.sleep(2) # Allow for some slewing for small angles
         while not self.tel.is_tracking():
             cal, caz = self.tel.get_current_alaz()
-            print(self.tel.target_alaz, self.tel.current_alaz)
+            #print(self.tel.target_alaz, self.tel.current_alaz)
             print("RESET: AL: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(taz,tal,caz,cal))
+            self.tel.set_target_alaz(tal, taz) 
             time.sleep(2)
         # Initialise position memory to see if we are stuck
         oldal, oldaz = self.tel.get_current_alaz()
@@ -119,18 +119,18 @@ class resetThread(threading.Thread):
                 stuckcount = 0
             print("RESET: AL: Slewing to (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(taz,tal,caz,cal))
             print("RESET: AL: Stuckcount at ", stuckcount)
-            if stuckcount >5:
+            if stuckcount >3:
                 alfound = True
                 # Important to stop, otherwise we get PULS TIMEOUT lock and need to reboot MD01
                 self.tel.stop()
+                time.sleep(3) # Wait for commands to finish
                 break
             # If no limit, continue
             oldal, oldaz = self.tel.get_current_alaz()
+            self.tel.set_target_alaz(tal, caz)
             time.sleep(1)
         if alfound:
             self.tel.alresetok = True #
-            self.tel._set_current_azel(caz,resetal)
-            print("RESET: Current al position has been set to resetal.", resetal)
         else:
             self.tel.alresetok = False #
             print("RESET: ALTITUDE RESET FAILED!")
@@ -228,7 +228,9 @@ class TelescopeController():
             # Remove local memory of previous target position, else we cannot stop and restart slew to same position.
             self.target_alaz = (-1,-1)
         elif self.action=="RESET":
-            self.reset()
+            self._set_current_azel(self.resetaz_deg,self.resetal_deg)
+            print("RESET: Current position has been set to reset position.")
+            self.isresetting = False # Done with resetting
             self.action=""
         else:
             self._get_current_alaz()
@@ -316,8 +318,8 @@ class TelescopeController():
         tal, taz = self.pcor(al, az)
         if self.can_reach(tal,taz):
             new_target_alaz = (round(tal,1), round(taz,1))
-            #print("old target", self.target_alaz, "new target", new_target_alaz, "current", self.current_alaz)
             if not new_target_alaz==self.target_alaz:
+                print("CHANGING TARGET TO (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(*new_target_alaz, *self.target_alaz))
                 self.target_alaz=new_target_alaz
                 #self.action="MOVE"
                 self.action="START"
