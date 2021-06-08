@@ -42,7 +42,10 @@ def plot(infile):
     refamp = min(data[:,4])
     corr = refamp/data[:,4]
     diff = data[:,1]*corr-refamp
-    diff_smooth = savgol_filter(diff, 101, 3) # window size 51, polynomial order 3
+    ndata = len(diff)
+    if ndata % 2 ==0:
+        ndata = ndata -1
+    diff_smooth = savgol_filter(diff, min(ndata,101), 3) # window size , polynomial order
     ax[0].plot(data[:,0],diff, linestyle="none", markersize=ms, marker='o', label="The Sun - Ref")
     ax[0].plot(data[:,0],diff_smooth, linestyle="--", markersize=ms, marker='o', label="The Sun - Ref")
     ax[1].plot(data[:,0],data[:,1], linestyle="none", markersize=ms, marker='o', label="The Sun (inc. ref)")
