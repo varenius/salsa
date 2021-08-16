@@ -16,7 +16,11 @@ class resetThread(threading.Thread):
     def run(self):
         self._reset_az()
         self._reset_al()
-        self.tel.action="RESET"
+        if self.alresetok and self.azresetok:
+            print("INFO: Both AL and AZ resets OK. Setting position.")
+            self.tel.action="RESET"
+        else:
+            print("INFO: AL or AZ reset FAILED! Not setting position!")
 
     def _reset_az(self):
         # RESET AZ
