@@ -319,7 +319,7 @@ class TelescopeController():
         if self.can_reach(tal,taz):
             new_target_alaz = (round(tal,1), round(taz,1))
             if (not new_target_alaz==self.target_alaz) or self.isresetting:
-                print("CHANGING TARGET TO (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(*new_target_alaz, *self.target_alaz))
+                print("CHANGING TARGET TO (el,az) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(*new_target_alaz, *self.target_alaz))
                 self.target_alaz=new_target_alaz
                 #self.action="MOVE"
                 self.action="START"
