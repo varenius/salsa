@@ -36,7 +36,7 @@ class resetThread(threading.Thread):
             # Create one range of azimuth angles to check, relative to resetaz
             az2check = np.sort(np.concatenate((s1,s2))) + resetaz
             print("RESET: Checking azimuth angles {0} ...".format(az2check))
-            ral = 45 # Use altitude during azimuth checks
+            ral = 90 # Use altitude during azimuth checks
             for raz in az2check:
                 self.tel.set_target_alaz(ral, raz)
                 time.sleep(2) # Allow for some slewing for small angles
@@ -91,7 +91,7 @@ class resetThread(threading.Thread):
     def _reset_al(self):
         # RESET AL
         alfound = False
-        # First go to 45 deg altitude to prepare that we always do the same movement
+        # First go to high altitude to prepare that we always do the same movement
         cal, caz = self.tel.get_current_alaz()
         tal = 45
         taz = caz
@@ -318,7 +318,7 @@ class TelescopeController():
         tal, taz = self.pcor(al, az)
         if self.can_reach(tal,taz):
             new_target_alaz = (round(tal,1), round(taz,1))
-            if not new_target_alaz==self.target_alaz:
+            if (not new_target_alaz==self.target_alaz) or self.isresetting:
                 print("CHANGING TARGET TO (az,el) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(*new_target_alaz, *self.target_alaz))
                 self.target_alaz=new_target_alaz
                 #self.action="MOVE"
