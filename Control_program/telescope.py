@@ -14,6 +14,7 @@ class resetThread(threading.Thread):
         self.tel = tel
 
     def run(self):
+        # Must be Az, then Al order, for reset logic to set correct position
         self._reset_az()
         self._reset_al()
         if self.tel.alresetok and self.tel.azresetok:
@@ -94,13 +95,13 @@ class resetThread(threading.Thread):
 
     def _reset_al(self):
         # RESET AL
+        self.tel.stop()
         alfound = False
         # First go to high altitude to prepare that we always do the same movement
         cal, caz = self.tel.get_current_alaz()
         tal = 45
         taz = caz
         self.tel.set_target_alaz(tal, taz) 
-        time.sleep(2) # Allow for some slewing for small angles
         while not self.tel.is_tracking():
             cal, caz = self.tel.get_current_alaz()
             #print(self.tel.target_alaz, self.tel.current_alaz)
@@ -109,6 +110,7 @@ class resetThread(threading.Thread):
             time.sleep(2)
         # Initialise position memory to see if we are stuck
         oldal, oldaz = self.tel.get_current_alaz()
+        print(self.tel.get_current_alaz(), self.tel.action)
         # Now, go until we hit the limits in al
         tal = -5
         self.tel.set_target_alaz(tal, caz)
@@ -135,6 +137,7 @@ class resetThread(threading.Thread):
             time.sleep(1)
         if alfound:
             self.tel.alresetok = True #
+            print("RESET: ALTITUDE RESET APPEARS TO HAVE WORKED!")
         else:
             self.tel.alresetok = False #
             print("RESET: ALTITUDE RESET FAILED!")
@@ -318,15 +321,19 @@ class TelescopeController():
         return (self.stowal_deg, self.stowaz_deg)
 
     def set_target_alaz(self, al, az):
+        print("SET", al, az)
         """Set the target altitude and azimuth of the telescope. Arguments in degrees."""
         tal, taz = self.pcor(al, az)
         if self.can_reach(tal,taz):
+            print("SET", tal, taz)
             new_target_alaz = (round(tal,1), round(taz,1))
-            if new_target_alaz!=self.target_alaz or self.isresetting:
+            if (new_target_alaz!=self.target_alaz):
+                print("SET CHANGE")
                 print("CHANGING TARGET TO (el,az) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(*new_target_alaz, *self.target_alaz))
                 self.target_alaz=new_target_alaz
                 #self.action="MOVE"
                 self.action="START"
+                print("SET ACTION", self.action)
         else: 
             raise ValueError("Cannot reach desired position. Target outside altitude range " + str(round(self.minal_deg,2)) + " to "+ str(round(self.maxal_deg,2))+" degrees. Please adjust your desired position.")
         
