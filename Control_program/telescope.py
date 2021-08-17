@@ -321,19 +321,20 @@ class TelescopeController():
         return (self.stowal_deg, self.stowaz_deg)
 
     def set_target_alaz(self, al, az):
-        print("SET", al, az)
+        # TODO: Fix a proper tracking loop, to check if we for some reason are stuck and not moving
+        #print("SET", al, az)
         """Set the target altitude and azimuth of the telescope. Arguments in degrees."""
         tal, taz = self.pcor(al, az)
         if self.can_reach(tal,taz):
-            print("SET", tal, taz)
+            #print("SET", tal, taz)
             new_target_alaz = (round(tal,1), round(taz,1))
             if (new_target_alaz!=self.target_alaz):
-                print("SET CHANGE")
+                #print("SET CHANGE")
                 print("CHANGING TARGET TO (el,az) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(*new_target_alaz, *self.target_alaz))
                 self.target_alaz=new_target_alaz
                 #self.action="MOVE"
                 self.action="START"
-                print("SET ACTION", self.action)
+                #print("SET ACTION", self.action)
         else: 
             raise ValueError("Cannot reach desired position. Target outside altitude range " + str(round(self.minal_deg,2)) + " to "+ str(round(self.maxal_deg,2))+" degrees. Please adjust your desired position.")
         
