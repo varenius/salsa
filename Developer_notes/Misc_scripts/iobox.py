@@ -6,6 +6,8 @@ import datetime
 # Create connection object
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Note: IP address may change (depends on your config). Port is normally 23 (not 26).
+tel = sys.argv[1].lower() # vale or brage
+print("TEL:", tel)
 sock.connect(("192.168.5.72", 23)) 
 
 def conid():
@@ -19,8 +21,10 @@ def conid():
     #print(ans.strip())
 
 def poll():
-    msg = "read:ttl:1?\n" # brage
-    #msg = "read:ttl:2?\n" # vale
+    if tel == "brage":
+        msg = "read:ttl:1?\n" # brage
+    elif tel == "vale":
+        msg = "read:ttl:2?\n" # vale
     # Send message
     sock.sendall(msg.encode("ascii"))
     # Wait to generate answer
