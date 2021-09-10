@@ -34,25 +34,32 @@ def plot(infile):
     f.canvas.mpl_connect('key_press_event', on_press)
     ax[0].set_ylabel("Total")
     ax[1].set_ylabel("Ref")
-    ax[2].set_ylabel("Diff")
+    ax[2].set_ylabel("Tot-smooth")
     ax[3].set_ylabel("Alt")
     ax[4].set_ylabel("Az")
     ax[4].set_xlabel("UTC Time")
     ms = 1 # Markersize
     refamp = min(data[:,4])
     corr = refamp/data[:,4]
+    tot = data[:,1]
+    t = data[:,0]
     diff = data[:,1]*corr-refamp
     ndata = len(diff)
     if ndata % 2 ==0:
         ndata = ndata -1
     diff_smooth = savgol_filter(diff, min(ndata,101), 3) # window size , polynomial order
-    ax[0].plot(data[:,0],data[:,1], linestyle="none", markersize=ms, marker='o') # Total
-    ax[1].plot(data[:,0],data[:,4], linestyle="none", markersize=ms, marker='o') # Ref
-    ax[2].plot(data[:,0],diff, linestyle="none", markersize=ms, marker='o') # Diff
-    ax[2].plot(data[:,0],diff_smooth, linestyle="--", markersize=ms, marker='o') # Diff, smoothed
-    ax[3].plot(data[:,0],data[:,2], linestyle="none", markersize=ms, marker='o')
-    ax[4].plot(data[:,0],data[:,3], linestyle="none", markersize=ms, marker='o')
-    f.suptitle("Press 'r' key to re-load latest data, 'q' to quit")
+    tot_smooth = savgol_filter(tot, min(ndata,101), 3) # window size , polynomial order
+    ax[0].plot(t, tot, linestyle="none", markersize=ms, marker='o') # Total
+    ax[0].plot(t, tot_smooth, linestyle="--", markersize=ms, marker='o') # Total, smoothed
+    ax[1].plot(t, data[:,4], linestyle="none", markersize=ms, marker='o') # Ref
+    residual = tot-tot_smooth
+    rms = round(np.std(residual))
+    ax[2].plot(t,residual, linestyle="none", markersize=ms, marker='o') # Data - model
+    #ax[2].plot(data[:,0],diff, linestyle="none", markersize=ms, marker='o') # Diff
+    #ax[2].plot(data[:,0],diff_smooth, linestyle="--", markersize=ms, marker='o') # Diff, smoothed
+    ax[3].plot(t,data[:,2], linestyle="none", markersize=ms, marker='o') # Alt
+    ax[4].plot(t,data[:,3], linestyle="none", markersize=ms, marker='o') # Az
+    f.suptitle("Press 'r' key to re-load latest data, 'q' to quit. Tot-Mod RMS = {}".format(rms))
     plt.draw()
     plt.pause(0.001)
 
