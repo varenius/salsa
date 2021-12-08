@@ -198,6 +198,9 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Language
         self.languageselector.currentIndexChanged.connect(self.change_language)
 
+        # Temp disable reset
+        self.btn_reset.setEnabled(False)
+
     def change_language(self):
         app = QtWidgets.QApplication.instance()
         l = self.languageselector.currentText()
@@ -1028,7 +1031,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def enable_movement_controls(self):
         self.btn_track.setEnabled(True)
-        self.btn_reset.setEnabled(True)
+        #self.btn_reset.setEnabled(True)
         self.btn_track.setText('Track')
         self.btn_GO.setText('GO')
         style = "QWidget {}"
@@ -1199,7 +1202,15 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
 
         if self.checkBoxGALILEO.isChecked() == True:
             [GALILEOname, phi_GALILEO, r_GALILEO] = satellites.SatCompute('visible', 'GSAT')  # fills the list with all GALILEO satellites
-            GALILEOname = [j.split()[-2].replace("(","" ) + j.split()[-1].replace(")" ,"") for j in GALILEOname]
+            #GALILEOname = [j.split()[-2].replace("(","" ) + j.split()[-1].replace(")" ,"") for j in GALILEOname]
+            # Handled Gsat names without parentheses
+            Gnamefilt = []
+            for j in GALILEOname:
+                if "(" in j:
+                    gn = j.split()[-2].replace("(","" ) + j.split()[-1].replace(")" ,"")
+                else:
+                    gn = j
+                Gnamefilt.append(gn)
             self.ax.plot(phi_GALILEO, r_GALILEO, 'go', label='GALILEO')
             for i, txt in enumerate(GALILEOname):
                 self.ax.annotate(txt, (phi_GALILEO[i], r_GALILEO[i]))
