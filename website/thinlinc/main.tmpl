@@ -1,83 +1,202 @@
+## Copyright 2001-2020 Cendio AB.
+## For more information, see http://www.cendio.com
+
+#*
+ * Template for Web Access login page
+ *
+ *   Expected variables: FIXME
+ *
+ *  Object classes:
+ *#
 <!DOCTYPE html>
 <html>
-
-## If we want to use an onLoad javascript in a page, we want to define it in 
-## the template for that page. But it will still need to be inserted here. 
-## Because of this, we need to force body.page to be rendered before main. 
-## We do this by referring to it with MaxLen set to 0.
-
-#filter MaxLen
-${body.page, maxlen=0}
-#end filter
-#set $js = $get_javascript()
-
 <head>
-    <title>SALSA Vale</title>
+  <title>SALSA Torre</title>
 
-    <meta charset="utf-8">
+  <meta charset="utf-8">
 
-    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-                Remove this if you use the .htaccess -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+              Remove this if you use the .htaccess -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <!-- Apple iOS Safari settings -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <!-- Apple iOS Safari settings -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-    <link rel="icon" sizes="16x16" type="image/png" href="/app/images/icons/tlclient_16.png">
-    <link rel="icon" sizes="24x24" type="image/png" href="/app/images/icons/tlclient_24.png">
-    <link rel="icon" sizes="32x32" type="image/png" href="/app/images/icons/tlclient_32.png">
-    <link rel="icon" sizes="48x48" type="image/png" href="/app/images/icons/tlclient_48.png">
-    <link rel="icon" sizes="60x60" type="image/png" href="/app/images/icons/tlclient_60.png">
-    <link rel="icon" sizes="64x64" type="image/png" href="/app/images/icons/tlclient_64.png">
-    <link rel="icon" sizes="72x72" type="image/png" href="/app/images/icons/tlclient_72.png">
-    <link rel="icon" sizes="76x76" type="image/png" href="/app/images/icons/tlclient_76.png">
-    <link rel="icon" sizes="96x96" type="image/png" href="/app/images/icons/tlclient_96.png">
-    <link rel="icon" sizes="120x120" type="image/png" href="/app/images/icons/tlclient_120.png">
-    <link rel="icon" sizes="144x144" type="image/png" href="/app/images/icons/tlclient_144.png">
-    <link rel="icon" sizes="152x152" type="image/png" href="/app/images/icons/tlclient_152.png">
-    <link rel="icon" sizes="192x192" type="image/png" href="/app/images/icons/tlclient_192.png">
-    <link rel="icon" sizes="any" type="image/svg+xml" href="/app/images/icons/tlclient.svg">
-    <!-- Repeated last so that legacy handling will pick this -->
-    <link rel="icon" sizes="16x16" type="image/png" href="/app/images/icons/tlclient_16.png">
+  <link rel="icon" sizes="16x16" type="image/png" href="/app/images/icons/tlclient_16.png">
+  <link rel="icon" sizes="24x24" type="image/png" href="/app/images/icons/tlclient_24.png">
+  <link rel="icon" sizes="32x32" type="image/png" href="/app/images/icons/tlclient_32.png">
+  <link rel="icon" sizes="48x48" type="image/png" href="/app/images/icons/tlclient_48.png">
+  <link rel="icon" sizes="60x60" type="image/png" href="/app/images/icons/tlclient_60.png">
+  <link rel="icon" sizes="64x64" type="image/png" href="/app/images/icons/tlclient_64.png">
+  <link rel="icon" sizes="72x72" type="image/png" href="/app/images/icons/tlclient_72.png">
+  <link rel="icon" sizes="76x76" type="image/png" href="/app/images/icons/tlclient_76.png">
+  <link rel="icon" sizes="96x96" type="image/png" href="/app/images/icons/tlclient_96.png">
+  <link rel="icon" sizes="120x120" type="image/png" href="/app/images/icons/tlclient_120.png">
+  <link rel="icon" sizes="144x144" type="image/png" href="/app/images/icons/tlclient_144.png">
+  <link rel="icon" sizes="152x152" type="image/png" href="/app/images/icons/tlclient_152.png">
+  <link rel="icon" sizes="192x192" type="image/png" href="/app/images/icons/tlclient_192.png">
+  <link rel="icon" sizes="any" type="image/svg+xml" href="/app/images/icons/tlclient.svg">
+  <!-- Repeated last so that legacy handling will pick this -->
+  <link rel="icon" sizes="16x16" type="image/png" href="/app/images/icons/tlclient_16.png">
 
-    <link rel="apple-touch-icon" sizes="60x60" type="image/png" href="/app/images/icons/tlclient_60.png">
-    <link rel="apple-touch-icon" sizes="76x76" type="image/png" href="/app/images/icons/tlclient_76.png">
-    <link rel="apple-touch-icon" sizes="120x120" type="image/png" href="/app/images/icons/tlclient_120.png">
-    <link rel="apple-touch-icon" sizes="152x152" type="image/png" href="/app/images/icons/tlclient_152.png">
+  <link rel="apple-touch-icon" sizes="60x60" type="image/png" href="/app/images/icons/tlclient_60.png">
+  <link rel="apple-touch-icon" sizes="76x76" type="image/png" href="/app/images/icons/tlclient_76.png">
+  <link rel="apple-touch-icon" sizes="120x120" type="image/png" href="/app/images/icons/tlclient_120.png">
+  <link rel="apple-touch-icon" sizes="152x152" type="image/png" href="/app/images/icons/tlclient_152.png">
 
-    <!-- Stylesheets -->
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="/styles/main_style.css" type="text/css"
         media="screen" />
-  <link rel="stylesheet" href="/styles/menu_style.css" type="text/css"
-  media="screen" />
 
-#for s in $js['scripts']
-  <script type="text/javascript" ><!--
-$s
-//-->
-  </script>
-#end for
-</head>
+#if not $getVar('targetserver', False)
 
-#if $js.has_key('onload')
-<body onLoad="${js['onload']}()">
+  <script src="/js/loginhome.js"></script>
+
 #else
-<body>
+
+  <script type="text/javascript">
+    function submitfunc () {
+      var redir_done = document.getElementById("redir_done");
+      if (!redir_done.value) {
+        redir_done.value = "1";
+        var frm = document.getElementById("redirform");
+        frm.submit();
+      } else {
+        document.location.href = '../';
+      }
+    }
+    window.onload = submitfunc;
+  </script>
+
 #end if
+
+</head>
+<body>
 
 <div id="body">
   <!--<img src="/images/tlbadge.svg" alt="Cendio ThinLinc">-->
   <img src="/images/logo.png" alt="SALSA $hostname">
-  
-$body
-    <strong>NOTE: </strong>For logging on to the telescope control, you need your "telescope password". To view/change this, go to <a href="http://vale.oso.chalmers.se/salsa/user">My account.</a> </br>For more details on connecting to SALSA, see the <a href="http://vale.oso.chalmers.se/salsa/support">user's manual</a>.</li>
 
+  <table id="container">
+    <tr>
+      <td id="page">
+
+#if not $getVar('targetserver', False)
+
+        ## Errors from the javascript code:
+        <p id="js_error" class="error" style="display: none;"></p>
+
+  ## Errors from the python code:
+  #if $error
+        <p class="error">$newline_to_html($qh($error))</p>
+  #end if
+
+        <form class="login" method="post" id="frm1" action="/"
+              onsubmit="return updatescreensize()">
+          <input type="hidden" name="screen_x_size" value="">
+          <input type="hidden" name="screen_y_size" value="">
+          <input type="hidden" name="pam_type" value="$pam_type">
+  #set global $button_label = "Login"
+
+  #if $new_conversation
+          #*
+           * A new PAM conversation is initiated, show user/password form
+           *#
+          <input type="hidden" name="loginsubmit" value="1">
+
+          <div class="pam_text">Username:</div>
+          <input type="text" class="pam_prompt" name="username" value="$qh($username)"
+    #if not $username
+                 autofocus
+    #end if
+                 autocapitalize="off">
+
+          <div class="pam_text">Password:</div>
+          <input class="pam_prompt" type="password" name="pamresponse" value=""
+    #if $username
+                 autofocus
+    #end if
+                 >
+
+  #else
+          #*
+           * Handle an on-going pamsession
+           *#
+
+          <input type="hidden" name="username" value="$qh($username)">
+          <input type="hidden" name="pamsession" value="$pamsession">
+
+    #if $pam_type == "PAM_TEXT_INFO"
+
+          <div class="pam_text">$newline_to_html($qh($pam_message))</div>
+
+          <script>
+            pam_message_timeout = window.setTimeout(on_pam_message_timeout, 4*1000)
+          </script>
+
+      #set global $button_label = "Next"
+
+    #else if $pam_type == "PAM_ERROR_MSG"
+
+          <div class="pam_text error">$newline_to_html($qh($pam_message))</div>
+
+      #set global $button_label = "Ok"
+
+    #else if $pam_type == "PAM_PROMPT_ECHO_ON"
+
+          <div class="pam_text">$newline_to_html($qh($pam_message))</div>
+
+      #set global $button_label = "Next"
+          <input class="pam_prompt" type="text" name="pamresponse" value="" autofocus>
+
+    #else if $pam_type == "PAM_PROMPT_ECHO_OFF"
+
+          <div class="pam_text">$newline_to_html($qh($pam_message))</div>
+
+      #set global $button_label = "Next"
+          <input class="pam_prompt" type="password" name="pamresponse" value="" autofocus>
+
+    #end if
+
+  #end if
+          <div class="form_submit">
+            <input type="submit" name="submitbutton" onclick="clear_pam_message_timeout()"
+                   value="$button_label" autofocus>
+          </div>
+        </form>
+
+        <noscript>
+          <p class="error">
+            Your browser does not have JavaScript enabled which is required to use ThinLinc Web Access.
+          </p>
+        </noscript>
+
+#else
+
+        <form id="redirform" method="post" action="$targetserver/agent">
+          <input type="hidden" name="username" value="$username">
+          <input type="hidden" name="display" value="$display">
+          <input type="hidden" name="auth_cookie" value="$auth_cookie">
+          <input type="hidden" name="launch_vnc" value="1">
+          <input type='hidden' id="redir_done" value="">
+
+          <div>
+            Redirecting to ThinLinc server $targetserver, please wait...
+          </div>
+        </form>
+
+#end if
+
+      </td>
+    </tr>
+  </table>
 </div>
 
 <div id="footer">
-  ThinLinc Version $tl_version (build $tl_buildnum) on $hostname
+    <strong>NOTE: </strong>For logging on to the telescope control, you need your "telescope password". To view/change this, go to <a href="http://liv.oso.chalmers.se/salsa/user">My account.</a> </br>For more details on connecting to SALSA, see the <a href="http://liv.oso.chalmers.se/salsa/support">user's manual</a>.</li>
+  Version $tl_version (build $tl_buildnum) on $hostname
   <p>Copyright &copy; <a href="http://www.cendio.com/">Cendio AB</a> 2021</p>
 </div>
 </body>
