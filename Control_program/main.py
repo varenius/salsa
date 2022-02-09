@@ -728,9 +728,13 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         if (self.telescope.is_tracking() and self.btn_track.text()=="Stop"):
             self.distance.setText("TRACKING")
         else:
-            self.distance.setText("{0:4.3f}".format(self.telescope.get_slew_dist()))
-
-
+            cal, caz = self.telescope.get_current_alaz()
+            tal = float(self.calc_des_left.text())
+            taz = float(self.calc_des_right.text())
+            dist = self.telescope._get_angular_distance(cal, caz, tal, taz)
+            print(cal, tal, caz, taz, cal-tal, caz-taz, dist)
+            self.distance.setText("{0:4.3f}".format(dist))
+    
     def update_desired_object(self):
         target = self.objectselector.currentText()
         if target == 'The Sun':

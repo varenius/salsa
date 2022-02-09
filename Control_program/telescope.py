@@ -366,14 +366,12 @@ class TelescopeController():
     def pcor(self, al,az):
         return (al+self.offset_al_deg, az+self.offset_az_deg)
 
-    def get_slew_dist(self):
+    def is_tracking(self):
         cal, caz = self.current_alaz
         tal, taz = self.target_alaz
-        return self._get_angular_distance(cal, caz, tal, taz)
-
-    def is_tracking(self):
+        dist = self._get_angular_distance(cal, caz, tal, taz)
         """Returns true if telescope is close enough to observe, else False."""
-        if self.get_slew_dist() < self.close_enough_distance:
+        if dist < self.close_enough_distance:
             return True
         else:
             return False
