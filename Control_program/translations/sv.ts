@@ -55,8 +55,8 @@
     </message>
     <message>
         <location filename="../SALSA_UI.ui" line="142"/>
-        <source>GO</source>
-        <translation type="unfinished"></translation>
+        <source>Move to</source>
+        <translation>Kör till</translation>
     </message>
     <message>
         <location filename="../SALSA_UI.ui" line="205"/>
@@ -435,8 +435,8 @@
     </message>
     <message>
         <location filename="../SALSA_UI.ui" line="160"/>
-        <source>Distance to go [deg]:</source>
-        <translation>Sträcka att köra [grad]:</translation>
+        <source>Angle to target [degrees]:</source>
+        <translation>Vinkel till mål [grader]:</translation>
     </message>
     <message>
         <location filename="../SALSA_UI.ui" line="191"/>

@@ -120,7 +120,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # No webcam yet for "torre"
         if self.config.get('SITE', 'name').lower() == "torre":
             self.btn_webcam.setEnabled(False)
-            self.btn_webcam.setText("Webcam N/A")
 
         # Make sure Ui is updated when changing target
         self.coordselector.currentIndexChanged.connect(self.update_Ui)
@@ -213,6 +212,11 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         trackstat = str(self.btn_track.text())
         olt = str(self.offset_left.text())
         ort = str(self.offset_right.text())
+        # get index of item in coordselector list, used to set as current
+        cind = self.coordselector.currentIndex()
+        oind = self.objectselector.currentIndex()
+        if self.coordselector.currentText() == "GNSS":
+            gind = self.GNSSselector.currentIndex()
 
         app = QtWidgets.QApplication.instance()
         l = self.languageselector.currentText()
@@ -230,6 +234,10 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.offset_left.setText(olt)
         self.offset_right.setText(ort)
         self.btn_track.setText(trackstat)
+        self.coordselector.setCurrentIndex(cind)
+        self.objectselector.setCurrentIndex(oind)
+        if self.coordselector.currentText() == "GNSS":
+            self.GNSSselector.setCurrentIndex(gind)
 
     def change_spectra(self):
         # Plot spectra of currently selected item
@@ -1064,7 +1072,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_track.setEnabled(True)
         #self.btn_reset.setEnabled(True)
         self.btn_track.setText('Track')
-        self.btn_GO.setText('GO')
+        self.btn_GO.setText('Move to')
         style = "QWidget {}"
         self.btn_track.setStyleSheet(style)
         self.btn_GO.setStyleSheet(style)

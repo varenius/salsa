@@ -63,9 +63,9 @@
       <widget class="QComboBox" name="objectselector">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>510</x>
          <y>30</y>
-         <width>161</width>
+         <width>211</width>
          <height>31</height>
         </rect>
        </property>
@@ -109,7 +109,7 @@
       <widget class="QLabel" name="label_5">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>420</x>
          <y>30</y>
          <width>81</width>
          <height>31</height>
@@ -127,27 +127,36 @@
       <widget class="QPushButton" name="btn_GO">
        <property name="geometry">
         <rect>
-         <x>250</x>
+         <x>290</x>
          <y>30</y>
-         <width>81</width>
+         <width>121</width>
          <height>31</height>
         </rect>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>31</height>
+        </size>
+       </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <pointsize>13</pointsize>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true">font-size: 13pt;</string>
+       </property>
        <property name="text">
-        <string>GO</string>
+        <string>Move to</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>420</x>
          <y>70</y>
-         <width>251</width>
+         <width>221</width>
          <height>31</height>
         </rect>
        </property>
@@ -157,15 +166,15 @@
         </font>
        </property>
        <property name="text">
-        <string>Distance to go [deg]:</string>
+        <string>Angle to target [degrees]:</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="distance">
        <property name="geometry">
         <rect>
-         <x>230</x>
+         <x>650</x>
          <y>70</y>
-         <width>101</width>
+         <width>71</width>
          <height>31</height>
         </rect>
        </property>
@@ -173,30 +182,12 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_webcam">
-       <property name="geometry">
-        <rect>
-         <x>450</x>
-         <y>70</y>
-         <width>191</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Open live webcam</string>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="ez_telstatus">
        <property name="geometry">
         <rect>
-         <x>610</x>
+         <x>160</x>
          <y>30</y>
-         <width>101</width>
+         <width>111</width>
          <height>31</height>
         </rect>
        </property>
@@ -207,7 +198,7 @@
       <widget class="QLabel" name="ez_telstatus_label">
        <property name="geometry">
         <rect>
-         <x>450</x>
+         <x>0</x>
          <y>30</y>
          <width>161</width>
          <height>31</height>
@@ -324,6 +315,24 @@
         <number>0</number>
        </property>
       </widget>
+     </widget>
+     <widget class="QPushButton" name="btn_webcam">
+      <property name="geometry">
+       <rect>
+        <x>590</x>
+        <y>0</y>
+        <width>191</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Open live webcam</string>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="tab">
