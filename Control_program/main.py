@@ -280,7 +280,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mode_signal.setEnabled(True)
         self.noise_checkbox.setEnabled(True)
         self.vlsr_checkbox.setEnabled(True)
-        self.btn_observe.setEnabled(True)
+        #self.btn_observe.setEnabled(True)
         self.btn_abort.setEnabled(False)
         self.sig_time_spinbox.setEnabled(True)
         self.ref_time_spinBox.setEnabled(True)
@@ -705,15 +705,18 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.int_time_spinbox.setEnabled(True)
         if self.btn_track.text()=="Stop":
             self.track()
+        if self.telstatus.text()=="TRACKING" and (not self.btn_abort.isEnabled()):
+            self.btn_observe.setEnabled(True)
+            self.btn_start_obs_ez.setEnabled(True)
+        else:
+            self.btn_observe.setEnabled(False)
+            self.btn_start_obs_ez.setEnabled(False)
 
         # Update simple UI distance value
-        cal, caz = self.telescope.get_current_alaz()
-        tal, taz = self.calculate_desired_alaz()
-        dist = self.telescope._get_angular_distance(cal, caz, tal, taz)
-        if (dist<0.25 and self.btn_track.text()=="Stop"):
+        if (self.telescope.is_tracking() and self.btn_track.text()=="Stop"):
             self.distance.setText("TRACKING")
         else:
-            self.distance.setText("{0:4.3f}".format(dist))
+            self.distance.setText("{0:4.3f}".format(self.telescope.get_slew_dist()))
 
 
     def update_desired_object(self):
@@ -854,11 +857,18 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Should perhaps use blue and yellow?
         if self.telescope.is_tracking() and self.btn_track.text()=="Stop":
             style = "QLineEdit {background-color:green; font-size: 13pt;}"
-        else:
+            self.telstatus.setText("TRACKING")
+        elif (not self.telescope.is_tracking()) and self.btn_track.text()=="Stop":
             style = "QLineEdit {background-color:yellow; font-size: 13pt;}"
+            self.telstatus.setText("SLEWING")
+        else:
+            style = "QLineEdit {background-color:none; font-size: 13pt;}"
+            self.telstatus.setText("IDLE")
         self.cur_alt.setStyleSheet(style)
         self.cur_az.setStyleSheet(style)
         self.distance.setStyleSheet(style)
+        self.telstatus.setStyleSheet(style)
+        self.btn_GO.setStyleSheet(style)
 
     def update_coord_labels(self):
         target = self.coordselector.currentText()
@@ -1024,8 +1034,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_track.setText('Stop')
         self.btn_GO.setText('STOP')
         #style = "QWidget { background-color:red;}"
-        self.btn_track.setStyleSheet(style)
-        self.btn_GO.setStyleSheet(style)
+        #self.btn_track.setStyleSheet(style)
+        #self.btn_GO.setStyleSheet(style)
         # Language, since changing will reset selector list
         self.languageselector.setEnabled(False)
 
