@@ -64,6 +64,11 @@
         <translation>Mätning</translation>
     </message>
     <message>
+        <location filename="SALSA_UI.ui" line="222"/>
+        <source>Telescope status:</source>
+        <translation>Teleskopstatus:</translation>
+    </message>
+    <message>
         <location filename="../SALSA_UI.ui" line="222"/>
         <source>Observing time [s]:</source>
         <translation>Observationstid [s]:</translation>

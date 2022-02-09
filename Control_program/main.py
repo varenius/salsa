@@ -858,16 +858,20 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.telescope.is_tracking() and self.btn_track.text()=="Stop":
             style = "QLineEdit {background-color:green; font-size: 13pt;}"
             self.telstatus.setText("TRACKING")
+            self.ez_telstatus.setText("TRACKING")
         elif (not self.telescope.is_tracking()) and self.btn_track.text()=="Stop":
             style = "QLineEdit {background-color:yellow; font-size: 13pt;}"
             self.telstatus.setText("SLEWING")
+            self.ez_telstatus.setText("SLEWING")
         else:
             style = "QLineEdit {background-color:none; font-size: 13pt;}"
             self.telstatus.setText("IDLE")
+            self.ez_telstatus.setText("IDLE")
         self.cur_alt.setStyleSheet(style)
         self.cur_az.setStyleSheet(style)
         self.distance.setStyleSheet(style)
         self.telstatus.setStyleSheet(style)
+        self.ez_telstatus.setStyleSheet(style)
         self.btn_GO.setStyleSheet(style)
 
     def update_coord_labels(self):

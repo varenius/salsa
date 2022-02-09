@@ -177,7 +177,7 @@
        <property name="geometry">
         <rect>
          <x>450</x>
-         <y>50</y>
+         <y>70</y>
          <width>191</width>
          <height>31</height>
         </rect>
@@ -189,6 +189,37 @@
        </property>
        <property name="text">
         <string>Open live webcam</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="ez_telstatus">
+       <property name="geometry">
+        <rect>
+         <x>610</x>
+         <y>30</y>
+         <width>101</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="ez_telstatus_label">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>30</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>13</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Telescope status:</string>
        </property>
       </widget>
      </widget>
