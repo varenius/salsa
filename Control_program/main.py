@@ -202,6 +202,13 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_reset.setEnabled(False)
 
     def change_language(self):
+        # Store coordinate values and tracking status
+        leftcoord = str(self.inputleftcoord.text())
+        rightcoord= str(self.inputrightcoord.text())
+        trackstat = str(self.btn_track.text())
+        olt = str(self.offset_left.text())
+        ort = str(self.offset_right.text())
+
         app = QtWidgets.QApplication.instance()
         l = self.languageselector.currentText()
         if l == "Svenska":
@@ -213,6 +220,11 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             app.removeTranslator(self.translator)
         self.retranslateUi(self)
+        self.inputleftcoord.setText(leftcoord)
+        self.inputrightcoord.setText(rightcoord)
+        self.offset_left.setText(olt)
+        self.offset_right.setText(ort)
+        self.btn_track.setText(trackstat)
 
     def change_spectra(self):
         # Plot spectra of currently selected item
@@ -1041,7 +1053,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         #self.btn_track.setStyleSheet(style)
         #self.btn_GO.setStyleSheet(style)
         # Language, since changing will reset selector list
-        self.languageselector.setEnabled(False)
+        #self.languageselector.setEnabled(False)
 
     def enable_movement_controls(self):
         self.btn_track.setEnabled(True)
@@ -1062,7 +1074,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         #self.btn_track.setStyleSheet(style)
         #self.btn_GO.setStyleSheet(style)
         # Language, since changing will reset selector list
-        self.languageselector.setEnabled(True)
+        #self.languageselector.setEnabled(True)
 
     def track(self):
         try:
