@@ -1023,7 +1023,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.GNSSselector.setEnabled(False)
         self.btn_track.setText('Stop')
         self.btn_GO.setText('STOP')
-        style = "QWidget { background-color:red;}"
+        #style = "QWidget { background-color:red;}"
         self.btn_track.setStyleSheet(style)
         self.btn_GO.setStyleSheet(style)
         # Language, since changing will reset selector list
