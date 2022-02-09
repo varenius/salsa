@@ -356,7 +356,7 @@
        </font>
       </property>
       <property name="title">
-       <string>Telescope movement control                                 Telescope status:</string>
+       <string>Telescope movement control                         Telescope status:</string>
       </property>
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
@@ -746,7 +746,7 @@
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>554</width>
+           <width>582</width>
            <height>41</height>
           </rect>
          </property>
@@ -1049,8 +1049,8 @@
           <rect>
            <x>300</x>
            <y>16</y>
-           <width>247</width>
-           <height>98</height>
+           <width>259</width>
+           <height>101</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1463,9 +1463,9 @@
    <widget class="QLabel" name="label_language">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>400</x>
       <y>40</y>
-      <width>61</width>
+      <width>81</width>
       <height>21</height>
      </rect>
     </property>

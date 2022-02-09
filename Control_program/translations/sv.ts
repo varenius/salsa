@@ -95,8 +95,8 @@
     </message>
     <message>
         <location filename="../SALSA_UI.ui" line="328"/>
-        <source>Telescope movement control                                 Telescope status:</source>
-        <translation>Styrning av teleskopet                                             Teleskopstatus:</translation>
+        <source>Telescope movement control                         Telescope status:</source>
+        <translation>Styrning av teleskopet                                     Teleskopstatus:</translation>
     </message>
     <message>
         <location filename="../SALSA_UI.ui" line="346"/>
