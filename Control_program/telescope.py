@@ -330,7 +330,7 @@ class TelescopeController():
             new_target_alaz = (round(tal,1), round(taz,1))
             if (new_target_alaz!=self.target_alaz):
                 #print("SET CHANGE")
-                print("CHANGING TARGET TO (el,az) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(*new_target_alaz, *self.target_alaz))
+                #print("CHANGING TARGET TO (el,az) = ({0:5.1f},{1:5.1f}) from ({2:5.1f},{3:5.1f})...".format(*new_target_alaz, *self.target_alaz))
                 self.target_alaz=new_target_alaz
                 #self.action="MOVE"
                 self.action="START"
