@@ -726,7 +726,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Update simple UI distance value
         if (self.telescope.is_tracking() and self.btn_track.text()=="Stop"):
-            self.distance.setText("TRACKING")
+            #self.distance.setText("TRACKING")
+            pass
         else:
             cal, caz = self.telescope.get_current_alaz()
             tal = float(self.calc_des_left.text())
