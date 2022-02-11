@@ -102,7 +102,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Define and run UiTimer
         self.uitimer = QtCore.QTimer()
         self.uitimer.timeout.connect(self.update_Ui)
-        self.uitimer.start(250) #ms
+        uiint = 250
+        self.uitimer.start(uiint) #ms
 
 
         # Reset needs its own timer to be able
@@ -206,6 +207,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_reset.setEnabled(False)
 
     def change_language(self):
+        #Stop UI update while changing language
+        self.uitimer.stop()
         # Store coordinate values and tracking status
         leftcoord = str(self.inputleftcoord.text())
         rightcoord= str(self.inputrightcoord.text())
@@ -238,6 +241,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.objectselector.setCurrentIndex(oind)
         if self.coordselector.currentText() == "GNSS":
             self.GNSSselector.setCurrentIndex(gind)
+        #start UI timer again
+        self.uitimer.start()
 
     def change_spectra(self):
         # Plot spectra of currently selected item
