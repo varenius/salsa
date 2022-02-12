@@ -217,8 +217,8 @@ class SALSA_spectrum:
 
     def get_vels(self):
         freqs = self.get_freqs()
-        # The -1 sign is introduced by comparison with the LAB survey. Velocity
-        # conversions... always the other one.
+        # The -1 sign is checked by comparison with the LAB survey. The formula, including sign, is however
+        # the same as used by e.g. the VLA; see "Radio velocity" at https://science.nrao.edu/facilities/vla/docs/manuals/obsguide/modes/line#DopplerCorrection
         vels = -1*(freqs-self.rest_freq)*c/self.rest_freq 
         return vels
 
