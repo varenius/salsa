@@ -38,6 +38,8 @@ if tel == "brage":
     sock.connect(("192.168.5.10", 23))  # Brage
 elif tel == "vale":
     sock.connect(("192.168.5.11", 23))  # Vale
+elif tel == "torre":
+    sock.connect(("192.168.5.12", 23))  # Torre
 
 
 def set_azel(taz,tel):
