@@ -23,6 +23,7 @@ import argparse
 
 import getpass # To find current username
 import configparser
+from os.path import expanduser
 
 # Make sure only one instance is running of this program
 from tendo import singleton
@@ -32,6 +33,7 @@ me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 scriptpath = os.path.dirname(os.path.realpath(__file__))
 configfile = scriptpath + '/SALSA.config'
 #############################
+    
 
 # Customize NavigatinoToolBarcalsss
 class NavigationToolbar(NavigationToolbar2QTAgg):
@@ -86,6 +88,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         #    self.show_message(msg)
         #else:
         #    self.reset_needed()
+        self.settings = QtCore.QSettings(expanduser("~")+"/.SALSA.settings", QtCore.QSettings.IniFormat)
+        self.restore()
 
     def init_Ui(self):
 
@@ -408,6 +412,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
 
         if reply == QtWidgets.QMessageBox.Yes:
+            self.save()
             event.accept()
             self.close_GNSSAzEl()
         else:
@@ -1166,6 +1171,18 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
                 msg = "ERROR: Reset failed! Please contact SALSA support."
             self.show_message(msg)
 
+    def restore(self):
+        finfo = QtCore.QFileInfo(self.settings.fileName())
+    
+        if finfo.exists() and finfo.isFile():
+            self.languageselector.setCurrentIndex(self.settings.value("language", type=int))
+            self.Observebase.setCurrentIndex(self.settings.value("maintab", type=int))
+    
+    def save(self):
+        self.settings.setValue("language", self.languageselector.currentIndex())
+        self.settings.setValue("maintab", self.Observebase.currentIndex())
+
+
 
 
 class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
@@ -1346,6 +1363,8 @@ class GNSSAzEl_window(QtWidgets.QMainWindow, Ui_GNSSAzElWindow ):
         This window displays current positions of GNSS satellites on the local horizon. Positions computed using two-line element set (TLE) data.
         """
         QtGui.QMessageBox.about(self, "GNSS Az-El view", msg.strip())
+
+
 
 
 def main():
