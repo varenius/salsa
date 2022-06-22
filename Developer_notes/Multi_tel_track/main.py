@@ -136,7 +136,9 @@ def control_loop(tels):
             conf = input("Are you sure you want to track alt={} az={} deg ? [Yes/No]".format(al, az))
             if conf.lower()=="yes":
                 target = ["HOR", al,az]
-                stop_all(tels)
+                # Stop all tels
+                for i, tel in enumerate(tels):
+                    tel.stop()
                 time.sleep(1.0)
                 # Move all telescopes, started here to simplify code (but yes, ugly place)
                 for i, tel in enumerate(tels):
