@@ -21,8 +21,8 @@ class MD01():
     
     def move(self, al, az):
         # Round to 0.1 deg precision
-        tal = round(al, 1)
-        taz = round(az, 1)
+        tal = round(al+self.offset_al, 1)
+        taz = round(az+self.offset_az, 1)
         PH = 10 # Pulses per degree, 0A in hex
         PV = 10 # Pulses per degree, 0A in hex
         H = str(int(PH * (360+taz)))
@@ -102,6 +102,11 @@ class MD01():
         self.site.elevation = config.getfloat('SITE', 'elevation')
         self.site.pressure = 0 # Do not correct for atmospheric refraction
         self.site.name = config.get('SITE', 'name')
+
+        # Read telescope pointing offsets
+        # These values will be added to any target position
+        self.offset_al = config.getfloat('POINTING', 'offset_al')
+        self.offset_az = config.getfloat('POINTING', 'offset_az')
 
     def _connect(self):
         try:
