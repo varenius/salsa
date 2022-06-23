@@ -70,8 +70,6 @@ def curses_loop(tels, target):
                 stdscr.addstr(4, cw * (1+i), "{}".format(tal))
                 stdscr.addstr(5, cw * (1+i), "{}".format(taz))
         elif target[0]=="SUN":
-            glon = target[1]
-            glat = target[2]
             stdscr.addstr(6, cw, "The Sun")
             for i, tel in enumerate(tels):
                 # Don't get current pos, instead get desired
@@ -84,20 +82,20 @@ def curses_loop(tels, target):
         
         # Handle user input
         try:
-            key = stdscr.getkey()
-            if key.lower()=="s":
+            key = stdscr.getkey().lower()
+            if key=="s":
                 # Stop all tels
                 for i, tel in enumerate(tels):
                     tel.stop()
                 target = ["", "", ""]
-            elif key.lower()=="q":
+            elif key=="q":
                 # Stop all tels
                 for i, tel in enumerate(tels):
                     tel.stop()
                 stdscr.clear()
                 stdscr.refresh()
                 loop = False
-            elif key.lower()=="g" or key.lower()=="h" or key.lower()=="i":
+            elif key=="g" or key=="h" or key=="i":
                 # Quit this loop to get new target from user
                 stdscr.clear()
                 stdscr.refresh()
@@ -108,7 +106,7 @@ def curses_loop(tels, target):
     curses.endwin()
 
     # Return user input to control loop
-    return key.lower()
+    return key
 
 def control_loop(tels):
     # Enable curses loop
