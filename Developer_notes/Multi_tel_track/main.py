@@ -21,7 +21,7 @@ def curses_loop(tels, target):
         stdscr.addstr(4, 0, "Tar. Alt. | ", curses.A_BOLD)
         stdscr.addstr(5, 0, "Tar. Az.  | ", curses.A_BOLD)
         stdscr.addstr(6, 0, "TRACKING: | ", curses.A_BOLD)
-        ## Some space
+        ## Some space before command list
         stdscr.addstr(10, 0, "Available commands: ", curses.A_BOLD)
         stdscr.addstr(11, 0, "s - stop telescopes")
         stdscr.addstr(12, 0, "q - stop telescopes and quit program")
@@ -62,21 +62,21 @@ def curses_loop(tels, target):
             glat = target[2]
             stdscr.addstr(6, cw, "GALACTIC LON={}, LAT={}".format(glon, glat))
             for i, tel in enumerate(tels):
-                # Don't get current pos, instead get desired
+                # Calculate desired al/az from LON,LAT
                 tal,taz = tel.get_desired_alaz(target)
-                # Move all telescopes
+                # Move telescope
                 tel.move(tal, taz)
-                # Print target alt/az from now or last loop
+                # Show target alt/az
                 stdscr.addstr(4, cw * (1+i), "{}".format(tal))
                 stdscr.addstr(5, cw * (1+i), "{}".format(taz))
         elif target[0]=="SUN":
             stdscr.addstr(6, cw, "The Sun")
             for i, tel in enumerate(tels):
-                # Don't get current pos, instead get desired
+                # Calculate desired al/az for the Sun
                 tal,taz = tel.get_desired_alaz(target)
-                # Move all telescopes
+                # Move telescope
                 tel.move(tal, taz)
-                # Print target alt/az from now or last loop
+                # Show target alt/az 
                 stdscr.addstr(4, cw * (1+i), "{}".format(tal))
                 stdscr.addstr(5, cw * (1+i), "{}".format(taz))
         
