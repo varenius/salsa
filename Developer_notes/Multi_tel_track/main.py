@@ -20,7 +20,7 @@ def curses_loop(tels, target):
         stdscr.addstr(3, 0, "Cur. Az.  | ", curses.A_BOLD)
         stdscr.addstr(4, 0, "Tar. Alt. | ", curses.A_BOLD)
         stdscr.addstr(5, 0, "Tar. Az.  | ", curses.A_BOLD)
-        stdscr.addstr(6, 0, "TRACKING: | ", curses.A_BOLD)
+        stdscr.addstr(6, 0, "Target    | ", curses.A_BOLD)
         ## Some space before command list
         stdscr.addstr(10, 0, "Available commands: ", curses.A_BOLD)
         stdscr.addstr(11, 0, "s - stop telescopes")
@@ -35,8 +35,8 @@ def curses_loop(tels, target):
         for i, tel in enumerate(tels):
             stdscr.addstr(1, cw * (1+i), tel.site.name, curses.A_UNDERLINE)
             (cal, caz) = tel.get_current_alaz()
-            stdscr.addstr(2, cw * (1+i), "{}".format(cal))
-            stdscr.addstr(3, cw * (1+i), "{}".format(caz))
+            stdscr.addstr(2, cw * (1+i), "{0:>5}".format(cal))
+            stdscr.addstr(3, cw * (1+i), "{0:>5}".format(caz))
         # Sleep 0.5s between reading and sending commands
         time.sleep(0.5)
 
@@ -46,17 +46,17 @@ def curses_loop(tels, target):
             tal = ""
             taz = ""
             for i, tel in enumerate(tels):
-                # Print target alt/az
-                stdscr.addstr(4, cw * (1+i), "{}".format(tal))
-                stdscr.addstr(5, cw * (1+i), "{}".format(taz))
+                # Print empty target alt/az
+                stdscr.addstr(4, cw * (1+i), "".format(tal))
+                stdscr.addstr(5, cw * (1+i), "".format(taz))
         elif target[0]=="HOR":
             stdscr.addstr(6, cw, "HORIZONTAL")
             tal = target[1]
             taz = target[2]
             for i, tel in enumerate(tels):
                 # Print target alt/az
-                stdscr.addstr(4, cw * (1+i), "{}".format(tal))
-                stdscr.addstr(5, cw * (1+i), "{}".format(taz))
+                stdscr.addstr(4, cw * (1+i), "{0:>7.3f}".format(tal))
+                stdscr.addstr(5, cw * (1+i), "{0:>7.3f}".format(taz))
         elif target[0]=="GAL":
             glon = target[1]
             glat = target[2]
@@ -67,8 +67,8 @@ def curses_loop(tels, target):
                 # Move telescope
                 tel.move(tal, taz)
                 # Show target alt/az
-                stdscr.addstr(4, cw * (1+i), "{}".format(tal))
-                stdscr.addstr(5, cw * (1+i), "{}".format(taz))
+                stdscr.addstr(4, cw * (1+i), "{0:>7.3f}".format(tal))
+                stdscr.addstr(5, cw * (1+i), "{0:>7.3f}".format(taz))
         elif target[0]=="SUN":
             stdscr.addstr(6, cw, "The Sun")
             for i, tel in enumerate(tels):
@@ -77,8 +77,8 @@ def curses_loop(tels, target):
                 # Move telescope
                 tel.move(tal, taz)
                 # Show target alt/az 
-                stdscr.addstr(4, cw * (1+i), "{}".format(tal))
-                stdscr.addstr(5, cw * (1+i), "{}".format(taz))
+                stdscr.addstr(4, cw * (1+i), "{0:>7.3f}".format(tal))
+                stdscr.addstr(5, cw * (1+i), "{0:>7.3f}".format(taz))
         
         # Handle user input
         try:
@@ -118,9 +118,9 @@ def control_loop(tels):
         ans = curses_loop(tels, target)
         # We got user input, deal with it...
         if ans == "g":
-            glon = float(input("Please enter target galactic longitude in decimal degrees e.g. 80.5 :"))
-            glat = float(input("Please enter target galactic latitude in decimal degrees e.g. 0.0 :"))
-            conf = input("Are you sure you want to track glon={} glat={} deg ? [Yes/No]".format(glon,glat))
+            glon = float(input("Please enter target galactic longitude in decimal degrees e.g. 80.5 : "))
+            glat = float(input("Please enter target galactic latitude in decimal degrees e.g. 0.0 : "))
+            conf = input("Are you sure you want to track glon={} glat={} deg ? [Yes/No] : ".format(glon,glat))
             if conf.lower()=="yes":
                 target = ["GAL", glon, glat]
                 # Stop all tels
@@ -129,9 +129,9 @@ def control_loop(tels):
                 time.sleep(1.0)
                 # Movement done by curses_loop in this case
         if ans == "h":
-            az = float(input("Please enter target azimuth in decimal degrees e.g. 148.5 :"))
-            al = float(input("Please enter target altitude in decimal degrees e.g. 43.5 :"))
-            conf = input("Are you sure you want to track alt={} az={} deg ? [Yes/No]".format(al, az))
+            az = float(input("Please enter target azimuth in decimal degrees e.g. 148.5 : "))
+            al = float(input("Please enter target altitude in decimal degrees e.g. 43.5 : "))
+            conf = input("Are you sure you want to track alt={} az={} deg ? [Yes/No] : ".format(al, az))
             if conf.lower()=="yes":
                 target = ["HOR", al,az]
                 # Stop all tels
@@ -142,7 +142,7 @@ def control_loop(tels):
                 for i, tel in enumerate(tels):
                     tel.move(al, az)
         if ans == "i":
-            conf = input("Are you sure you want to track the Sun ? [Yes/No]")
+            conf = input("Are you sure you want to track the Sun ? [Yes/No]: ")
             if conf.lower()=="yes":
                 target = ["SUN", "", ""]
                 # Stop all tels
