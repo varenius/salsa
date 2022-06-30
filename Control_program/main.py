@@ -119,7 +119,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Initialise buttons and tracking status.
         self.btn_track.clicked.connect(self.track_or_stop)
         self.btn_GO.clicked.connect(self.track_or_stop)
-        self.btn_webcam.clicked.connect(lambda: webbrowser.open('http://129.16.208.83/view/#view'))
+        self.btn_webcam.clicked.connect(lambda: webbrowser.open('http://129.16.208.198/view/#view'))
         self.btn_reset.clicked.connect(self.reset)
 
         # No webcam yet for "torre"
