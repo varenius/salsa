@@ -65,6 +65,8 @@ class MD01():
             pos.compute(self.site) # Needed for the sun since depending on time
         elif target[0] == 'GAL':
             pos = ephem.Galactic(ephem.degrees(str(target[1])), ephem.degrees(str(target[2])))
+        elif target[0] == 'J2000':
+            pos = ephem.Equatorial(ephem.degrees(str(target[1])), ephem.degrees(str(target[2])), epoch=ephem.J2000)
         # Calculate alt, az, via fixedbody since only fixed body has alt, az
         # First needs to make sure we have equatorial coordinates
         eqpos = ephem.Equatorial(pos)

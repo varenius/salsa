@@ -25,9 +25,10 @@ def curses_loop(tels, target):
         stdscr.addstr(10, 0, "Available commands: ", curses.A_BOLD)
         stdscr.addstr(11, 0, "s - stop telescopes")
         stdscr.addstr(12, 0, "q - stop telescopes and quit program")
-        stdscr.addstr(13, 0, "g - Track new Galactic (GLON/GLAT) position")
-        stdscr.addstr(14, 0, "h - Track new Horizontal (ALT/AZ) direction ")
-        stdscr.addstr(15, 0, "i - Track the Sun")
+        stdscr.addstr(13, 0, "f - Track new Equatorial (R.A./DEC) J2000 position")
+        stdscr.addstr(14, 0, "g - Track new Galactic (GLON/GLAT) position")
+        stdscr.addstr(15, 0, "h - Track new Horizontal (ALT/AZ) direction ")
+        stdscr.addstr(16, 0, "i - Track the Sun")
         # Set datetime info
         utcnow = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
         stdscr.addstr(0, cw, utcnow)
@@ -55,6 +56,18 @@ def curses_loop(tels, target):
             taz = target[2]
             for i, tel in enumerate(tels):
                 # Print target alt/az
+                stdscr.addstr(4, cw * (1+i), "{0:>7.3f}".format(tal))
+                stdscr.addstr(5, cw * (1+i), "{0:>7.3f}".format(taz))
+        elif target[0]=="J2000":
+            ra = target[1]
+            dec = target[2]
+            stdscr.addstr(6, cw, "EQUATORIAL RA={}, DEC={}".format(ra, dec))
+            for i, tel in enumerate(tels):
+                # Calculate desired al/az from RA,DEC
+                tal,taz = tel.get_desired_alaz(target)
+                # Move telescope
+                tel.move(tal, taz)
+                # Show target alt/az
                 stdscr.addstr(4, cw * (1+i), "{0:>7.3f}".format(tal))
                 stdscr.addstr(5, cw * (1+i), "{0:>7.3f}".format(taz))
         elif target[0]=="GAL":
@@ -95,7 +108,7 @@ def curses_loop(tels, target):
                 stdscr.clear()
                 stdscr.refresh()
                 loop = False
-            elif key=="g" or key=="h" or key=="i":
+            elif key == "f" or key=="g" or key=="h" or key=="i":
                 # Quit this loop to get new target from user
                 stdscr.clear()
                 stdscr.refresh()
@@ -117,6 +130,17 @@ def control_loop(tels):
         # Run curses loop awaiting user input
         ans = curses_loop(tels, target)
         # We got user input, deal with it...
+        if ans == "f":
+            ra = float(input("Please enter target J2000 Right Ascension in decimal degrees e.g. 125.8 : "))
+            dec = float(input("Please enter target J2000 Declination in decimal degrees e.g. 20 : "))
+            conf = input("Are you sure you want to track R.A.={} Dec={} deg ? [Yes/No] : ".format(ra,dec))
+            if conf.lower()=="yes":
+                target = ["J2000", ra, dec]
+                # Stop all tels
+                for i, tel in enumerate(tels):
+                    tel.stop()
+                time.sleep(1.0)
+                # Movement done by curses_loop in this case
         if ans == "g":
             glon = float(input("Please enter target galactic longitude in decimal degrees e.g. 80.5 : "))
             glat = float(input("Please enter target galactic latitude in decimal degrees e.g. 0.0 : "))
