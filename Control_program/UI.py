@@ -430,7 +430,7 @@ class Ui_MainWindow(object):
         self.RefFreqInput.setMinimum(800.0)
         self.RefFreqInput.setMaximum(2300.0)
         self.RefFreqInput.setSingleStep(0.1)
-        self.RefFreqInput.setProperty("value", 1417.5)
+        self.RefFreqInput.setProperty("value", 1426.5)
         self.RefFreqInput.setObjectName("RefFreqInput")
         self.BandwidthInput = QtWidgets.QComboBox(self.receiver_tab_advanced)
         self.BandwidthInput.setGeometry(QtCore.QRect(170, 40, 121, 24))
