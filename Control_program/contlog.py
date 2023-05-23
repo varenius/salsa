@@ -38,10 +38,10 @@ def getdata(tobs, conf, tel, alt, az):
     global reflevel
     if reflevel <0:
         reflevel = sigspec.get_total_power()
-        res = "REF at {} : Power={:6.1f} alt={:6.1f} az={:6.1f}".format(ephem.now(), reflevel, alt, az)
+        res = "REF at {} : Power= {:6.1f} alt= {:6.1f} az= {:6.1f}".format(ephem.now(), reflevel, alt, az)
     else:
         fglevel = sigspec.get_total_power()
-        res = "SUN at {} : Power={:6.1f} alt={:6.1f} az={:6.1f} REF(az-10)={:6.1f}".format(ephem.now(), fglevel, alt, az, reflevel)
+        res = "SUN at {} : Power= {:6.1f} alt= {:6.1f} az= {:6.1f} REF(az-10)={:6.1f}".format(ephem.now(), fglevel, alt, az, reflevel)
         reflevel = -1
         of = open(outfile,"a")
         of.write(res+"\n")
