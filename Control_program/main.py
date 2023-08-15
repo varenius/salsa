@@ -122,10 +122,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_webcam.clicked.connect(lambda: webbrowser.open('http://129.16.208.198/view/#view'))
         self.btn_reset.clicked.connect(self.reset)
 
-        # No webcam yet for "torre"
-        if self.config.get('SITE', 'name').lower() == "torre":
-            self.btn_webcam.setEnabled(False)
-
         # Make sure Ui is updated when changing target
         self.coordselector.currentIndexChanged.connect(self.update_Ui)
         # Make sure special targets like "The Sun" are handled correctly.
