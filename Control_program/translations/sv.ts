@@ -165,8 +165,8 @@
     </message>
     <message>
         <location filename="../SALSA_UI.ui" line="574"/>
-        <source>Reset</source>
-        <translation>Nollställ</translation>
+        <source>Unfreeze</source>
+        <translation>Unfreeze</translation>
     </message>
     <message>
         <location filename="../SALSA_UI.ui" line="583"/>

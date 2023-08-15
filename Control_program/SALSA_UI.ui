@@ -609,12 +609,12 @@
          </layout>
         </item>
         <item row="4" column="3">
-         <widget class="QPushButton" name="btn_reset">
+         <widget class="QPushButton" name="btn_unfreeze">
           <property name="enabled">
            <bool>true</bool>
           </property>
           <property name="text">
-           <string>Reset</string>
+           <string>Unfreeze</string>
           </property>
          </widget>
         </item>

@@ -107,8 +107,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_track.clicked.connect(self.track_or_stop)
         self.btn_GO.clicked.connect(self.track_or_stop)
         self.btn_webcam.clicked.connect(lambda: webbrowser.open('http://129.16.208.198/view/#view'))
-        self.btn_reset.clicked.connect(self.unfreeze)
-        self.btn_reset.setText('Unfreeze')
+        self.btn_unfreeze.clicked.connect(self.unfreeze)
 
         # Make sure Ui is updated when changing target
         self.coordselector.currentIndexChanged.connect(self.update_Ui)
@@ -1060,7 +1059,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def enable_movement_controls(self):
         self.btn_track.setEnabled(True)
-        self.btn_reset.setEnabled(True)
+        self.btn_unfreeze.setEnabled(True)
         self.btn_track.setText('Track')
         self.btn_GO.setText('Move to')
         style = "QWidget {}"
@@ -1111,7 +1110,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def unfreeze(self):
         # Show a message box
-        qmsg = "You have asked to unfreeze the telescope control unit. This should fix problems where the telescope won't move. Should be harmless, but take 5 seconds. Send unfreeze command?"
+        qmsg = "You have asked to unfreeze the telescope control unit. This should fix problems where the telescope won't move. Should be harmless, but take 20 seconds. The software will stop working for 20 seconds, and then it should work again. Send unfreeze command?"
         result = QtWidgets.QMessageBox.question(QtWidgets.QWidget(), 'Confirmation', qmsg, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
         if result==QtWidgets.QMessageBox.Yes:
             #Stop UI update while restarting device
