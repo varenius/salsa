@@ -248,6 +248,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.addWidget(self.calc_des_right)
         self.gridLayout.addLayout(self.horizontalLayout_10, 3, 2, 1, 1)
         self.btn_reset = QtWidgets.QPushButton(self.layoutWidget)
+        self.btn_reset.setEnabled(True)
         self.btn_reset.setObjectName("btn_reset")
         self.gridLayout.addWidget(self.btn_reset, 4, 3, 1, 1)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()

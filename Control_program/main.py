@@ -107,7 +107,8 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_track.clicked.connect(self.track_or_stop)
         self.btn_GO.clicked.connect(self.track_or_stop)
         self.btn_webcam.clicked.connect(lambda: webbrowser.open('http://129.16.208.198/view/#view'))
-        self.btn_reset.clicked.connect(self.reset)
+        self.btn_reset.clicked.connect(self.unfreeze)
+        self.btn_reset.setText('Unfreeze')
 
         # Make sure Ui is updated when changing target
         self.coordselector.currentIndexChanged.connect(self.update_Ui)
@@ -1046,7 +1047,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.inputrightcoord.setReadOnly(True)
         self.offset_left.setReadOnly(True)
         self.offset_right.setReadOnly(True)
-        self.btn_reset.setEnabled(False)
         self.objectselector.setEnabled(False)
         self.coordselector.setEnabled(False)
         self.GNSSselector.setEnabled(False)
@@ -1109,12 +1109,16 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.telescope.stop()
         self.enable_movement_controls()
 
-    def reset(self):
+    def unfreeze(self):
         # Show a message box
-        qmsg = "You have asked to unfreeze the telescope control unit. This should be instant and harmless, and should fix problems where the telescope won't respond to movement. Send unfreeze command?"
+        qmsg = "You have asked to unfreeze the telescope control unit. This should fix problems where the telescope won't move. Should be harmless, but take 5 seconds. Send unfreeze command?"
         result = QtWidgets.QMessageBox.question(QtWidgets.QWidget(), 'Confirmation', qmsg, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
         if result==QtWidgets.QMessageBox.Yes:
-            self.telescope.reset()
+            #Stop UI update while restarting device
+            self.uitimer.stop()
+            self.telescope.restart()
+            #start UI timer again
+            self.uitimer.start()
 
     def restore(self):
         finfo = QtCore.QFileInfo(self.settings.fileName())

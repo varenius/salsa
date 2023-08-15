@@ -610,6 +610,9 @@
         </item>
         <item row="4" column="3">
          <widget class="QPushButton" name="btn_reset">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="text">
            <string>Reset</string>
           </property>
