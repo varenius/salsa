@@ -81,13 +81,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.init_Ui()
         self.setWindowTitle("SALSA Controller: " + self.telescope.site.name)
 
-        ## Check if telescope knows where it is (position can be lost e.g. during powercut).
-        #if self.telescope.get_pos_ok():
-        #    msg = "Welcome to SALSA. If this is your first measurement for today, please reset the telscope to make sure that it tracks the sky correctly. A small position error can accumulate if using the telescope for multiple hours, but this is fixed if you press the reset button and wait until the telescope is reset."
-        #    print (msg)
-        #    self.show_message(msg)
-        #else:
-        #    self.reset_needed()
         self.settings = QtCore.QSettings(expanduser("~")+"/.SALSA.settings", QtCore.QSettings.IniFormat)
         self.restore()
 
@@ -109,12 +102,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         uiint = 250
         self.uitimer.start(uiint) #ms
 
-
-        # Reset needs its own timer to be able
-        # to check if reset position has been reached
-        # and then, only then, enable GUI input again.
-        self.resettimer = QtCore.QTimer()
-        self.resettimer.timeout.connect(self.resettimer_action)
 
         # Initialise buttons and tracking status.
         self.btn_track.clicked.connect(self.track_or_stop)
@@ -202,9 +189,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Language
         self.languageselector.currentIndexChanged.connect(self.change_language)
-
-        # Temp disable reset
-        self.btn_reset.setEnabled(False)
 
     def change_language(self):
         #Stop UI update while changing language
@@ -1076,7 +1060,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def enable_movement_controls(self):
         self.btn_track.setEnabled(True)
-        #self.btn_reset.setEnabled(True)
+        self.btn_reset.setEnabled(True)
         self.btn_track.setText('Track')
         self.btn_GO.setText('Move to')
         style = "QWidget {}"
@@ -1125,47 +1109,12 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.telescope.stop()
         self.enable_movement_controls()
 
-    #def reset_needed(self):
-    #    # Telescope must apparently be resetted
-    #    self.btn_track.setEnabled(False)
-    #    self.btn_reset.setEnabled(True)
-    #    self.btn_observe.setEnabled(False)
-    #    msg = "Dear user. The telescope is lost, this may happen when there is a power cut. A reset is needed for SALSA to know where it is pointing. Please press reset and wait until reset is finished."
-    #    self.show_message(msg)
-
     def reset(self):
         # Show a message box
-        qmsg = "You have asked for a system reset. This process may take a few minutes if the telescope is far from its starting position so please be patient. Do you really want to reset the telescope?"
+        qmsg = "You have asked to unfreeze the telescope control unit. This should be instant and harmless, and should fix problems where the telescope won't respond to movement. Send unfreeze command?"
         result = QtWidgets.QMessageBox.question(QtWidgets.QWidget(), 'Confirmation', qmsg, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
         if result==QtWidgets.QMessageBox.Yes:
             self.telescope.reset()
-            self.resettimer.start(1000)
-
-    def resettimer_action(self):
-        self.inputleftcoord.setReadOnly(True)
-        self.inputleftcoord.setText("Resetting...")
-        self.inputrightcoord.setReadOnly(True)
-        self.inputrightcoord.setText("Resetting...")
-        self.btn_track.setEnabled(False)
-        self.btn_reset.setEnabled(False)
-        self.coordselector.setEnabled(False)
-        self.disable_receiver_controls()
-        self.btn_abort.setEnabled(False)
-
-        if not self.telescope.isresetting:
-            self.resettimer.stop()
-            # Set default values for input fields
-            self.inputleftcoord.setText("100.0")
-            self.inputrightcoord.setText("0.0")
-            self.enable_movement_controls()
-            self.enable_receiver_controls()
-            # Make sure labels are properly updated again, will change input values for fixed objects like the Sun etc.
-            self.update_desired_target()
-            if self.telescope.azresetok and self.telescope.alresetok:
-                msg = "Dear user: The telescope has been reset and now knows its position. Thank you for your patience."
-            else:
-                msg = "ERROR: Reset failed! Please contact SALSA support."
-            self.show_message(msg)
 
     def restore(self):
         finfo = QtCore.QFileInfo(self.settings.fileName())
@@ -1177,7 +1126,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
     def save(self):
         self.settings.setValue("language", self.languageselector.currentIndex())
         self.settings.setValue("maintab", self.Observebase.currentIndex())
-
 
 
 
