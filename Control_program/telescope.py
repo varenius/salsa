@@ -44,9 +44,11 @@ class TelescopeController():
         self.current_alaz = (0,0)
 
     def restart(self):
+        self._stop()
+        time.sleep(1.0) # Seconds, to ensure device is ready
         msg = bytes.fromhex("57EFBEADDE000000000000EE20")
         self.md01(msg)
-        time.sleep(20.0) # Seconds, to ensure device is ready
+        time.sleep(19.0) # Seconds, to ensure device is ready
 
     def do_action(self):
         #print(self.action)
