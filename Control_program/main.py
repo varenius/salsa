@@ -758,7 +758,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.coordselector.setCurrentIndex(cind)
             # set other things
             # Get index of item in GNSSselector list, used to set as current
-            gind = self.GNSSselector.findText("BEIDOU 11 (C05)", QtCore.Qt.MatchFixedString)
+            gind = self.GNSSselector.findText("BEIDOU-2 G5 (C05)", QtCore.Qt.MatchFixedString)
             # Set current index
             self.GNSSselector.setCurrentIndex(gind)
             bind = self.BandwidthInput.findText("25.0", QtCore.Qt.MatchFixedString)
