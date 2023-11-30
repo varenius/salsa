@@ -33,14 +33,16 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Connect to MD-01 via ethernet interface, using default config (as in manual).
 # Note: IP address may change (depends on your config). Port is normally 23 (not 26).
 tel = sys.argv[1].lower() # vale or brage
-print("TEL", tel)
+print("Connecting to telescope ", tel)
 if tel == "brage":
     sock.connect(("192.168.5.10", 23))  # Brage
 elif tel == "vale":
     sock.connect(("192.168.5.11", 23))  # Vale
 elif tel == "torre":
     sock.connect(("192.168.5.12", 23))  # Torre
-
+else :
+    # No preset name given, assume IP
+    sock.connect((tel, 23))  # Assume IP given, connect to that
 
 def set_azel(taz,tel):
     PH = 10 # Pulses per degree, 0A in hex
@@ -156,11 +158,11 @@ print(get_azel())
 #stop()
 #get_config()
 #reset()
-calaz = float(sys.argv[2])
-calel = float(sys.argv[3])
-calibrate(calaz, calel) # az, el
-time.sleep(1)
-print(get_azel())
+#calaz = float(sys.argv[2])
+#calel = float(sys.argv[3])
+#calibrate(calaz, calel) # az, el
+#time.sleep(1)
+#print(get_azel())
 
 #while True:
 #    # Read Az/El once every second
