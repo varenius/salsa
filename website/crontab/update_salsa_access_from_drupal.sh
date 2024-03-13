@@ -25,7 +25,7 @@ telescope_name="Brage" # As in drupal NODE table
 # Define group of users permitted to login via the ThinLinc webaccess
 weblogingrp="salsa_weblogin"
 
-telescope_id=$(/usr/bin/mysql -u "$mysql_user" --host="$mysql_host" --password="$mysql_password" --silent --skip-column-names "$mysql_db_name" -e "SELECT node.nid FROM node WHERE node.title='$telescope_name' AND node.type = 'telescope';")
+telescope_id=$(/usr/bin/mysql -u "$mysql_user" --host="$mysql_host" --password="$mysql_password" --silent --skip-column-names "$mysql_db_name" -e "SELECT node.nid FROM node WHERE node.title='$telescope_name' AND node.type = 'telescope' AND node.uid = 1;")
 # Need to select on type telescope. If not, select will match also merci_reservations with title = telescope_name,
 # i.e. problems if a reservation is called "Vale" since multiple rows will be returned.
 echo "ID for this telescope:"
