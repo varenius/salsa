@@ -6,6 +6,7 @@ from astropy.io import fits
 import math, os
 from scipy.constants import c
 import MySQLdb as mdb
+from contextlib import closing
 from datetime import datetime
 
 
@@ -75,6 +76,7 @@ class SALSA_spectrum:
         known_RFI = [[1420.4+4.595, 0.02],
                      [1420.4-0.392, 0.02],
                      [1420.4+0.182, 0.02],
+                     [1420.4+-0.4, 0.035],
                      ]
         for item in known_RFI:
             RFI_freq = item[0] *1e6 
@@ -205,6 +207,7 @@ class SALSA_spectrum:
 
     def decimate_channels(self, outchans):
         self.data = signal.decimate(self.data, int(self.nchans/outchans), axis=0, ftype = 'fir')
+        self.data[0] = self.data[1]
         self.nchans = outchans
 
     def get_center_freq(self):
@@ -311,7 +314,6 @@ class SALSA_spectrum:
         user = self.config.get('ARCHIVE', 'user')
         passwd = self.config.get('ARCHIVE', 'password')
         table = self.config.get('ARCHIVE', 'table')
-        con=mdb.connect(host = host, passwd=passwd, db=db, user = user)
         # Read fitsdata
         f_fits = open(fitsfile, 'rb')
         fitsdata = f_fits.read()
@@ -326,23 +328,23 @@ class SALSA_spectrum:
         f_txt.close()
 
         # Insert to database
-        with con:
-            cur = con.cursor()
-            mysqlcmd = "INSERT INTO ".encode() + table.encode() + " SET file_fits=\'".encode() + con.escape_string(fitsdata) + "\',".encode()
-            mysqlcmd = mysqlcmd + "observer=\'".encode() + self.observer.encode() + "\',".encode()
-            glon = str(self.glon)
-            glat = str(self.glat)
-            mysqlcmd = mysqlcmd + "glon=\'".encode() + con.escape_string(glon) + "\',".encode()
-            mysqlcmd = mysqlcmd + "glat=\'".encode() + con.escape_string(glat) + "\',".encode()
-            unixtime_sec = math.floor((self.site.date.datetime() - datetime(1970, 1, 1)).total_seconds())
-            mysqlcmd = mysqlcmd + "obsdate=".encode()+ str(unixtime_sec).encode() + ",".encode()
-            mysqlcmd = mysqlcmd + "obsfreq=".encode() + str(1e-6*self.obs_freq).encode()+ ",".encode()
-            mysqlcmd = mysqlcmd + "bandwidth=".encode() + str(1e-6*self.bandwidth).encode() + ",".encode()
-            mysqlcmd = mysqlcmd + "int_time=".encode() + str(self.int_time).encode() + ",".encode()
-            mysqlcmd = mysqlcmd + "telescope=\'".encode() + self.site.name.encode() + "\',".encode()
-            mysqlcmd = mysqlcmd + "file_png=\'".encode() + con.escape_string(pngdata) + "\'".encode() + ",".encode()
-            mysqlcmd = mysqlcmd + "file_txt=\'".encode() + con.escape_string(txtdata) + "\'".encode()
-            cur.execute(mysqlcmd)
+        con=mdb.connect(host = host, passwd=passwd, db=db, user = user)
+        cur = con.cursor()
+        mysqlcmd = "INSERT INTO ".encode() + table.encode() + " SET file_fits=\'".encode() + con.escape_string(fitsdata) + "\',".encode()
+        mysqlcmd = mysqlcmd + "observer=\'".encode() + self.observer.encode() + "\',".encode()
+        glon = str(self.glon)
+        glat = str(self.glat)
+        mysqlcmd = mysqlcmd + "glon=\'".encode() + con.escape_string(glon) + "\',".encode()
+        mysqlcmd = mysqlcmd + "glat=\'".encode() + con.escape_string(glat) + "\',".encode()
+        unixtime_sec = math.floor((self.site.date.datetime() - datetime(1970, 1, 1)).total_seconds())
+        mysqlcmd = mysqlcmd + "obsdate=".encode()+ str(unixtime_sec).encode() + ",".encode()
+        mysqlcmd = mysqlcmd + "obsfreq=".encode() + str(1e-6*self.obs_freq).encode()+ ",".encode()
+        mysqlcmd = mysqlcmd + "bandwidth=".encode() + str(1e-6*self.bandwidth).encode() + ",".encode()
+        mysqlcmd = mysqlcmd + "int_time=".encode() + str(self.int_time).encode() + ",".encode()
+        mysqlcmd = mysqlcmd + "telescope=\'".encode() + self.site.name.encode() + "\',".encode()
+        mysqlcmd = mysqlcmd + "file_png=\'".encode() + con.escape_string(pngdata) + "\'".encode() + ",".encode()
+        mysqlcmd = mysqlcmd + "file_txt=\'".encode() + con.escape_string(txtdata) + "\'".encode()
+        cur.execute(mysqlcmd)
         self.uploaded = True
 
     def get_total_power(self):
